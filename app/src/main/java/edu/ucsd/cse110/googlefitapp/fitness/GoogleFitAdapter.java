@@ -1,6 +1,6 @@
 package edu.ucsd.cse110.googlefitapp.fitness;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
