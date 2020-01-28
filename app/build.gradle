@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "edu.ucsd.cse110.googlefitapp"
+        applicationId "edu.ucsd.cse110.fitnessapp"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 1

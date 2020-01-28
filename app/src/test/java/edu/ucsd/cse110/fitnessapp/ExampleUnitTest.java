@@ -1,4 +1,4 @@
-package edu.ucsd.cse110.googlefitapp;
+package edu.ucsd.cse110.fitnessapp;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package edu.ucsd.cse110.googlefitapp;
+package edu.ucsd.cse110.fitnessapp;
 
 import android.content.Intent;
 import android.widget.Button;
@@ -11,8 +11,8 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
-import edu.ucsd.cse110.googlefitapp.fitness.FitnessService;
-import edu.ucsd.cse110.googlefitapp.fitness.FitnessServiceFactory;
+import edu.ucsd.cse110.fitnessapp.fitness.FitnessService;
+import edu.ucsd.cse110.fitnessapp.fitness.FitnessServiceFactory;
 
 import static org.junit.Assert.assertEquals;
 
