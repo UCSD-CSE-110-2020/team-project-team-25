@@ -4,50 +4,45 @@ import android.content.Intent;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 
 import edu.ucsd.cse110.fitnessapp.fitness.FitnessService;
 import edu.ucsd.cse110.fitnessapp.fitness.FitnessServiceFactory;
 
-import static org.junit.Assert.assertEquals;
+import static com.google.common.truth.Truth.assertThat;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(AndroidJUnit4.class)
 public class StepCountActivityUnitTest {
     private static final String TEST_SERVICE = "TEST_SERVICE";
 
-    private StepCountActivity activity;
-    private TextView textSteps;
-    private Button btnUpdateSteps;
+    private Intent intent;
     private long nextStepCount;
 
     @Before
-    public void setUp() throws Exception {
-        FitnessServiceFactory.put(TEST_SERVICE, new FitnessServiceFactory.BluePrint() {
-            @Override
-            public FitnessService create(StepCountActivity stepCountActivity) {
-                return new TestFitnessService(stepCountActivity);
-            }
-        });
-
-        Intent intent = new Intent(RuntimeEnvironment.application, StepCountActivity.class);
+    public void setUp() {
+        FitnessServiceFactory.put(TEST_SERVICE, TestFitnessService::new);
+        intent = new Intent(ApplicationProvider.getApplicationContext(), StepCountActivity.class);
         intent.putExtra(StepCountActivity.FITNESS_SERVICE_KEY, TEST_SERVICE);
-        activity = Robolectric.buildActivity(StepCountActivity.class, intent).create().get();
-
-        textSteps = activity.findViewById(R.id.textSteps);
-        btnUpdateSteps = activity.findViewById(R.id.buttonUpdateSteps);
-        nextStepCount = 1337;
     }
 
     @Test
     public void testUpdateStepsButton() {
-        assertEquals("steps will be shown here", textSteps.getText().toString());
-        btnUpdateSteps.performClick();
-        assertEquals("1337", textSteps.getText().toString());
+        nextStepCount = 1337;
+
+        ActivityScenario<StepCountActivity> scenario = ActivityScenario.launch(intent);
+        scenario.onActivity(activity -> {
+            TextView textSteps = activity.findViewById(R.id.textSteps);
+            Button btnUpdateSteps = activity.findViewById(R.id.buttonUpdateSteps);
+            assertThat(textSteps.getText().toString()).isEqualTo("steps will be shown here");
+            btnUpdateSteps.performClick();
+            assertThat(textSteps.getText().toString()).isEqualTo(String.valueOf(nextStepCount));
+        });
     }
 
     private class TestFitnessService implements FitnessService {
