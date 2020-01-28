@@ -18,6 +18,7 @@ import edu.ucsd.cse110.fitnessapp.StepCountActivity;
 public class GoogleFitAdapter implements FitnessService {
     private final int GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = System.identityHashCode(this) & 0xFFFF;
     private final String TAG = "GoogleFitAdapter";
+    private GoogleSignInAccount account;
 
     private StepCountActivity activity;
 
@@ -32,11 +33,13 @@ public class GoogleFitAdapter implements FitnessService {
                 .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
                 .build();
 
-        if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(activity), fitnessOptions)) {
+
+        account = GoogleSignIn.getAccountForExtension(activity, fitnessOptions);
+        if (!GoogleSignIn.hasPermissions(account, fitnessOptions)) {
             GoogleSignIn.requestPermissions(
                     activity, // your activity
                     GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
-                    GoogleSignIn.getLastSignedInAccount(activity),
+                    account,
                     fitnessOptions);
         } else {
             updateStepCount();
@@ -45,12 +48,11 @@ public class GoogleFitAdapter implements FitnessService {
     }
 
     private void startRecording() {
-        GoogleSignInAccount lastSignedInAccount = GoogleSignIn.getLastSignedInAccount(activity);
-        if (lastSignedInAccount == null) {
+        if (account == null) {
             return;
         }
 
-        Fitness.getRecordingClient(activity, GoogleSignIn.getLastSignedInAccount(activity))
+        Fitness.getRecordingClient(activity, account)
                 .subscribe(DataType.TYPE_STEP_COUNT_CUMULATIVE)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -72,12 +74,11 @@ public class GoogleFitAdapter implements FitnessService {
      * current timezone.
      */
     public void updateStepCount() {
-        GoogleSignInAccount lastSignedInAccount = GoogleSignIn.getLastSignedInAccount(activity);
-        if (lastSignedInAccount == null) {
+        if (account == null) {
             return;
         }
 
-        Fitness.getHistoryClient(activity, lastSignedInAccount)
+        Fitness.getHistoryClient(activity, account)
                 .readDailyTotal(DataType.TYPE_STEP_COUNT_DELTA)
                 .addOnSuccessListener(
                         new OnSuccessListener<DataSet>() {
