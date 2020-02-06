@@ -25,6 +25,17 @@ android {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
     }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            all {
+                testLogging {
+                    events "passed", "skipped", "failed"
+                    exceptionFormat "full"
+                }
+            }
+        }
+    }
 }
 
 dependencies {
