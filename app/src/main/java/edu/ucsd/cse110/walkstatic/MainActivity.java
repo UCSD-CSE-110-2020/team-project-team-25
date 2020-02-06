@@ -1,12 +1,15 @@
 package edu.ucsd.cse110.walkstatic;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import edu.ucsd.cse110.walkstatic.R;
+import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 import edu.ucsd.cse110.walkstatic.fitness.GoogleFitAdapter;
@@ -18,27 +21,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Button btnGoToSteps = findViewById(R.id.buttonGoToSteps);
-        btnGoToSteps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launchStepCountActivity();
-            }
-        });
+        TextView textSteps = findViewById(R.id.steps_today);
 
         FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
             @Override
-            public FitnessService create(StepCountActivity stepCountActivity) {
-                return new GoogleFitAdapter(stepCountActivity);
+            public FitnessService create(Activity activity, FitnessListener listener) {
+                return new GoogleFitAdapter(activity, listener);
             }
         });
-    }
-
-    public void launchStepCountActivity() {
-        Intent intent = new Intent(this, StepCountActivity.class);
-        intent.putExtra(StepCountActivity.FITNESS_SERVICE_KEY, fitnessServiceKey);
-        startActivity(intent);
     }
 
     public void setFitnessServiceKey(String fitnessServiceKey) {

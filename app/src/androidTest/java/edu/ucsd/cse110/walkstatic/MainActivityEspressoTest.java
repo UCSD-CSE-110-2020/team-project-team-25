@@ -6,6 +6,8 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -18,7 +20,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import edu.ucsd.cse110.walkstatic.R;
+import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 
@@ -42,8 +44,8 @@ public class MainActivityEspressoTest {
     public void mainActivityEspressoTest() {
         FitnessServiceFactory.put(TEST_SERVICE, new FitnessServiceFactory.BluePrint() {
             @Override
-            public FitnessService create(StepCountActivity stepCountActivity) {
-                return new TestFitnessService(stepCountActivity);
+            public FitnessService create(Activity activity, FitnessListener listener) {
+                return new TestFitnessService(activity, listener);
             }
         });
 
@@ -121,10 +123,10 @@ public class MainActivityEspressoTest {
 
     private class TestFitnessService implements FitnessService {
         private static final String TAG = "[TestFitnessService]: ";
-        private StepCountActivity stepCountActivity;
+        private FitnessListener listener;
 
-        public TestFitnessService(StepCountActivity stepCountActivity) {
-            this.stepCountActivity = stepCountActivity;
+        public TestFitnessService(Activity activity, FitnessListener listener) {
+            this.listener = listener;
         }
 
         @Override
@@ -140,7 +142,7 @@ public class MainActivityEspressoTest {
         @Override
         public void updateStepCount() {
             System.out.println(TAG + "updateStepCount");
-            stepCountActivity.setStepCount(1337);
+            listener.onNewSteps(1337);
         }
     }
 }

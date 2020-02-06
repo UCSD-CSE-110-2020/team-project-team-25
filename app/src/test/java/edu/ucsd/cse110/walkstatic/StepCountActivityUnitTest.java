@@ -1,5 +1,6 @@
 package edu.ucsd.cse110.walkstatic;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.widget.Button;
 import android.widget.TextView;
@@ -12,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 
@@ -47,10 +49,10 @@ public class StepCountActivityUnitTest {
 
     private class TestFitnessService implements FitnessService {
         private static final String TAG = "[TestFitnessService]: ";
-        private StepCountActivity stepCountActivity;
+        private FitnessListener listener;
 
-        public TestFitnessService(StepCountActivity stepCountActivity) {
-            this.stepCountActivity = stepCountActivity;
+        public TestFitnessService(Activity stepCountActivity, FitnessListener listener) {
+            this.listener = listener;
         }
 
         @Override
@@ -66,7 +68,7 @@ public class StepCountActivityUnitTest {
         @Override
         public void updateStepCount() {
             System.out.println(TAG + "updateStepCount");
-            stepCountActivity.setStepCount(nextStepCount);
+            listener.onNewSteps(nextStepCount);
         }
     }
 }
