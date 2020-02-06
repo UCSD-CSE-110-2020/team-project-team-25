@@ -38,10 +38,10 @@ public class StepCountActivityUnitTest {
 
     @Test
     public void testUpdateStepsButton() {
-        fakeFitnessService.nextStepCount = 1337;
 
         ActivityScenario<StepCountActivity> scenario = ActivityScenario.launch(intent);
         scenario.onActivity(activity -> {
+            fakeFitnessService.nextStepCount = 1337;
             TextView textSteps = activity.findViewById(R.id.textSteps);
             Button btnUpdateSteps = activity.findViewById(R.id.buttonUpdateSteps);
             assertThat(textSteps.getText().toString()).isEqualTo("steps will be shown here");

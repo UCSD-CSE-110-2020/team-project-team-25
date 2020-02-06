@@ -13,7 +13,7 @@ public class StepTrackerTest {
             this.lastSteps = steps;
         }
     }
-    
+
     @Test
     public void whenStepTrackerIsCreatedStepsUpdatedNotifiedClientsAreToo(){
         FakeFitnessService fakeFitnessService = new FakeFitnessService(null);
