@@ -1,4 +1,4 @@
-package edu.ucsd.cse110.fitnessapp.fitness;
+package edu.ucsd.cse110.walkstatic.fitness;
 
 public interface FitnessService {
     int getRequestCode();

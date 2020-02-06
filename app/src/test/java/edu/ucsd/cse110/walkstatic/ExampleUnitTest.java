@@ -1,4 +1,4 @@
-package edu.ucsd.cse110.fitnessapp;
+package edu.ucsd.cse110.walkstatic;
 
 import org.junit.Test;
 

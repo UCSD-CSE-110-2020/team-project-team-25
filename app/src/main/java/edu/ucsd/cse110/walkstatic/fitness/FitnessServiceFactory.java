@@ -1,11 +1,11 @@
-package edu.ucsd.cse110.fitnessapp.fitness;
+package edu.ucsd.cse110.walkstatic.fitness;
 
 import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.ucsd.cse110.fitnessapp.StepCountActivity;
+import edu.ucsd.cse110.walkstatic.StepCountActivity;
 
 public class FitnessServiceFactory {
 

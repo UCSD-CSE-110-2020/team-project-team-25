@@ -1,4 +1,4 @@
-package edu.ucsd.cse110.fitnessapp;
+package edu.ucsd.cse110.walkstatic;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,8 +9,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import edu.ucsd.cse110.fitnessapp.fitness.FitnessService;
-import edu.ucsd.cse110.fitnessapp.fitness.FitnessServiceFactory;
+import edu.ucsd.cse110.walkstatic.R;
+import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
+import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 
 public class StepCountActivity extends AppCompatActivity {
 

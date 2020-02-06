@@ -1,7 +1,8 @@
-package edu.ucsd.cse110.fitnessapp;
+package edu.ucsd.cse110.walkstatic;
 
 
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -11,13 +12,15 @@ import android.view.ViewParent;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import edu.ucsd.cse110.fitnessapp.fitness.FitnessService;
-import edu.ucsd.cse110.fitnessapp.fitness.FitnessServiceFactory;
+import edu.ucsd.cse110.walkstatic.R;
+import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
+import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -47,7 +50,7 @@ public class MainActivityEspressoTest {
         mActivityTestRule.getActivity().setFitnessServiceKey(TEST_SERVICE);
 
         ViewInteraction button = onView(
-                allOf(withId(R.id.buttonGoToSteps),
+                Matchers.allOf(ViewMatchers.withId(R.id.buttonGoToSteps),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),

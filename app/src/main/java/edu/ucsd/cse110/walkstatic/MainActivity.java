@@ -1,4 +1,4 @@
-package edu.ucsd.cse110.fitnessapp;
+package edu.ucsd.cse110.walkstatic;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,9 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
-import edu.ucsd.cse110.fitnessapp.fitness.FitnessService;
-import edu.ucsd.cse110.fitnessapp.fitness.FitnessServiceFactory;
-import edu.ucsd.cse110.fitnessapp.fitness.GoogleFitAdapter;
+import edu.ucsd.cse110.walkstatic.R;
+import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
+import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
+import edu.ucsd.cse110.walkstatic.fitness.GoogleFitAdapter;
 
 public class MainActivity extends AppCompatActivity {
     private String fitnessServiceKey = "GOOGLE_FIT";

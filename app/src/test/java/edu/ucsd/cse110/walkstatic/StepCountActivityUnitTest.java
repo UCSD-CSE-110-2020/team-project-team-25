@@ -1,4 +1,4 @@
-package edu.ucsd.cse110.fitnessapp;
+package edu.ucsd.cse110.walkstatic;
 
 import android.content.Intent;
 import android.widget.Button;
@@ -12,8 +12,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import edu.ucsd.cse110.fitnessapp.fitness.FitnessService;
-import edu.ucsd.cse110.fitnessapp.fitness.FitnessServiceFactory;
+import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
+import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 
 import static com.google.common.truth.Truth.assertThat;
 
