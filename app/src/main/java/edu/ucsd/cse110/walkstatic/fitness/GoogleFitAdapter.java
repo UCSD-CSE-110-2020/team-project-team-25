@@ -26,8 +26,12 @@ public class GoogleFitAdapter implements FitnessService {
     private Activity activity;
     private FitnessListener listener;
 
-    public GoogleFitAdapter(Activity activity, FitnessListener listener) {
+    public GoogleFitAdapter(Activity activity) {
         this.activity = activity;
+    }
+
+    @Override
+    public void setListener(FitnessListener listener){
         this.listener = listener;
     }
 
@@ -95,7 +99,9 @@ public class GoogleFitAdapter implements FitnessService {
                                                 ? 0
                                                 : dataSet.getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt();
 
-                                listener.onNewSteps(total);
+                                if(listener != null){
+                                    listener.onNewSteps(total);
+                                }
                                 Log.d(TAG, "Total steps: " + total);
                             }
                         })

@@ -44,8 +44,8 @@ public class MainActivityEspressoTest {
     public void mainActivityEspressoTest() {
         FitnessServiceFactory.put(TEST_SERVICE, new FitnessServiceFactory.BluePrint() {
             @Override
-            public FitnessService create(Activity activity, FitnessListener listener) {
-                return new TestFitnessService(activity, listener);
+            public FitnessService create(Activity activity) {
+                return new TestFitnessService(activity);
             }
         });
 
@@ -125,8 +125,7 @@ public class MainActivityEspressoTest {
         private static final String TAG = "[TestFitnessService]: ";
         private FitnessListener listener;
 
-        public TestFitnessService(Activity activity, FitnessListener listener) {
-            this.listener = listener;
+        public TestFitnessService(Activity activity) {
         }
 
         @Override
@@ -142,7 +141,14 @@ public class MainActivityEspressoTest {
         @Override
         public void updateStepCount() {
             System.out.println(TAG + "updateStepCount");
-            listener.onNewSteps(1337);
+            if(this.listener != null){
+                listener.onNewSteps(1337);
+            }
+        }
+
+        @Override
+        public void setListener(FitnessListener listener) {
+            this.listener = listener;
         }
     }
 }

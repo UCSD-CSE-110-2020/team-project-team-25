@@ -13,10 +13,12 @@ public class StepTrackerTest {
             this.lastSteps = steps;
         }
     }
+    
     @Test
     public void whenStepTrackerIsCreatedStepsUpdatedNotifiedClientsAreToo(){
+        FakeFitnessService fakeFitnessService = new FakeFitnessService(null);
         FakeStepListener fakeStepListener = new FakeStepListener();
-        StepTracker tracker = new StepTracker(fakeStepListener);
+        StepTracker tracker = new StepTracker(fakeFitnessService, fakeStepListener);
         tracker.onNewSteps(10);
         assertEquals(10, fakeStepListener.lastSteps);
         tracker.onNewSteps(40);

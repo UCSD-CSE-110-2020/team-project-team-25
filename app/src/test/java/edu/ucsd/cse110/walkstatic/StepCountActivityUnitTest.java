@@ -24,18 +24,21 @@ public class StepCountActivityUnitTest {
     private static final String TEST_SERVICE = "TEST_SERVICE";
 
     private Intent intent;
-    private long nextStepCount;
+    private FakeFitnessService fakeFitnessService;
 
     @Before
     public void setUp() {
-        FitnessServiceFactory.put(TEST_SERVICE, TestFitnessService::new);
+        FitnessServiceFactory.put(TEST_SERVICE, (Activity a) ->{
+            fakeFitnessService = new FakeFitnessService(a);
+            return fakeFitnessService;
+        });
         intent = new Intent(ApplicationProvider.getApplicationContext(), StepCountActivity.class);
         intent.putExtra(StepCountActivity.FITNESS_SERVICE_KEY, TEST_SERVICE);
     }
 
     @Test
     public void testUpdateStepsButton() {
-        nextStepCount = 1337;
+        fakeFitnessService.nextStepCount = 1337;
 
         ActivityScenario<StepCountActivity> scenario = ActivityScenario.launch(intent);
         scenario.onActivity(activity -> {
@@ -43,32 +46,8 @@ public class StepCountActivityUnitTest {
             Button btnUpdateSteps = activity.findViewById(R.id.buttonUpdateSteps);
             assertThat(textSteps.getText().toString()).isEqualTo("steps will be shown here");
             btnUpdateSteps.performClick();
-            assertThat(textSteps.getText().toString()).isEqualTo(String.valueOf(nextStepCount));
+            assertThat(textSteps.getText().toString()).isEqualTo("1337");
         });
     }
 
-    private class TestFitnessService implements FitnessService {
-        private static final String TAG = "[TestFitnessService]: ";
-        private FitnessListener listener;
-
-        public TestFitnessService(Activity stepCountActivity, FitnessListener listener) {
-            this.listener = listener;
-        }
-
-        @Override
-        public int getRequestCode() {
-            return 0;
-        }
-
-        @Override
-        public void setup() {
-            System.out.println(TAG + "setup");
-        }
-
-        @Override
-        public void updateStepCount() {
-            System.out.println(TAG + "updateStepCount");
-            listener.onNewSteps(nextStepCount);
-        }
-    }
 }

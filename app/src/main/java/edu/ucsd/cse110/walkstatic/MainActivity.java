@@ -25,8 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
         FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
             @Override
-            public FitnessService create(Activity activity, FitnessListener listener) {
-                return new GoogleFitAdapter(activity, listener);
+            public FitnessService create(Activity activity) {
+                return new GoogleFitAdapter(activity);
             }
         });
     }

@@ -18,12 +18,12 @@ public class FitnessServiceFactory {
         blueprints.put(key, bluePrint);
     }
 
-    public static FitnessService create(String key, Activity activity, FitnessListener listener) {
+    public static FitnessService create(String key, Activity activity) {
         Log.i(TAG, String.format("creating FitnessService with key %s", key));
-        return blueprints.get(key).create(activity, listener);
+        return blueprints.get(key).create(activity);
     }
 
     public interface BluePrint {
-        FitnessService create(Activity activity, FitnessListener listener);
+        FitnessService create(Activity activity);
     }
 }
