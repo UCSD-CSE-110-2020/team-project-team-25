@@ -1,20 +1,29 @@
 package edu.ucsd.cse110.walkstatic;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
+import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.TimerTask;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import edu.ucsd.cse110.walkstatic.R;
-import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 import edu.ucsd.cse110.walkstatic.fitness.GoogleFitAdapter;
@@ -27,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     private StepTracker stepTracker;
     private FitnessService fitnessService;
+    private ActionBarDrawerToggle toggle;
 
     private static final String TAG = "StepCountActivity";
 
@@ -35,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        initStepCount();
+        //initStepCount();
+        setupNavBar();
     }
 
     @Override
@@ -85,5 +96,37 @@ public class MainActivity extends AppCompatActivity {
         TextView textSteps = findViewById(R.id.steps_today);
         long steps = this.stepTracker.getStepTotal();
         textSteps.setText(Long.toString(steps));
+    }
+
+    private void setupNavBar(){
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBar actionBar = getActionBar();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        toggle = new ActionBarDrawerToggle(this, drawer,  R.string.open_drawer, R.string.close_drawer);
+        drawer.addDrawerListener(toggle);
+        toggle.setDrawerIndicatorEnabled(true);
+        toggle.syncState();
+        this.populateNavList();
+    }
+
+    private void populateNavList(){
+        ListView listView = findViewById(R.id.list_drawer);
+        List<String> listItems = Arrays.asList(new String[]{"Current Run", "My Runs"});
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                R.layout.hamburger_textview,
+                listItems);
+        listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        if (toggle.onOptionsItemSelected(item))
+        {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
