@@ -20,7 +20,8 @@ public class StepCountActivity extends AppCompatActivity {
     private static final String TAG = "StepCountActivity";
 
     private TextView textSteps;
-    private FitnessService fitnessService;
+    private StepTracker tracker;
+    FitnessService fitnessService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,12 +31,16 @@ public class StepCountActivity extends AppCompatActivity {
 
         String fitnessServiceKey = getIntent().getStringExtra(FITNESS_SERVICE_KEY);
         fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
+        tracker = new StepTracker(fitnessService);
 
         Button btnUpdateSteps = findViewById(R.id.buttonUpdateSteps);
         btnUpdateSteps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fitnessService.updateStepCount();
+                tracker.update();
+                if(tracker.hasData()){
+                    setStepCount(tracker.getStepTotal());
+                }
             }
         });
 
@@ -44,19 +49,7 @@ public class StepCountActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-//       If authentication was required during google fit setup, this will be called after the user authenticates
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == fitnessService.getRequestCode()) {
-                fitnessService.updateStepCount();
-            }
-        } else {
-            Log.e(TAG, "ERROR, google fit result code: " + resultCode);
-        }
-    }
 
     public void setStepCount(long stepCount) {
         textSteps.setText(String.valueOf(stepCount));

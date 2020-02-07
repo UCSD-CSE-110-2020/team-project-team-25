@@ -1,6 +1,9 @@
 package edu.ucsd.cse110.walkstatic.fitness;
 
 import androidx.annotation.NonNull;
+
+import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -20,10 +23,16 @@ public class GoogleFitAdapter implements FitnessService {
     private final String TAG = "GoogleFitAdapter";
     private GoogleSignInAccount account;
 
-    private StepCountActivity activity;
+    private Activity activity;
+    private FitnessListener listener;
 
-    public GoogleFitAdapter(StepCountActivity activity) {
+    public GoogleFitAdapter(Activity activity) {
         this.activity = activity;
+    }
+
+    @Override
+    public void setListener(FitnessListener listener){
+        this.listener = listener;
     }
 
 
@@ -90,7 +99,9 @@ public class GoogleFitAdapter implements FitnessService {
                                                 ? 0
                                                 : dataSet.getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt();
 
-                                activity.setStepCount(total);
+                                if(listener != null){
+                                    listener.onNewSteps(total);
+                                }
                                 Log.d(TAG, "Total steps: " + total);
                             }
                         })

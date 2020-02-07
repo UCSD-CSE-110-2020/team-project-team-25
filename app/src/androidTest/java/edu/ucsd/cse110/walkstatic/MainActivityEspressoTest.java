@@ -6,6 +6,8 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -18,7 +20,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import edu.ucsd.cse110.walkstatic.R;
+import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 
@@ -42,62 +44,14 @@ public class MainActivityEspressoTest {
     public void mainActivityEspressoTest() {
         FitnessServiceFactory.put(TEST_SERVICE, new FitnessServiceFactory.BluePrint() {
             @Override
-            public FitnessService create(StepCountActivity stepCountActivity) {
-                return new TestFitnessService(stepCountActivity);
+            public FitnessService create(Activity activity) {
+                return new TestFitnessService(activity);
             }
         });
 
         mActivityTestRule.getActivity().setFitnessServiceKey(TEST_SERVICE);
 
-        ViewInteraction button = onView(
-                Matchers.allOf(ViewMatchers.withId(R.id.buttonGoToSteps),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                0),
-                        isDisplayed()));
-        button.check(matches(isDisplayed()));
 
-        ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.buttonGoToSteps), withText("go to step counter"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                0),
-                        isDisplayed()));
-        appCompatButton.perform(click());
-
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.textSteps),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                1),
-                        isDisplayed()));
-        textView.check(matches(withText("steps will be shown here")));
-
-        ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.buttonUpdateSteps), withText("update steps"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                0),
-                        isDisplayed()));
-        appCompatButton2.perform(click());
-
-        ViewInteraction textView2 = onView(
-                allOf(withId(R.id.textSteps),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                1),
-                        isDisplayed()));
-        textView2.check(matches(withText("1337")));
     }
 
     private static Matcher<View> childAtPosition(
@@ -121,10 +75,9 @@ public class MainActivityEspressoTest {
 
     private class TestFitnessService implements FitnessService {
         private static final String TAG = "[TestFitnessService]: ";
-        private StepCountActivity stepCountActivity;
+        private FitnessListener listener;
 
-        public TestFitnessService(StepCountActivity stepCountActivity) {
-            this.stepCountActivity = stepCountActivity;
+        public TestFitnessService(Activity activity) {
         }
 
         @Override
@@ -140,7 +93,14 @@ public class MainActivityEspressoTest {
         @Override
         public void updateStepCount() {
             System.out.println(TAG + "updateStepCount");
-            stepCountActivity.setStepCount(1337);
+            if(this.listener != null){
+                listener.onNewSteps(1337);
+            }
+        }
+
+        @Override
+        public void setListener(FitnessListener listener) {
+            this.listener = listener;
         }
     }
 }
