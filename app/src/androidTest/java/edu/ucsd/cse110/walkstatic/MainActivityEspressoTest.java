@@ -51,55 +51,7 @@ public class MainActivityEspressoTest {
 
         mActivityTestRule.getActivity().setFitnessServiceKey(TEST_SERVICE);
 
-        ViewInteraction button = onView(
-                Matchers.allOf(ViewMatchers.withId(R.id.buttonGoToSteps),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                0),
-                        isDisplayed()));
-        button.check(matches(isDisplayed()));
 
-        ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.buttonGoToSteps), withText("go to step counter"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                0),
-                        isDisplayed()));
-        appCompatButton.perform(click());
-
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.textSteps),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                1),
-                        isDisplayed()));
-        textView.check(matches(withText("steps will be shown here")));
-
-        ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.buttonUpdateSteps), withText("update steps"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                0),
-                        isDisplayed()));
-        appCompatButton2.perform(click());
-
-        ViewInteraction textView2 = onView(
-                allOf(withId(R.id.textSteps),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                1),
-                        isDisplayed()));
-        textView2.check(matches(withText("1337")));
     }
 
     private static Matcher<View> childAtPosition(
