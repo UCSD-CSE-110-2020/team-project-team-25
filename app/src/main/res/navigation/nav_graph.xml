@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@+id/runActivity">
+
+    <activity
+        android:id="@+id/runActivity"
+        android:name="edu.ucsd.cse110.walkstatic.RunActivity"
+        android:label="RunActivity" />
+    <activity
+        android:id="@+id/stepCountActivity"
+        android:name="edu.ucsd.cse110.walkstatic.StepCountActivity"
+        android:label="StepCountActivity" />
+</navigation>
