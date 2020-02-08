@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private StepTracker stepTracker;
     private FitnessService fitnessService;
     private ActionBarDrawerToggle toggle;
+    private AppBarConfiguration appBarConfiguration;
 
     private static final String TAG = "StepCountActivity";
 
@@ -71,30 +72,34 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupNavBar(){
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBar actionBar = getActionBar();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        toggle = new ActionBarDrawerToggle(this, drawer,  R.string.open_drawer, R.string.close_drawer);
-        drawer.addDrawerListener(toggle);
-        toggle.setDrawerIndicatorEnabled(true);
-        toggle.syncState();
+//        ActionBar actionBar = getActionBar();
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setHomeButtonEnabled(false);
+//        toggle = new ActionBarDrawerToggle(this, drawer,  R.string.open_drawer, R.string.close_drawer);
+//        drawer.addDrawerListener(toggle);
+//        toggle.setDrawerIndicatorEnabled(true);
+//        toggle.syncState();
         //this.populateNavList();
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationView navigationView = findViewById(R.id.nav_view);
+
+        appBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_graph).build();
+        NavigationUI.setupActionBarWithNavController(this, navController, drawer);
         NavigationUI.setupWithNavController(navigationView, navController);
+
     }
 
     @Override
     public boolean onSupportNavigateUp(){
-        return Navigation.findNavController(this, R.id.nav_host_fragment).navigateUp();
+        return NavigationUI.navigateUp(Navigation.findNavController(this, R.id.nav_host_fragment), findViewById(R.id.drawer_layout));
     }
 
 //    private void populateNavList(){
 //        ListView listView = findViewById(R.id.list_drawer);
 //        List<String> listItems = Arrays.asList(new String[]{"Current Run", "My Runs"});
 //        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-//                R.layout.hamburger_textview,
+//                R.layout.run_list_textview,
 //                listItems);
 //        listView.setAdapter(adapter);
 //        adapter.notifyDataSetChanged();
@@ -103,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        if (toggle.onOptionsItemSelected(item))
+        if (NavigationUI.onNavDestinationSelected(item, Navigation.findNavController(this, R.id.nav_host_fragment)))
         {
             return true;
         }

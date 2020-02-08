@@ -16,5 +16,20 @@
         android:id="@+id/myRunsFragment"
         android:name="edu.ucsd.cse110.walkstatic.MyRunsFragment"
         android:label="fragment_my_runs"
-        tools:layout="@layout/fragment_my_runs" />
+        tools:layout="@layout/fragment_my_runs" >
+        <action
+            android:id="@+id/action_myRunsFragment_to_viewRunFragment"
+            app:destination="@id/viewRunFragment"
+            app:popUpTo="@+id/myRunsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewRunFragment"
+        android:name="edu.ucsd.cse110.walkstatic.ViewRunFragment"
+        android:label="fragment_view_run"
+        tools:layout="@layout/fragment_view_run" />
+    <action
+        android:id="@+id/action_global_myRunsFragment"
+        app:destination="@id/myRunsFragment"
+        app:popUpTo="@+id/myRunsFragment"
+        app:popUpToInclusive="true" />
 </navigation>
