@@ -85,6 +85,11 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
     }
 
+    @Override
+    public boolean onSupportNavigateUp(){
+        return Navigation.findNavController(this, R.id.nav_host_fragment).navigateUp();
+    }
+
 //    private void populateNavList(){
 //        ListView listView = findViewById(R.id.list_drawer);
 //        List<String> listItems = Arrays.asList(new String[]{"Current Run", "My Runs"});

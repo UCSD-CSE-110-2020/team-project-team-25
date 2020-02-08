@@ -1,45 +1,24 @@
 package edu.ucsd.cse110.walkstatic;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.material.navigation.NavigationView;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.zip.Inflater;
-
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 import edu.ucsd.cse110.walkstatic.fitness.GoogleFitAdapter;
 
-public class RunActivity extends Fragment {
+public class RunFragment extends Fragment {
     private static String fitnessServiceKey = "DEBUG"; //TODO change to "GOOGLE_FIT"
     public static void setFitnessServiceKey(String newKey) {
         fitnessServiceKey = newKey;
@@ -47,6 +26,7 @@ public class RunActivity extends Fragment {
 
     private StepTracker stepTracker;
     private FitnessService fitnessService;
+    private SecondTimer timer;
 
     private static final String TAG = "StepCountActivity";
 
@@ -125,16 +105,20 @@ public class RunActivity extends Fragment {
         this.fitnessService.setup();
         this.stepTracker = new StepTracker(this.fitnessService);
 
-        Handler secondTimer = new Handler();
+        Handler handler = new Handler();
 
         int secondDelay = 1000; //TODO make constant
-        secondTimer.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                updateStepCount();
-                secondTimer.postDelayed(this, secondDelay);
-            }
-        }, secondDelay);
+        this.timer = new SecondTimer(secondDelay, handler);
+        handler.postDelayed(this.timer, secondDelay);
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        if(this.timer != null){
+            this.timer.stop();
+        }
+
     }
 
     private void updateStepCount(){
@@ -142,6 +126,30 @@ public class RunActivity extends Fragment {
         TextView textSteps = getActivity().findViewById(R.id.steps_today);
         long steps = this.stepTracker.getStepTotal();
         textSteps.setText(Long.toString(steps));
+    }
+
+    private class SecondTimer implements Runnable{
+        int delay;
+        Handler timer;
+        boolean stop;
+        public SecondTimer(int delay, Handler timer){
+            this.delay = delay;
+            this.timer = timer;
+            this.stop = false;
+        }
+
+        @Override
+        public void run(){
+            if(this.stop){
+                return;
+            }
+            updateStepCount();
+            timer.postDelayed(this, this.delay);
+        }
+
+        void stop(){
+            this.stop = true;
+        }
     }
 
 }

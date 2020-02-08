@@ -6,7 +6,7 @@
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.ucsd.cse110.walkstatic.RunActivity">
+    tools:context="edu.ucsd.cse110.walkstatic.RunFragment">
 
     <TextView
         android:id="@+id/run_name"

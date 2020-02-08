@@ -2,21 +2,16 @@ package edu.ucsd.cse110.walkstatic;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.shadows.ShadowLooper;
 
-import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
-import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 import androidx.fragment.app.testing.FragmentScenario;
 
@@ -31,7 +26,7 @@ public class MainActivityTest {
 
     @Before
     public void setUp() {
-        RunActivity.setFitnessServiceKey(TEST_SERVICE);
+        RunFragment.setFitnessServiceKey(TEST_SERVICE);
         FitnessServiceFactory.put(TEST_SERVICE, (Activity a) ->{
             fakeFitnessService = new FakeFitnessService(a);
             return fakeFitnessService;
@@ -44,10 +39,10 @@ public class MainActivityTest {
     @Test
     public void StepsAreUpdatedPeriodically() {
 
-        FragmentScenario<RunActivity> scenario = FragmentScenario.launchInContainer(RunActivity.class);
+        FragmentScenario<RunFragment> scenario = FragmentScenario.launchInContainer(RunFragment.class);
         scenario.onFragment(activity -> {
             fakeFitnessService.nextStepCount = 0;
-            TextView textSteps = activity.findViewById(R.id.steps_today);
+            TextView textSteps = activity.getActivity().findViewById(R.id.steps_today);
             ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
             assertThat(textSteps.getText().toString()).isEqualTo("0");
             fakeFitnessService.nextStepCount = 10;
