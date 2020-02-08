@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/runActivity">
+    <fragment
+        android:id="@+id/runActivity"
+        android:name="edu.ucsd.cse110.walkstatic.RunFragment"
+        android:label="RunActivity"
+        tools:layout="@layout/activity_run"/>
+    <action
+        android:id="@+id/action_global_runActivity"
+        app:destination="@id/runActivity" />
+    <fragment
+        android:id="@+id/myRunsFragment"
+        android:name="edu.ucsd.cse110.walkstatic.MyRunsFragment"
+        android:label="fragment_my_runs"
+        tools:layout="@layout/fragment_my_runs" />
+</navigation>
