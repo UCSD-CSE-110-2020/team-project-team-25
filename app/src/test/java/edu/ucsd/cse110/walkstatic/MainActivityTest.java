@@ -2,6 +2,7 @@ package edu.ucsd.cse110.walkstatic;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -54,12 +55,12 @@ public class MainActivityTest {
     @Test
     public void RunStepsUpdated() {
 
-        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(intent);
-        scenario.onActivity(activity -> {
+        FragmentScenario<RunFragment> scenario = FragmentScenario.launchInContainer(RunFragment.class);
+        scenario.onFragment(activity -> {
             fakeFitnessService.nextStepCount = 0;
-            TextView textSteps = activity.findViewById(R.id.steps_today);
-            TextView textRunSteps = activity.findViewById(R.id.stepRunCount);
-            Button btnStart = activity.findViewById(R.id.startButton);
+            TextView textSteps = activity.getActivity().findViewById(R.id.steps_today);
+            TextView textRunSteps = activity.getActivity().findViewById(R.id.stepRunCount);
+            Button btnStart = activity.getActivity().findViewById(R.id.startButton);
             btnStart.performClick();
             ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
             assertThat(textSteps.getText().toString()).isEqualTo("0");
@@ -74,17 +75,17 @@ public class MainActivityTest {
     @Test
     public void RunStepsUpdatedDelayedStart() {
 
-        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(intent);
-        scenario.onActivity(activity -> {
+        FragmentScenario<RunFragment> scenario = FragmentScenario.launchInContainer(RunFragment.class);
+        scenario.onFragment(activity -> {
             fakeFitnessService.nextStepCount = 0;
-            TextView textSteps = activity.findViewById(R.id.steps_today);
-            TextView textRunSteps = activity.findViewById(R.id.stepRunCount);
+            TextView textSteps = activity.getActivity().findViewById(R.id.steps_today);
+            TextView textRunSteps = activity.getActivity().findViewById(R.id.stepRunCount);
             ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
             assertThat(textSteps.getText().toString()).isEqualTo("0");
             fakeFitnessService.nextStepCount = 10;
             ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
             assertThat(textSteps.getText().toString()).isEqualTo("10");
-            Button btnStart = activity.findViewById(R.id.startButton);
+            Button btnStart = activity.getActivity().findViewById(R.id.startButton);
             btnStart.performClick();
             fakeFitnessService.nextStepCount = 20;
             ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
@@ -94,11 +95,11 @@ public class MainActivityTest {
     }
 
     public void StartButtonHandler() {
-        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(intent);
-        scenario.onActivity(activity -> {
-            TextView textRunSteps = activity.findViewById(R.id.stepRunCount);
+        FragmentScenario<RunFragment> scenario = FragmentScenario.launchInContainer(RunFragment.class);
+        scenario.onFragment(activity -> {
+            TextView textRunSteps = activity.getActivity().findViewById(R.id.stepRunCount);
             assertThat(textRunSteps.getText().toString()).isEqualTo("");
-            Button btnStart = activity.findViewById(R.id.startButton);
+            Button btnStart = activity.getActivity().findViewById(R.id.startButton);
             btnStart.performClick();
             assertThat(textRunSteps.getText().toString()).isEqualTo("0");
         });

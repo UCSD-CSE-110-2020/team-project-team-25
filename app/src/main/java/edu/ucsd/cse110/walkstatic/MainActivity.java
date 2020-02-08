@@ -36,82 +36,18 @@ public class MainActivity extends AppCompatActivity {
         fitnessServiceKey = newKey;
     }
 
-    private StepTracker stepTracker;
-    private FitnessService fitnessService;
-    private ActionBarDrawerToggle toggle;
 
-    private boolean startBool = false;
-    long currentSteps;
+    private ActionBarDrawerToggle toggle;
 
     private static final String TAG = "StepCountActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);   
-        initStepCount();
-        Button startButton = findViewById(R.id.startButton);
-        startButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startBool = true;
-                currentSteps = stepTracker.getStepTotal();
-            }
-        });
+        setContentView(R.layout.activity_main);
         setupNavBar();
 
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-//       If authentication was required during google fit setup, this will be called after the user authenticates
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == fitnessService.getRequestCode()) {
-                fitnessService.updateStepCount();
-            }
-        } else {
-            Log.e(TAG, "ERROR, google fit result code: " + resultCode);
-        }
-    }
-
-    private void initStepCount(){
-        FitnessServiceFactory.put("GOOGLE_FIT", new FitnessServiceFactory.BluePrint() {
-            @Override
-            public FitnessService create(Activity activity) {
-                return new GoogleFitAdapter(activity);
-            }
-        });
-
-        TextView textSteps = findViewById(R.id.steps_today);
-        textSteps.setText("--");
-        this.fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
-        this.fitnessService.setup();
-        this.stepTracker = new StepTracker(this.fitnessService);
-
-        Handler secondTimer = new Handler();
-
-        int secondDelay = 1000; //TODO make constant
-        secondTimer.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                updateStepCount();
-                secondTimer.postDelayed(this, secondDelay);
-            }
-        }, secondDelay);
-    }
-
-    private void updateStepCount(){
-        //for day
-        this.stepTracker.update();
-        TextView textSteps = findViewById(R.id.steps_today);
-        long steps = this.stepTracker.getStepTotal();
-        textSteps.setText(Long.toString(steps));
-        if(startBool == true) {
-            TextView textRunSteps = findViewById(R.id.stepRunCount);
-            textRunSteps.setText(Long.toString(steps - currentSteps));
-        }
 
     private void setupNavBar(){
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
