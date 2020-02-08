@@ -6,8 +6,6 @@ import android.util.Log;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.ucsd.cse110.walkstatic.StepCountActivity;
-
 public class FitnessServiceFactory {
 
     private static final String TAG = "[FitnessServiceFactory]";

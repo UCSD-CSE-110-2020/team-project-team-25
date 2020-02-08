@@ -28,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
     private StepTracker stepTracker;
     private FitnessService fitnessService;
 
-    private StepTracker stepRunTracker;
-    private FitnessService fitnessRunService;
+    private boolean startBool = false;
+    long currentSteps;
 
     private static final String TAG = "StepCountActivity";
 
@@ -39,7 +39,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         
         initStepCount();
-//        initRunCount();
+        Button startButton = findViewById(R.id.startButton);
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startBool = true;
+                currentSteps = stepTracker.getStepTotal();
+            }
+        });
     }
 
     @Override
@@ -56,31 +63,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void initRunCount(){
-        FitnessServiceFactory.put("GOOGLE_FIT", new FitnessServiceFactory.BluePrint() {
-            @Override
-            public FitnessService create(Activity activity) {
-                return new GoogleFitAdapter(activity);
-            }
-        });
-
-        TextView textSteps = findViewById(R.id.stepRunCount);
-        textSteps.setText("");
-        this.fitnessRunService = FitnessServiceFactory.create(fitnessServiceKey, this);
-        this.fitnessRunService.setup();
-        this.stepRunTracker = new StepTracker(this.fitnessRunService);
-
-        Handler secondTimer = new Handler();
-
-        int secondDelay = 1000; //TODO make constant
-        secondTimer.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                updateStepCount();
-                secondTimer.postDelayed(this, secondDelay);
-            }
-        }, secondDelay);
-    }
 
     private void initStepCount(){
         FitnessServiceFactory.put("GOOGLE_FIT", new FitnessServiceFactory.BluePrint() {
@@ -114,11 +96,9 @@ public class MainActivity extends AppCompatActivity {
         TextView textSteps = findViewById(R.id.steps_today);
         long steps = this.stepTracker.getStepTotal();
         textSteps.setText(Long.toString(steps));
-
-//        //during run
-//        this.stepRunTracker.update();
-//        TextView textStepsRun = findViewById(R.id.stepRunCount);
-//        long runSteps = this.stepRunTracker.getStepTotal();
-//        textStepsRun.setText(Long.toString(runSteps));
+        if(startBool == true) {
+            TextView textRunSteps = findViewById(R.id.stepRunCount);
+            textRunSteps.setText(Long.toString(steps - currentSteps));
+        }
     }
 }
