@@ -16,8 +16,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="edu.ucsd.cse110.walkstatic.StepCountActivity"></activity>
-        <activity android:name="edu.ucsd.cse110.walkstatic.RunActivity"></activity>
     </application>
 
 </manifest>

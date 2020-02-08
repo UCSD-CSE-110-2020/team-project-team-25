@@ -46,8 +46,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
-        //initStepCount();
+
         setupNavBar();
     }
 
@@ -67,38 +66,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private void initStepCount(){
-        FitnessServiceFactory.put("GOOGLE_FIT", new FitnessServiceFactory.BluePrint() {
-            @Override
-            public FitnessService create(Activity activity) {
-                return new GoogleFitAdapter(activity);
-            }
-        });
 
-        TextView textSteps = findViewById(R.id.steps_today);
-        textSteps.setText("--");
-        this.fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
-        this.fitnessService.setup();
-        this.stepTracker = new StepTracker(this.fitnessService);
 
-        Handler secondTimer = new Handler();
-
-        int secondDelay = 1000; //TODO make constant
-        secondTimer.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                updateStepCount();
-                secondTimer.postDelayed(this, secondDelay);
-            }
-        }, secondDelay);
-    }
-
-    private void updateStepCount(){
-        this.stepTracker.update();
-        TextView textSteps = findViewById(R.id.steps_today);
-        long steps = this.stepTracker.getStepTotal();
-        textSteps.setText(Long.toString(steps));
-    }
 
     private void setupNavBar(){
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

@@ -10,7 +10,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -20,18 +25,22 @@ import com.google.android.material.navigation.NavigationView;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.zip.Inflater;
 
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
+import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 import edu.ucsd.cse110.walkstatic.fitness.GoogleFitAdapter;
 
-public class RunActivity extends AppCompatActivity {
-    private static String fitnessServiceKey = "GOOGLE_FIT";
+public class RunActivity extends Fragment {
+    private static String fitnessServiceKey = "DEBUG"; //TODO change to "GOOGLE_FIT"
     public static void setFitnessServiceKey(String newKey) {
         fitnessServiceKey = newKey;
     }
@@ -42,16 +51,20 @@ public class RunActivity extends AppCompatActivity {
     private static final String TAG = "StepCountActivity";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_run);
-
-        //initStepCount(); TODO uncomment!
-        setupDrawerButton();
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.activity_run, container, false);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onViewCreated(View view, Bundle savedInstanceState){
+        super.onViewCreated(view, savedInstanceState);
+
+        initStepCount();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
 //       If authentication was required during google fit setup, this will be called after the user authenticates
@@ -74,9 +87,41 @@ public class RunActivity extends AppCompatActivity {
             }
         });
 
-        TextView textSteps = findViewById(R.id.steps_today);
+        FitnessServiceFactory.put("DEBUG", new FitnessServiceFactory.BluePrint() {
+            @Override
+            public FitnessService create(Activity activity) {
+                return new FitnessService() {
+                    FitnessListener listener;
+                    @Override
+                    public int getRequestCode() {
+                        return 0;
+                    }
+
+                    @Override
+                    public void setup() {
+
+                    }
+
+                    @Override
+                    public void updateStepCount() {
+                        if(this.listener == null){
+                            return;
+                        }
+                        long rand = Math.round(Math.random()*1000);
+                        this.listener.onNewSteps(rand);
+                    }
+
+                    @Override
+                    public void setListener(FitnessListener listener) {
+                        this.listener = listener;
+                    }
+                };
+            }
+        });
+
+        TextView textSteps = getActivity().findViewById(R.id.steps_today);
         textSteps.setText("--");
-        this.fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
+        this.fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this.getActivity());
         this.fitnessService.setup();
         this.stepTracker = new StepTracker(this.fitnessService);
 
@@ -94,19 +139,9 @@ public class RunActivity extends AppCompatActivity {
 
     private void updateStepCount(){
         this.stepTracker.update();
-        TextView textSteps = findViewById(R.id.steps_today);
+        TextView textSteps = getActivity().findViewById(R.id.steps_today);
         long steps = this.stepTracker.getStepTotal();
         textSteps.setText(Long.toString(steps));
     }
 
-    private void setupDrawerButton(){
-            DrawerLayout drawer = findViewById(R.id.drawer_layout);
-            ActionBar actionBar = getActionBar();
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeButtonEnabled(true);
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer,  R.string.open_drawer, R.string.close_drawer);
-            drawer.addDrawerListener(toggle);
-            toggle.setDrawerIndicatorEnabled(true);
-            toggle.syncState();
-    }
 }
