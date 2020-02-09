@@ -39,8 +39,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         setupNavBar();
+
         createFakeRuns();
     }
 
@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         runs.add(new Run("Mission Trails"));
         sharedPreferences.edit().putString("runs", gson.toJson(runs)).apply();
     }
-
 
     private void setupNavBar(){
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -74,13 +73,4 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        if (NavigationUI.onNavDestinationSelected(item, Navigation.findNavController(this, R.id.nav_host_fragment)))
-        {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }

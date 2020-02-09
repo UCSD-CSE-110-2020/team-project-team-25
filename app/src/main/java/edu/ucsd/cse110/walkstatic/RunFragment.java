@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -28,6 +29,7 @@ public class RunFragment extends Fragment {
     private FitnessService fitnessService;
     private SecondTimer timer;
 
+
     private static final String TAG = "StepCountActivity";
 
     @Override
@@ -41,6 +43,13 @@ public class RunFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         initStepCount();
+        Button startButton = getActivity().findViewById(R.id.startButton);
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stepTracker.setRunStepTotal();
+            }
+        });
     }
 
     @Override
@@ -122,10 +131,15 @@ public class RunFragment extends Fragment {
     }
 
     private void updateStepCount(){
+        //for day
         this.stepTracker.update();
         TextView textSteps = getActivity().findViewById(R.id.steps_today);
         long steps = this.stepTracker.getStepTotal();
         textSteps.setText(Long.toString(steps));
+        if(stepTracker.isStartPressed() == true) {
+            TextView textRunSteps = getActivity().findViewById(R.id.stepRunCount);
+            textRunSteps.setText(Long.toString(stepTracker.getRunStep()));
+        }
     }
 
     private class SecondTimer implements Runnable{
