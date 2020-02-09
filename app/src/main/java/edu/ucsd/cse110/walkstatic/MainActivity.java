@@ -2,7 +2,9 @@ package edu.ucsd.cse110.walkstatic;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -16,6 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +41,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         setupNavBar();
+        createFakeRuns();
+    }
+
+    private void createFakeRuns(){
+        String preferencesName = this.getResources().getString(R.string.run_save_name);
+        SharedPreferences sharedPreferences = this.getSharedPreferences(
+                preferencesName, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        ArrayList<Run> runs = new ArrayList<Run>();
+        runs.add(new Run("Point Loma"));
+        runs.add(new Run("Mission Trails"));
+        sharedPreferences.edit().putString("runs", gson.toJson(runs)).apply();
     }
 
 

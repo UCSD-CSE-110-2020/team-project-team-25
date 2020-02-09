@@ -42,8 +42,10 @@ public class MyRunsTest {
             ShadowListView shadowListView = Shadows.shadowOf(listView);
             TextView run1 = (TextView)shadowListView.findItemContainingText("Run 1");
             assertThat(run1).isNotNull();
+            assertThat(run1.getText().toString()).isEqualTo("Run 1");
             TextView run2 = (TextView)shadowListView.findItemContainingText("Run 2");
             assertThat(run2).isNotNull();
+            assertThat(run2.getText().toString()).isEqualTo("Run 2");
             int idxRun1 = shadowListView.findIndexOfItemContainingText("Run 1");
             int idxRun2 = shadowListView.findIndexOfItemContainingText("Run 2");
             assertThat(idxRun1).isLessThan(idxRun2);

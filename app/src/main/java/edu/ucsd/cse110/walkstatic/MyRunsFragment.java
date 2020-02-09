@@ -15,6 +15,7 @@ import android.widget.ListView;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
@@ -40,7 +41,7 @@ public class MyRunsFragment extends Fragment implements AdapterView.OnItemClickL
                 preferencesName, Context.MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString(preferencesName, "[]");
-        ArrayList<Run> runs = gson.fromJson(json, ArrayList.class);
+        Run[] runs = gson.fromJson(json, Run[].class);
         ArrayAdapter<Run> adapter = new ArrayAdapter<Run>(this.getActivity(),
                 R.layout.run_list_textview,
                 runs);
