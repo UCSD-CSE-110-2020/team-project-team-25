@@ -3,9 +3,10 @@
     android:id="@android:id/text1"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:gravity="center"
+    android:gravity="start"
+    android:paddingLeft="10dp"
     android:paddingTop="6dp"
     android:paddingBottom="6dp"
-    android:text="Test"
+    android:text="Run Name"
     android:textColor="#0C0C0C"
     android:textSize="24sp" />

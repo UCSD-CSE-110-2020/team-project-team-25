@@ -2,7 +2,9 @@ package edu.ucsd.cse110.walkstatic;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -16,6 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,15 +34,6 @@ import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 import edu.ucsd.cse110.walkstatic.fitness.GoogleFitAdapter;
 
 public class MainActivity extends AppCompatActivity {
-    private static String fitnessServiceKey = "GOOGLE_FIT";
-    public static void setFitnessServiceKey(String newKey) {
-        fitnessServiceKey = newKey;
-    }
-
-
-    private ActionBarDrawerToggle toggle;
-
-    private static final String TAG = "StepCountActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,47 +41,36 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setupNavBar();
 
+        createFakeRuns();
+    }
+
+    private void createFakeRuns(){
+        String preferencesName = this.getResources().getString(R.string.run_save_name);
+        SharedPreferences sharedPreferences = this.getSharedPreferences(
+                preferencesName, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        ArrayList<Run> runs = new ArrayList<Run>();
+        runs.add(new Run("Point Loma"));
+        runs.add(new Run("Mission Trails"));
+        sharedPreferences.edit().putString("runs", gson.toJson(runs)).apply();
     }
 
     private void setupNavBar(){
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBar actionBar = getActionBar();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        toggle = new ActionBarDrawerToggle(this, drawer,  R.string.open_drawer, R.string.close_drawer);
-        drawer.addDrawerListener(toggle);
-        toggle.setDrawerIndicatorEnabled(true);
-        toggle.syncState();
-        //this.populateNavList();
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationView navigationView = findViewById(R.id.nav_view);
+
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_graph).build();
+        NavigationUI.setupActionBarWithNavController(this, navController, drawer);
         NavigationUI.setupWithNavController(navigationView, navController);
+
     }
 
     @Override
     public boolean onSupportNavigateUp(){
-        return Navigation.findNavController(this, R.id.nav_host_fragment).navigateUp();
+        return NavigationUI.navigateUp(Navigation.findNavController(this, R.id.nav_host_fragment), findViewById(R.id.drawer_layout));
     }
 
-//    private void populateNavList(){
-//        ListView listView = findViewById(R.id.list_drawer);
-//        List<String> listItems = Arrays.asList(new String[]{"Current Run", "My Runs"});
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-//                R.layout.hamburger_textview,
-//                listItems);
-//        listView.setAdapter(adapter);
-//        adapter.notifyDataSetChanged();
-//    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        if (toggle.onOptionsItemSelected(item))
-        {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-
-    }
 }
