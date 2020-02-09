@@ -12,4 +12,9 @@ public class Run implements Serializable {
     public String getName(){
         return this.name;
     }
+
+    @Override
+    public String toString(){
+        return this.name;
+    }
 }

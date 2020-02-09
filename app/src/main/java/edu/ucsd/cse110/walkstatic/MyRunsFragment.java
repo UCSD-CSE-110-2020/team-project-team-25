@@ -32,8 +32,8 @@ public class MyRunsFragment extends Fragment implements AdapterView.OnItemClickL
 
     private void populateMyRuns(){
         ListView listView = this.getActivity().findViewById(R.id.my_runs_list);
-        List<String> listItems = Arrays.asList(new String[]{"Point Loma", "Del Mar"});
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(),
+        List<Run> listItems = Arrays.asList(new Run[]{new Run("Point Loma"), new Run("Del Mar")});
+        ArrayAdapter<Run> adapter = new ArrayAdapter<Run>(this.getActivity(),
                 R.layout.run_list_textview,
                 listItems);
         listView.setAdapter(adapter);
@@ -42,9 +42,10 @@ public class MyRunsFragment extends Fragment implements AdapterView.OnItemClickL
     }
 
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+    public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+        Run run = (Run)parent.getItemAtPosition(pos);
         Bundle bundle = new Bundle();
-        bundle.putSerializable("Run", new Run("Test"));
+        bundle.putSerializable("Run", run);
         Navigation.findNavController(this.getActivity(), this.getId()).navigate(R.id.action_myRunsFragment_to_viewRunFragment, bundle);
     }
 }
