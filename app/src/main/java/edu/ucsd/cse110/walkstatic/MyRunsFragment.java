@@ -12,13 +12,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.google.gson.Gson;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.runs.RunList;
 
 public class MyRunsFragment extends Fragment implements AdapterView.OnItemClickListener {
 
@@ -39,9 +36,9 @@ public class MyRunsFragment extends Fragment implements AdapterView.OnItemClickL
         String preferencesName = this.getResources().getString(R.string.run_save_name);
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(
                 preferencesName, Context.MODE_PRIVATE);
-        Gson gson = new Gson();
+
         String json = sharedPreferences.getString(preferencesName, "[]");
-        Run[] runs = gson.fromJson(json, Run[].class);
+        RunList runs = new RunList(json);
         ArrayAdapter<Run> adapter = new ArrayAdapter<Run>(this.getActivity(),
                 R.layout.run_list_textview,
                 runs);
