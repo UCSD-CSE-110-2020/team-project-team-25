@@ -1,70 +1,76 @@
 package edu.ucsd.cse110.walkstatic;
 
 
-import androidx.test.espresso.DataInteraction;
-import androidx.test.espresso.ViewInteraction;
-import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
+import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
-import static androidx.test.InstrumentationRegistry.getInstrumentation;
-import static androidx.test.espresso.Espresso.onData;
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.Espresso.pressBack;
-import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
-import static androidx.test.espresso.action.ViewActions.*;
-import static androidx.test.espresso.assertion.ViewAssertions.*;
-import static androidx.test.espresso.matcher.ViewMatchers.*;
-
-import edu.ucsd.cse110.walkstatic.R;
+import androidx.test.espresso.ViewInteraction;
+import androidx.test.filters.LargeTest;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
+import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
+import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
+
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.anything;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class StartButtonTest {
+    private static final String TEST_SERVICE = "TEST_SERVICE";
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
     public void startButtonTest() {
+        FitnessServiceFactory.put(TEST_SERVICE, new FitnessServiceFactory.BluePrint() {
+            @Override
+            public FitnessService create(Activity activity) {
+                return new StartButtonTest.TestFitnessService(activity);
+            }
+        });
+
+        RunFragment.setFitnessServiceKey(TEST_SERVICE);
+
         ViewInteraction appCompatButton = onView(
-allOf(withId(R.id.startButton), withText("Start"),
-childAtPosition(
-allOf(withId(R.id.linearLayout),
-childAtPosition(
-withId(R.id.nav_host_fragment),
-0)),
-5),
-isDisplayed()));
+                allOf(withId(R.id.startButton), withText("Start"),
+                        childAtPosition(
+                                allOf(withId(R.id.linearLayout),
+                                        childAtPosition(
+                                                withId(R.id.nav_host_fragment),
+                                                0)),
+                                5),
+                        isDisplayed()));
         appCompatButton.perform(click());
-        
-        ViewInteraction textView = onView(
-allOf(withId(R.id.stepRunCount), withText("-80"),
-childAtPosition(
-allOf(withId(R.id.linearLayout),
-childAtPosition(
-withId(R.id.nav_host_fragment),
-0)),
-7),
-isDisplayed()));
-        textView.check(matches(withText("0")));
+
+        try {
+            Thread.sleep(2100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-    
+
+        ViewInteraction textView = onView( allOf(withId(R.id.stepRunCount), isDisplayed()));
+        textView.check(matches(not(withText(""))));
+    }
+
     private static Matcher<View> childAtPosition(
             final Matcher<View> parentMatcher, final int position) {
 
@@ -79,8 +85,39 @@ isDisplayed()));
             public boolean matchesSafely(View view) {
                 ViewParent parent = view.getParent();
                 return parent instanceof ViewGroup && parentMatcher.matches(parent)
-                        && view.equals(((ViewGroup)parent).getChildAt(position));
+                        && view.equals(((ViewGroup) parent).getChildAt(position));
             }
         };
     }
+
+    private class TestFitnessService implements FitnessService {
+        private static final String TAG = "[TestFitnessService]: ";
+        private FitnessListener listener;
+
+        public TestFitnessService(Activity activity) {
+        }
+
+        @Override
+        public int getRequestCode() {
+            return 0;
+        }
+
+        @Override
+        public void setup() {
+            System.out.println(TAG + "setup");
+        }
+
+        @Override
+        public void updateStepCount() {
+            System.out.println(TAG + "updateStepCount");
+            if(this.listener != null){
+                listener.onNewSteps(1337);
+            }
+        }
+
+        @Override
+        public void setListener(FitnessListener listener) {
+            this.listener = listener;
+        }
     }
+}
