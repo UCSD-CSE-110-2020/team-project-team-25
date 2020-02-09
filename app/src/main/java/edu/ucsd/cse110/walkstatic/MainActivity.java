@@ -36,8 +36,7 @@ public class MainActivity extends AppCompatActivity {
         fitnessServiceKey = newKey;
     }
 
-    private StepTracker stepTracker;
-    private FitnessService fitnessService;
+
     private ActionBarDrawerToggle toggle;
 
     private static final String TAG = "StepCountActivity";
@@ -46,28 +45,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         setupNavBar();
+
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-//       If authentication was required during google fit setup, this will be called after the user authenticates
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == fitnessService.getRequestCode()) {
-                fitnessService.updateStepCount();
-            }
-        } else {
-            Log.e(TAG, "ERROR, google fit result code: " + resultCode);
-        }
-    }
-
-
-
-
-
 
     private void setupNavBar(){
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -108,5 +88,6 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+
     }
 }
