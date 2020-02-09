@@ -29,8 +29,6 @@ public class RunFragment extends Fragment {
     private FitnessService fitnessService;
     private SecondTimer timer;
 
-    private boolean startBool = false;
-    long currentSteps;
 
     private static final String TAG = "StepCountActivity";
 
@@ -49,8 +47,7 @@ public class RunFragment extends Fragment {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startBool = true;
-                currentSteps = stepTracker.getStepTotal();
+                stepTracker.setRunStepTotal();
             }
         });
     }
@@ -139,9 +136,9 @@ public class RunFragment extends Fragment {
         TextView textSteps = getActivity().findViewById(R.id.steps_today);
         long steps = this.stepTracker.getStepTotal();
         textSteps.setText(Long.toString(steps));
-        if(startBool == true) {
+        if(stepTracker.isStartPressed() == true) {
             TextView textRunSteps = getActivity().findViewById(R.id.stepRunCount);
-            textRunSteps.setText(Long.toString(steps - currentSteps));
+            textRunSteps.setText(Long.toString(stepTracker.getRunStep()));
         }
     }
 

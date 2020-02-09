@@ -9,7 +9,9 @@ public class StepTracker implements FitnessListener {
     private FitnessService service;
 
     private long stepTotal;
+    private long runStepTotal;
     private boolean hasData;
+    private boolean startPressed;
 
     public StepTracker(FitnessService service){
         this.service = service;
@@ -21,6 +23,17 @@ public class StepTracker implements FitnessListener {
         this.hasData = true;
         this.stepTotal = newTotal;
     }
+
+    public void setRunStepTotal() {
+        this.startPressed = true;
+        this.runStepTotal = stepTotal;
+    }
+
+    public boolean isStartPressed() {
+        return startPressed;
+    }
+
+    public long getRunStep() { return(this.stepTotal - this.runStepTotal); }
 
     public long getStepTotal(){
         return this.stepTotal;
