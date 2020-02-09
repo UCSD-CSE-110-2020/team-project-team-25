@@ -1,5 +1,7 @@
 package edu.ucsd.cse110.walkstatic;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.view.LayoutInflater;
@@ -10,8 +12,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import java.util.Arrays;
-import java.util.List;
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
 
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
@@ -32,10 +35,15 @@ public class MyRunsFragment extends Fragment implements AdapterView.OnItemClickL
 
     private void populateMyRuns(){
         ListView listView = this.getActivity().findViewById(R.id.my_runs_list);
-        List<Run> listItems = Arrays.asList(new Run[]{new Run("Point Loma"), new Run("Del Mar")});
+        String preferencesName = this.getResources().getString(R.string.run_save_name);
+        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(
+                preferencesName, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString(preferencesName, "[]");
+        ArrayList<Run> runs = gson.fromJson(json, ArrayList.class);
         ArrayAdapter<Run> adapter = new ArrayAdapter<Run>(this.getActivity(),
                 R.layout.run_list_textview,
-                listItems);
+                runs);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
         adapter.notifyDataSetChanged();
