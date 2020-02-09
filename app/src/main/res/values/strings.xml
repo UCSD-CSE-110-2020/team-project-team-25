@@ -3,4 +3,8 @@
     <string name="open_drawer">Open</string>
     <string name="close_drawer">Close</string>
     <string name="run_save_name">runs</string>
+    <string name="run_name_label">Name:</string>
+    <string name="run_starting_point_label">Starting Point:</string>
+    <string name="run_difficulty_label">Difficulty:</string>
+    <string name="save">Save</string>
 </resources>

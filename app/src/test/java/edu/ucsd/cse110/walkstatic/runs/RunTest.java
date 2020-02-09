@@ -46,4 +46,18 @@ public class RunTest {
         assertEquals(0, bRun.compareTo(bRun));
         assertEquals(0, bRun.compareTo(cRun) + cRun.compareTo(bRun));
     }
+
+    @Test
+    public void uuIDNotUsedInCompare(){
+        Run run1 = new Run(1,"B");
+        Run run2 = new Run(2,"B");
+        assertEquals(0, run1.compareTo(run2));
+    }
+
+    @Test
+    public void equalsRespectsUUID(){
+        Run run1 = new Run(1,"B");
+        Run run2 = new Run(2,"B");
+        assertNotEquals(run1, run2);
+    }
 }

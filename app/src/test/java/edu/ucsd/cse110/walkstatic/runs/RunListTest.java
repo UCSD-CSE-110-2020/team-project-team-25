@@ -27,10 +27,10 @@ public class RunListTest {
 
     @Test
     public void fourElementRunListContainsRunsInOrder(){
-        Run runA = new Run("A");
-        Run runB = new Run("B");
-        Run runC = new Run("C");
-        Run runD = new Run("D");
+        Run runA = new Run(5,"A");
+        Run runB = new Run(1,"B");
+        Run runC = new Run(3,"C");
+        Run runD = new Run(2,"D");
 
         String json = "[" + jsonFromRun(runA) + "," +
                 jsonFromRun(runB) + "," + jsonFromRun(runD) + "," +
@@ -47,10 +47,10 @@ public class RunListTest {
     @Test
     public void addingRunKeepsSortedOrder(){
         RunList runList = new RunList();
-        Run runA = new Run("A");
-        Run runB = new Run("B");
-        Run runC = new Run("C");
-        Run runD = new Run("D");
+        Run runA = new Run(1,"A");
+        Run runB = new Run(2,"B");
+        Run runC = new Run(3,"C");
+        Run runD = new Run(4,"D");
         runList.add(runB);
         runList.add(runC);
         runList.add(runA);
@@ -70,13 +70,34 @@ public class RunListTest {
 
     @Test
     public void serializationProducesJSONListWithRuns(){
-        Run runTest = new Run("Test");
-        Run runFoo = new Run("Foo");
+        Run runTest = new Run(1,"Test");
+        Run runFoo = new Run(2,"Foo");
         RunList runList = new RunList();
         runList.add(runTest);
         runList.add(runFoo);
         String expectedJSON = "[" + jsonFromRun(runFoo) + "," + jsonFromRun(runTest) + "]";
         assertEquals(expectedJSON, runList.toJSON());
+    }
+
+    @Test
+    public void nextUUIDReturnsOneLargerThanInList(){
+        Run runTest = new Run(5,"Test");
+        Run runFoo = new Run(10,"Foo");
+        RunList runList = new RunList();
+        runList.add(runTest);
+        runList.add(runFoo);
+        assertEquals(11, runList.getNextUUID());
+    }
+
+    @Test
+    public void duplicateInsertionReplaces(){
+        Run runTest = new Run(5,"Test");
+        Run runFoo = new Run(5,"Foo");
+        RunList runList = new RunList();
+        runList.add(runTest);
+        runList.add(runFoo);
+        assertEquals(1, runList.size());
+        assertEquals(runFoo, runList.get(0));
     }
 
     private String jsonFromRun(Run run){
