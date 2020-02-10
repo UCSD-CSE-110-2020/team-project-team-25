@@ -58,13 +58,12 @@ public class EditRunFragment extends Fragment {
         EditText runName = this.getActivity().findViewById(R.id.run_name_text);
         EditText startingPoint = this.getActivity().findViewById(R.id.starting_point_text);
         String runText = runName.getText().toString() + startingPoint.getText();
-        Snackbar.make(this.getView(), "Run Saved", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
+
         RunViewModel runViewModel = new ViewModelProvider(this.getActivity()).get(RunViewModel.class);
         runViewModel.setRun(new Run(this.safeGetUUID(), runName.getText().toString()));
         runName.clearFocus();
         startingPoint.clearFocus();
-        Navigation.findNavController(this.getActivity(), this.getId()).navigateUp();
+        Navigation.findNavController(this.getView()).navigateUp();
     }
 
     private int safeGetUUID(){
