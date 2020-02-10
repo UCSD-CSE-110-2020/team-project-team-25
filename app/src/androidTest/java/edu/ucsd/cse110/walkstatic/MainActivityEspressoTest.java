@@ -44,10 +44,11 @@ public class MainActivityEspressoTest {
     private TestFitnessService testFitnessService;
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
 
     @Test
     public void mainActivityEspressoTest() {
+        EspressoHelpers.setUserHeightRequest(mActivityTestRule, false);
         FitnessServiceFactory.put(TEST_SERVICE, new FitnessServiceFactory.BluePrint() {
             @Override
             public FitnessService create(Activity activity) {

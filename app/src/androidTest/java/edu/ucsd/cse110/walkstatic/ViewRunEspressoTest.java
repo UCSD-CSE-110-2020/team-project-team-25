@@ -41,10 +41,11 @@ import static org.hamcrest.Matchers.anything;
 public class ViewRunEspressoTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
 
     @Test
     public void viewRunEspressoTest() {
+        EspressoHelpers.setUserHeightRequest(mActivityTestRule, false);
         Gson gson = new Gson();
         ArrayList<Run> runs = new ArrayList<Run>();
         runs.add(new Run("Run 1"));

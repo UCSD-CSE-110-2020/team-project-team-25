@@ -45,19 +45,11 @@ public class DayStepsTest {
   //  SharedPreferences.Editor preferencesEditor;
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
-/*
-    @Before
-    public void init(){
-        Context targetContext = getInstrumentation().getTargetContext();
-        preferencesEditor = PreferenceManager.getDefaultSharedPreferences(targetContext).edit();
-        preferencesEditor.putBoolean("firstUse", false);
-        preferencesEditor.commit();
+    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
 
-    }
-*/
     @Test
     public void dayStepsTest() {
+        EspressoHelpers.setUserHeightRequest(mActivityTestRule, false);
         FitnessServiceFactory.put(TEST_SERVICE, new FitnessServiceFactory.BluePrint() {
             @Override
             public FitnessService create(Activity activity) {
