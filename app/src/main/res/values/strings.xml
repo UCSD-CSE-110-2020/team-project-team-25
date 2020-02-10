@@ -7,4 +7,5 @@
     <string name="run_starting_point_label">Starting Point:</string>
     <string name="run_difficulty_label">Difficulty:</string>
     <string name="save">Save</string>
+    <string name="add">Add</string>
 </resources>

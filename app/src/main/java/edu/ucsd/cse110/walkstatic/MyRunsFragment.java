@@ -6,6 +6,9 @@ import android.os.Bundle;
 
 import android.view.LayoutInflater;
 
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -14,6 +17,7 @@ import android.widget.ListView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -30,6 +34,7 @@ public class MyRunsFragment extends Fragment implements AdapterView.OnItemClickL
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.initRunViewModel();
+        this.setHasOptionsMenu(true);
     }
 
     @Override
@@ -42,7 +47,6 @@ public class MyRunsFragment extends Fragment implements AdapterView.OnItemClickL
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
         this.populateMyRuns();
-        this.initAddButton();
     }
 
     private void populateMyRuns(){
@@ -69,14 +73,27 @@ public class MyRunsFragment extends Fragment implements AdapterView.OnItemClickL
         Navigation.findNavController(this.getActivity(), this.getId()).navigate(R.id.action_myRunsFragment_to_viewRunFragment, bundle);
     }
 
-    private void initAddButton(){
-        FloatingActionButton addButton = this.getActivity().findViewById(R.id.add_new_route);
-        addButton.setOnClickListener((view) -> {
-            Bundle bundle = new Bundle();
-            int nextUUID = this.runs.getNextUUID();
-            bundle.putInt("UUID", nextUUID);
-            Navigation.findNavController(this.getActivity(), this.getId()).navigate(R.id.action_myRunsFragment_to_editRunFragment, bundle);
-        });
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        inflater.inflate(R.menu.add_menu, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.action_add){
+            this.addNewRun();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void addNewRun(){
+        Bundle bundle = new Bundle();
+        int nextUUID = this.runs.getNextUUID();
+        bundle.putInt("UUID", nextUUID);
+        Navigation.findNavController(this.getActivity(), this.getId()).navigate(R.id.action_myRunsFragment_to_editRunFragment, bundle);
     }
 
     private void initRunViewModel(){

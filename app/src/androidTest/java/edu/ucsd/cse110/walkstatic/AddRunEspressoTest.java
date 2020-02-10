@@ -80,15 +80,15 @@ public class AddRunEspressoTest {
                         isDisplayed()));
         navigationMenuItemView.perform(click());
 
-        ViewInteraction floatingActionButton = onView(
-                allOf(withId(R.id.add_new_route),
+        ViewInteraction actionMenuItemView1 = onView(
+                allOf(withId(R.id.action_add), withContentDescription("Add"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.nav_host_fragment),
-                                        0),
-                                1),
+                                        withId(R.id.action_bar),
+                                        2),
+                                0),
                         isDisplayed()));
-        floatingActionButton.perform(click());
+        actionMenuItemView1.perform(click());
 
         ViewInteraction appCompatEditText = onView(
                 allOf(withId(R.id.run_name_text),
@@ -121,15 +121,15 @@ public class AddRunEspressoTest {
                         isDisplayed()));
         textView.check(matches(withText("Apple Park")));
 
-        ViewInteraction floatingActionButton2 = onView(
-                allOf(withId(R.id.add_new_route),
+        ViewInteraction actionMenuItemView2 = onView(
+                allOf(withId(R.id.action_add), withContentDescription("Add"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.nav_host_fragment),
-                                        0),
-                                1),
+                                        withId(R.id.action_bar),
+                                        2),
+                                0),
                         isDisplayed()));
-        floatingActionButton2.perform(click());
+        actionMenuItemView2.perform(click());
 
         ViewInteraction appCompatEditText2 = onView(
                 allOf(withId(R.id.run_name_text),
@@ -141,7 +141,7 @@ public class AddRunEspressoTest {
                         isDisplayed()));
         appCompatEditText2.perform(replaceText("Z Park"), closeSoftKeyboard());
 
-        ViewInteraction actionMenuItemView2 = onView(
+        ViewInteraction actionMenuItemView3 = onView(
                 allOf(withId(R.id.action_save), withContentDescription("Save"),
                         childAtPosition(
                                 childAtPosition(
@@ -149,7 +149,7 @@ public class AddRunEspressoTest {
                                         2),
                                 0),
                         isDisplayed()));
-        actionMenuItemView2.perform(click());
+        actionMenuItemView3.perform(click());
 
         ViewInteraction textView3 = onView(
                 allOf(withId(android.R.id.text1), withText("Z Park"),
