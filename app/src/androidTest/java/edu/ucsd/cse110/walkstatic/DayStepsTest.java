@@ -2,6 +2,9 @@ package edu.ucsd.cse110.walkstatic;
 
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -9,10 +12,12 @@ import android.view.ViewParent;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import androidx.annotation.MainThread;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
@@ -21,6 +26,7 @@ import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 
+import static android.content.Context.MODE_PRIVATE;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -28,6 +34,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.hamcrest.Matchers.allOf;
 
 @LargeTest
@@ -35,10 +42,20 @@ import static org.hamcrest.Matchers.allOf;
 public class DayStepsTest {
     private static final String TEST_SERVICE = "TEST_SERVICE";
     public static long stepCount = 1337;
+  //  SharedPreferences.Editor preferencesEditor;
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+/*
+    @Before
+    public void init(){
+        Context targetContext = getInstrumentation().getTargetContext();
+        preferencesEditor = PreferenceManager.getDefaultSharedPreferences(targetContext).edit();
+        preferencesEditor.putBoolean("firstUse", false);
+        preferencesEditor.commit();
 
+    }
+*/
     @Test
     public void dayStepsTest() {
         FitnessServiceFactory.put(TEST_SERVICE, new FitnessServiceFactory.BluePrint() {

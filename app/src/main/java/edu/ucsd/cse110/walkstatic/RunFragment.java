@@ -2,6 +2,7 @@ package edu.ucsd.cse110.walkstatic;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.os.Handler;
@@ -13,6 +14,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+
+import java.text.DecimalFormat;
+
+import static android.content.Context.MODE_PRIVATE;
 
 import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
@@ -142,6 +147,20 @@ public class RunFragment extends Fragment {
         }
     }
 
+    private void updateMilesCount(){
+        //this.stepTracker.update();
+        TextView textMiles = getActivity().findViewById(R.id.miles_today);
+        long steps = this.stepTracker.getStepTotal();
+        SharedPreferences sharedPreferences = (SharedPreferences) getActivity().getSharedPreferences("userHeight", MODE_PRIVATE);
+        String uHeight = sharedPreferences.getString("height","65");
+        int height = Integer.valueOf(uHeight);
+        double miles = (steps * (0.43 * (double)height/12))/5280;
+        DecimalFormat decimalFormat = new DecimalFormat("#.00");
+        String displayMiles = decimalFormat.format(miles);
+        textMiles.setText(displayMiles);
+
+    }
+
     private class SecondTimer implements Runnable{
         int delay;
         Handler timer;
@@ -158,6 +177,7 @@ public class RunFragment extends Fragment {
                 return;
             }
             updateStepCount();
+            updateMilesCount();
             timer.postDelayed(this, this.delay);
         }
 

@@ -2,7 +2,9 @@ package edu.ucsd.cse110.walkstatic;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,8 +16,10 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
@@ -42,6 +46,27 @@ public class MainActivity extends AppCompatActivity {
         setupNavBar();
 
         createFakeRuns();
+
+        SharedPreferences sharedPreferences = getSharedPreferences("userHeight", MODE_PRIVATE);
+
+        // If first run
+        if (sharedPreferences.getBoolean("firstUse", true)) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("firstUse", false);
+            editor.commit();
+
+            // Set default value for height if user closes app w/o entering height
+            editor.putString("height","65");
+            editor.apply();
+            Toast.makeText(MainActivity.this, sharedPreferences.getString("height","65") + " Inches Saved",Toast.LENGTH_SHORT).show();
+
+            // Prompt user for height
+            promptHeight(MainActivity.this);
+        }
+        else{
+            String uHeight = sharedPreferences.getString("height","65");
+            Toast.makeText(MainActivity.this, uHeight + " loaded",Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void createFakeRuns(){
@@ -64,6 +89,30 @@ public class MainActivity extends AppCompatActivity {
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_graph).build();
         NavigationUI.setupActionBarWithNavController(this, navController, drawer);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+    }
+
+    protected void promptHeight(Context c) {
+        final EditText taskEditText = new EditText(c);
+        SharedPreferences sharedPreferences = getSharedPreferences("userHeight", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        AlertDialog dialog = new AlertDialog.Builder(c)
+                .setTitle("Enter your height in inches")
+                .setMessage("Your height is used to calculate the number of miles you've traveled")
+                .setView(taskEditText)
+                .setPositiveButton("Enter", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String task = taskEditText.getText().toString();
+                        editor.putString("height",task);
+                        editor.apply();
+                        Toast.makeText(c,task + " Inches Saved",Toast.LENGTH_SHORT).show();
+                    }
+                })
+                // Dont need cancel button atm
+                // .setNegativeButton("Cancel", null)
+                .create();
+        dialog.show();
 
     }
 

@@ -105,5 +105,23 @@ public class MainActivityTest {
         });
     }
 
+    @Test
+    public void MilesAreUpdatedPeriodically() {
+        FragmentScenario<RunFragment> scenario = FragmentScenario.launchInContainer(RunFragment.class);
+        scenario.onFragment(activity -> {
+            fakeFitnessService.nextStepCount = 0;
+            TextView textSteps = activity.getActivity().findViewById(R.id.steps_today);
+            TextView textMiles = activity.getActivity().findViewById(R.id.miles_today);
+            ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
+            assertThat(textSteps.getText().toString()).isEqualTo("0");
+            assertThat(textMiles.getText().toString()).isEqualTo(".00");
+            fakeFitnessService.nextStepCount = 1000;
+            ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
+            assertThat(textSteps.getText().toString()).isEqualTo("1000");
+            assertThat(textMiles.getText().toString()).isEqualTo(".44");
+        });
+
+
+    }
 
 }
