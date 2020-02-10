@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import edu.ucsd.cse110.walkstatic.runs.Run;
 
 public class ViewRunFragment extends Fragment {
 

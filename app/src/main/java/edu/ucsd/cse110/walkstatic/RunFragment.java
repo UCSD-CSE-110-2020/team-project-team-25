@@ -20,7 +20,7 @@ import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 import edu.ucsd.cse110.walkstatic.fitness.GoogleFitAdapter;
 
 public class RunFragment extends Fragment {
-    private static String fitnessServiceKey = "DEBUG"; //TODO change to "GOOGLE_FIT"
+    private static String fitnessServiceKey = "GOOGLE_FIT"; //TODO change to "GOOGLE_FIT"
     public static void setFitnessServiceKey(String newKey) {
         fitnessServiceKey = newKey;
     }
