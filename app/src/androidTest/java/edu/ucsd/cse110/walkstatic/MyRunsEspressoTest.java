@@ -74,12 +74,12 @@ public class MyRunsEspressoTest {
         navigationMenuItemView.perform(click());
 
         ViewInteraction textView = onView(
-                allOf(withId(R.id.run_name), withText("Run 1"),
+                allOf(withId(R.id.listed_run_name), withText("Run 1"),
                         isDisplayed()));
         textView.check(matches(withText("Run 1")));
 
         ViewInteraction textView2 = onView(
-                allOf(withId(R.id.run_name), withText("Run 2"),
+                allOf(withId(R.id.listed_run_name), withText("Run 2"),
                         isDisplayed()));
         textView2.check(matches(withText("Run 2")));
 

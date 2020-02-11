@@ -60,11 +60,6 @@ public class MyRunsFragment extends Fragment implements AdapterView.OnItemClickL
         String json = sharedPreferences.getString(preferencesName, "[]");
         runs = new RunList(json);
 
-        /*
-        runListAdapter = new ArrayAdapter<Run>(this.getActivity(),
-                R.layout.run_list_textview,
-                runs);
-         */
         runListAdapter = new RunArrayAdapter(this.getActivity(), R.layout.run_list_textview, runs);
         listView.setAdapter(runListAdapter);
         listView.setOnItemClickListener(this);
