@@ -33,7 +33,7 @@ public class EditRunFragment extends Fragment implements SpeechListener {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setHasOptionsMenu(true);
-        this.voiceDictation = VoiceDictationFactory.getVoiceDictation(this.getContext());
+        this.voiceDictation = VoiceDictationFactory.getVoiceDictation(this.getActivity());
         this.voiceDictation.setListener(this);
     }
 

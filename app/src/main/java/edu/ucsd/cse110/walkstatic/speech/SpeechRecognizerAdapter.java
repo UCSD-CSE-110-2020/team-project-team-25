@@ -1,6 +1,7 @@
 package edu.ucsd.cse110.walkstatic.speech;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,6 +13,8 @@ import android.speech.SpeechRecognizer;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.PermissionChecker;
 
 import java.util.ArrayList;
@@ -23,12 +26,12 @@ public class SpeechRecognizerAdapter implements VoiceDictation, RecognitionListe
     private SpeechRecognizer speechRecognizer;
     private SpeechListener speechListener;
     private Bundle lastBundle;
-    private Context context;
+    private Activity activity;
 
-    public SpeechRecognizerAdapter(Context context){
-        this.speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
+    public SpeechRecognizerAdapter(Activity activity){
+        this.speechRecognizer = SpeechRecognizer.createSpeechRecognizer(activity);
         this.speechRecognizer.setRecognitionListener(this);
-        this.context = context;
+        this.activity = activity;
     }
 
     @Override
@@ -82,11 +85,13 @@ public class SpeechRecognizerAdapter implements VoiceDictation, RecognitionListe
     @Override
     public void onResults(Bundle results) {
         ArrayList<String> strings = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-        String recognizedStrings = String.join("", strings);
         if(this.speechListener == null){
             return;
         }
-        this.speechListener.onSpeech(recognizedStrings, this.lastBundle);
+        if(strings.size() == 0){
+            return;
+        }
+        this.speechListener.onSpeech(strings.get(0), this.lastBundle);
     }
 
     @Override
@@ -100,14 +105,11 @@ public class SpeechRecognizerAdapter implements VoiceDictation, RecognitionListe
     }
 
     private void requestRecordAudioPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            String requiredPermission = Manifest.permission.RECORD_AUDIO;
-
-            // If the user previously denied this permission then show a message explaining why
-            // this permission is needed
-            if (PermissionChecker.checkCallingOrSelfPermission(this.context, requiredPermission) == PermissionChecker.PERMISSION_DENIED) {
-                Log.e("SpeechRecognizerAdapter", "No permission for recording!");
-            }
+        if (ContextCompat.checkSelfPermission(this.activity, Manifest.permission.RECORD_AUDIO) != PermissionChecker.PERMISSION_GRANTED) {
+            Log.d("SpeechRecognizerAdapter", "No permission for recording!");
+            ActivityCompat.requestPermissions(this.activity,
+                    new String[]{Manifest.permission.RECORD_AUDIO},
+                    0);
         }
     }
 }

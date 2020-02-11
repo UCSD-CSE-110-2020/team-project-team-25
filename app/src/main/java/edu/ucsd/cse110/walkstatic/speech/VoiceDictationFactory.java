@@ -1,5 +1,6 @@
 package edu.ucsd.cse110.walkstatic.speech;
 
+import android.app.Activity;
 import android.content.Context;
 
 public class VoiceDictationFactory {
@@ -9,19 +10,19 @@ public class VoiceDictationFactory {
         VoiceDictationFactory.currentBlueprint = currentBlueprint;
     }
 
-    public static VoiceDictation getVoiceDictation(Context context){
-        return VoiceDictationFactory.currentBlueprint.getVoiceDictation(context);
+    public static VoiceDictation getVoiceDictation(Activity activity){
+        return VoiceDictationFactory.currentBlueprint.getVoiceDictation(activity);
     }
 
     public interface VoiceDictationBlueprint {
-        public VoiceDictation getVoiceDictation(Context context);
+        public VoiceDictation getVoiceDictation(Activity activity);
     }
 
     private static class SpeechRecognizerBlueprint implements VoiceDictationBlueprint {
 
         @Override
-        public VoiceDictation getVoiceDictation(Context context) {
-            return new SpeechRecognizerAdapter(context);
+        public VoiceDictation getVoiceDictation(Activity activity) {
+            return new SpeechRecognizerAdapter(activity);
         }
     }
 }
