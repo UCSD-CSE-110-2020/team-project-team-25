@@ -45,7 +45,7 @@ public class ViewRunEspressoTest {
 
     @Test
     public void viewRunEspressoTest() {
-        EspressoHelpers.setUserHeightRequest(mActivityTestRule, false);
+        EspressoHelpers.setUserHeightRequest(mActivityTestRule, "65");
         Gson gson = new Gson();
         ArrayList<Run> runs = new ArrayList<Run>();
         runs.add(new Run("Run 1"));

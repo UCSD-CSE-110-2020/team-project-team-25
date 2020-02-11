@@ -148,17 +148,15 @@ public class RunFragment extends Fragment {
     }
 
     private void updateMilesCount(){
-        //this.stepTracker.update();
         TextView textMiles = getActivity().findViewById(R.id.miles_today);
-        long steps = this.stepTracker.getStepTotal();
         SharedPreferences sharedPreferences = (SharedPreferences) getActivity().getSharedPreferences("userHeight", MODE_PRIVATE);
-        String uHeight = sharedPreferences.getString("height","65");
-        int height = Integer.valueOf(uHeight);
-        double miles = (steps * (0.43 * (double)height/12))/5280;
+
+        String uHeight = sharedPreferences.getString("height","-1");
+        double miles = this.stepTracker.getMilesCount(uHeight);
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
         String displayMiles = decimalFormat.format(miles);
-        textMiles.setText(displayMiles);
 
+        textMiles.setText(displayMiles);
     }
 
     private class SecondTimer implements Runnable{

@@ -8,9 +8,9 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.rule.ActivityTestRule;
 
 public class EspressoHelpers{
-    public static <T extends Activity> void setUserHeightRequest(ActivityTestRule<T> activityTestRule, boolean shouldRequest){
+    public static <T extends Activity> void setUserHeightRequest(ActivityTestRule<T> activityTestRule, String shouldRequest){
         SharedPreferences preferences = ApplicationProvider.getApplicationContext().getSharedPreferences("userHeight", Context.MODE_PRIVATE);
-        preferences.edit().putBoolean("firstUse", shouldRequest).commit();
+        preferences.edit().putString("height", shouldRequest).commit();
         activityTestRule.launchActivity(null);
     }
 }

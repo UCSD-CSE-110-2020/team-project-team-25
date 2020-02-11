@@ -49,7 +49,7 @@ public class DayStepsTest {
 
     @Test
     public void dayStepsTest() {
-        EspressoHelpers.setUserHeightRequest(mActivityTestRule, false);
+        EspressoHelpers.setUserHeightRequest(mActivityTestRule, "65");
         FitnessServiceFactory.put(TEST_SERVICE, new FitnessServiceFactory.BluePrint() {
             @Override
             public FitnessService create(Activity activity) {

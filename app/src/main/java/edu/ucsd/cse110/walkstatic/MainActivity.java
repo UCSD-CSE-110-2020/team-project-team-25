@@ -13,6 +13,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Handler;
+import android.text.InputType;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -49,23 +50,9 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("userHeight", MODE_PRIVATE);
 
-        // If first run
-        if (sharedPreferences.getBoolean("firstUse", true)) {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean("firstUse", false);
-            editor.commit();
 
-            // Set default value for height if user closes app w/o entering height
-            editor.putString("height","65");
-            editor.apply();
-            Toast.makeText(MainActivity.this, sharedPreferences.getString("height","65") + " Inches Saved",Toast.LENGTH_SHORT).show();
-
-            // Prompt user for height
+        if (sharedPreferences.getString("height","-1").equals("-1") || sharedPreferences.getString("height","-1").equals("")) {
             promptHeight(MainActivity.this);
-        }
-        else{
-            String uHeight = sharedPreferences.getString("height","65");
-            Toast.makeText(MainActivity.this, uHeight + " loaded",Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -94,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected void promptHeight(Context c) {
         final EditText taskEditText = new EditText(c);
+        taskEditText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         SharedPreferences sharedPreferences = getSharedPreferences("userHeight", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         AlertDialog dialog = new AlertDialog.Builder(c)
@@ -104,9 +92,12 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String task = taskEditText.getText().toString();
-                        editor.putString("height",task);
-                        editor.apply();
-                        Toast.makeText(c,task + " Inches Saved",Toast.LENGTH_SHORT).show();
+                        if(task.equals("") || task.equals("-1")) promptHeight(c);
+                        else {
+                            editor.putString("height", task);
+                            editor.apply();
+                        }
+                       // Toast.makeText(c,task + " Inches Saved",Toast.LENGTH_SHORT).show();
                     }
                 })
                 // Dont need cancel button atm

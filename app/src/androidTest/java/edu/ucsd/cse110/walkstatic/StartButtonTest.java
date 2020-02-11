@@ -41,7 +41,7 @@ public class StartButtonTest {
 
     @Test
     public void startButtonTest() {
-        EspressoHelpers.setUserHeightRequest(mActivityTestRule, false);
+        EspressoHelpers.setUserHeightRequest(mActivityTestRule, "65");
         FitnessServiceFactory.put(TEST_SERVICE, new FitnessServiceFactory.BluePrint() {
             @Override
             public FitnessService create(Activity activity) {
