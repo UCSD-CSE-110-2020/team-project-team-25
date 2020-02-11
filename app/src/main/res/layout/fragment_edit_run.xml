@@ -46,11 +46,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/ic_mic_white_24dp"
-            android:backgroundTint="#ef527f"
+            android:backgroundTint="@color/micBackgroundOff"
+            android:src="@drawable/ic_mic_white_24dp"
+            android:tint="@color/micOff"
             bind:layout_constraintBottom_toBottomOf="parent"
             bind:layout_constraintEnd_toEndOf="parent"
-            bind:layout_constraintTop_toTopOf="parent" />
+            bind:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_mic_white_24dp" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -78,7 +80,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             android:hint="Penny Pines"
             android:inputType="text|textAutoComplete"
             android:visibility="visible"
@@ -93,11 +94,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/ic_mic_white_24dp"
-            android:backgroundTint="#ef527f"
+            android:backgroundTint="@color/micBackgroundOff"
+            android:src="@drawable/ic_mic_white_24dp"
+            android:tint="@color/micOff"
             bind:layout_constraintBottom_toBottomOf="parent"
             bind:layout_constraintEnd_toEndOf="parent"
-            bind:layout_constraintTop_toTopOf="parent" />
+            bind:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_mic_white_24dp" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

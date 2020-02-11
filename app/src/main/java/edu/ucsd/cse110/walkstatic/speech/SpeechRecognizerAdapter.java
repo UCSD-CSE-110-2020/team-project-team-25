@@ -2,10 +2,7 @@ package edu.ucsd.cse110.walkstatic.speech;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -19,18 +16,20 @@ import androidx.core.content.PermissionChecker;
 
 import java.util.ArrayList;
 
-import static androidx.core.app.ActivityCompat.requestPermissions;
-import static androidx.core.content.PermissionChecker.checkCallingOrSelfPermission;
-
 public class SpeechRecognizerAdapter implements VoiceDictation, RecognitionListener {
-    private SpeechRecognizer speechRecognizer;
+    private static final String logKey = "SpeechRecognizerAdapter";
+
+    private static SpeechRecognizer speechRecognizer;
     private SpeechListener speechListener;
     private Bundle lastBundle;
     private Activity activity;
+    private boolean running;
 
     public SpeechRecognizerAdapter(Activity activity){
-        this.speechRecognizer = SpeechRecognizer.createSpeechRecognizer(activity);
-        this.speechRecognizer.setRecognitionListener(this);
+        if(speechRecognizer == null){
+            this.speechRecognizer = SpeechRecognizer.createSpeechRecognizer(activity);
+            this.speechRecognizer.setRecognitionListener(this);
+        }
         this.activity = activity;
     }
 
@@ -48,18 +47,13 @@ public class SpeechRecognizerAdapter implements VoiceDictation, RecognitionListe
     }
 
     @Override
-    public void cancel() {
-        this.speechRecognizer.cancel();
-    }
-
-    @Override
     public void onReadyForSpeech(Bundle params) {
-
+        Log.d(logKey, "Event onReadyForSpeech");
     }
 
     @Override
     public void onBeginningOfSpeech() {
-
+        Log.d(logKey, "Event onBeginningOfSpeech");
     }
 
     @Override
@@ -69,22 +63,33 @@ public class SpeechRecognizerAdapter implements VoiceDictation, RecognitionListe
 
     @Override
     public void onBufferReceived(byte[] buffer) {
-
+        Log.d(logKey, "Event onBufferReceived");
     }
 
     @Override
     public void onEndOfSpeech() {
-
+        Log.d(logKey, "Event onEndOfSpeech");
     }
 
     @Override
     public void onError(int error) {
-        Log.e("SpeechRecognizerAdapter",  "error #" +  error);
+        Log.e(logKey,  "error #" +  error);
+        if(this.speechListener == null){
+            return;
+        }
+        this.speechListener.onSpeechDone(true, this.lastBundle);
     }
 
     @Override
     public void onResults(Bundle results) {
-        ArrayList<String> strings = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+        this.onPartialResults(results);
+        Log.d(logKey, "Event results");
+        this.notifyDone();
+    }
+
+    @Override
+    public void onPartialResults(Bundle partialResults) {
+        ArrayList<String> strings = partialResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
         if(this.speechListener == null){
             return;
         }
@@ -95,21 +100,24 @@ public class SpeechRecognizerAdapter implements VoiceDictation, RecognitionListe
     }
 
     @Override
-    public void onPartialResults(Bundle partialResults) {
-
-    }
-
-    @Override
     public void onEvent(int eventType, Bundle params) {
-
+        Log.d(logKey, "Event #" + eventType);
     }
 
     private void requestRecordAudioPermission() {
         if (ContextCompat.checkSelfPermission(this.activity, Manifest.permission.RECORD_AUDIO) != PermissionChecker.PERMISSION_GRANTED) {
-            Log.d("SpeechRecognizerAdapter", "No permission for recording!");
+            Log.d(logKey, "No permission for recording!");
             ActivityCompat.requestPermissions(this.activity,
                     new String[]{Manifest.permission.RECORD_AUDIO},
                     0);
         }
+    }
+
+    private void notifyDone(){
+        if(this.speechListener == null){
+            return;
+        }
+        this.speechListener.onSpeechDone(false, this.lastBundle);
+        this.lastBundle = null;
     }
 }

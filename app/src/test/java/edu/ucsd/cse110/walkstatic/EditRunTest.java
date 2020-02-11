@@ -29,8 +29,6 @@ import static com.google.common.truth.Truth.assertThat;
 @RunWith(AndroidJUnit4.class)
 public class EditRunTest {
 
-    private String voiceReturnString;
-
     @Test
     public void RunCreatedWithZeroUUIDAndFilledName() {
         TestNavHostController navController = new TestNavHostController(
@@ -75,21 +73,84 @@ public class EditRunTest {
     }
 
     @Test
-    public void VoiceDictationFillsInName() {
+    public void voiceDictationFillsInNameWithNoError() {
         TestNavHostController navController = new TestNavHostController(
                 ApplicationProvider.getApplicationContext());
         navController.setGraph(R.navigation.nav_graph);
 
+        VoiceDictationMock voiceDictationMock = new VoiceDictationMock();
         VoiceDictationFactory.setCurrentBlueprint(context -> {
-            return new VoiceDictationMock();
+            return voiceDictationMock;
         });
 
         FragmentScenario<EditRunFragment> scenario = FragmentScenario.launchInContainer(EditRunFragment.class);
         scenario.onFragment(fragment -> {
             Navigation.setViewNavController(fragment.requireView(), navController);
             ImageButton runNameButton = fragment.getActivity().findViewById(R.id.dictate_name);
-            voiceReturnString = "Run 1";
             runNameButton.callOnClick();
+            voiceDictationMock.callOnSpeech("Run 1");
+            voiceDictationMock.callOnFinish(false);
+            MenuItem save = new RoboMenuItem(R.id.action_save);
+            fragment.onOptionsItemSelected(save);
+
+            RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
+            Run run = runViewModel.sharedRun.getValue();
+            assertThat(run.getName()).isEqualTo( "Run 1");
+        });
+    }
+
+    @Test
+    public void voiceDictationDisablesButtonsDuringRecording() {
+        TestNavHostController navController = new TestNavHostController(
+                ApplicationProvider.getApplicationContext());
+        navController.setGraph(R.navigation.nav_graph);
+
+        VoiceDictationMock voiceDictationMock = new VoiceDictationMock();
+        VoiceDictationFactory.setCurrentBlueprint(context -> {
+            return voiceDictationMock;
+        });
+
+        FragmentScenario<EditRunFragment> scenario = FragmentScenario.launchInContainer(EditRunFragment.class);
+        scenario.onFragment(fragment -> {
+            Navigation.setViewNavController(fragment.requireView(), navController);
+            ImageButton runNameButton = fragment.getActivity().findViewById(R.id.dictate_name);
+            ImageButton startingPointButton = fragment.getActivity().findViewById(R.id.dictate_starting_point);
+
+            assertThat(runNameButton.isEnabled()).isTrue();
+            assertThat(startingPointButton.isEnabled()).isTrue();
+
+            runNameButton.callOnClick();
+
+            voiceDictationMock.callOnSpeech("Run 2");
+            assertThat(runNameButton.isEnabled()).isFalse();
+            assertThat(startingPointButton.isEnabled()).isFalse();
+
+            voiceDictationMock.callOnFinish(false);
+            assertThat(runNameButton.isEnabled()).isTrue();
+            assertThat(startingPointButton.isEnabled()).isTrue();
+        });
+    }
+
+    @Test
+    public void voiceDictationOnErrorHasOldText() {
+        TestNavHostController navController = new TestNavHostController(
+                ApplicationProvider.getApplicationContext());
+        navController.setGraph(R.navigation.nav_graph);
+
+        VoiceDictationMock voiceDictationMock = new VoiceDictationMock();
+        VoiceDictationFactory.setCurrentBlueprint(context -> {
+            return voiceDictationMock;
+        });
+
+        FragmentScenario<EditRunFragment> scenario = FragmentScenario.launchInContainer(EditRunFragment.class);
+        scenario.onFragment(fragment -> {
+            Navigation.setViewNavController(fragment.requireView(), navController);
+            ImageButton runNameButton = fragment.getActivity().findViewById(R.id.dictate_name);
+            runNameButton.callOnClick();
+            voiceDictationMock.callOnSpeech("Run 1");
+            voiceDictationMock.callOnFinish(false);
+            runNameButton.callOnClick();
+            voiceDictationMock.callOnFinish(true);
             MenuItem save = new RoboMenuItem(R.id.action_save);
             fragment.onOptionsItemSelected(save);
 
@@ -101,6 +162,7 @@ public class EditRunTest {
 
     private class VoiceDictationMock implements VoiceDictation {
         SpeechListener listener;
+        private Bundle bundle;
         @Override
         public void setListener(SpeechListener listener) {
             this.listener = listener;
@@ -108,12 +170,15 @@ public class EditRunTest {
 
         @Override
         public void doRecognition(@Nullable Bundle arguments) {
-            this.listener.onSpeech(voiceReturnString, arguments);
+            this.bundle = arguments;
         }
 
-        @Override
-        public void cancel() {
+        public void callOnSpeech(String speech){
+            this.listener.onSpeech(speech, this.bundle);
+        }
 
+        public void callOnFinish(boolean error){
+            this.listener.onSpeechDone(error, this.bundle);
         }
     }
 

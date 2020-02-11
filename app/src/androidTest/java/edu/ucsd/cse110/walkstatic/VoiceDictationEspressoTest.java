@@ -1,6 +1,8 @@
 package edu.ucsd.cse110.walkstatic;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.runs.RunList;
 import edu.ucsd.cse110.walkstatic.speech.SpeechListener;
 import edu.ucsd.cse110.walkstatic.speech.VoiceDictation;
 import edu.ucsd.cse110.walkstatic.speech.VoiceDictationFactory;
@@ -32,6 +36,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
 
@@ -46,6 +51,15 @@ public class VoiceDictationEspressoTest {
 
     @Test
     public void voiceDictationEspressoTest() {
+        RunList runs = new RunList();
+        runs.add(new Run(runs.getNextUUID(),"Run 1"));
+        runs.add(new Run(runs.getNextUUID(),"Run 2"));
+
+        Context targetContext = getInstrumentation().getTargetContext();
+        String preferencesName = targetContext.getResources().getString(R.string.run_save_name);
+        SharedPreferences.Editor preferencesEditor = targetContext.getSharedPreferences(preferencesName, Context.MODE_PRIVATE).edit();
+
+        preferencesEditor.putString("runs", runs.toJSON()).commit();
         VoiceDictationFactory.setCurrentBlueprint(context -> {
             return new VoiceDictationMock();
         });
@@ -103,6 +117,7 @@ public class VoiceDictationEspressoTest {
         editText.check(matches(withText("A Run")));
 
         voiceReturnString = "A Starting Point";
+
 
         ViewInteraction appCompatImageButton3 = onView(
                 allOf(withId(R.id.dictate_starting_point),
@@ -185,11 +200,7 @@ public class VoiceDictationEspressoTest {
         @Override
         public void doRecognition(@Nullable Bundle arguments) {
             this.listener.onSpeech(voiceReturnString, arguments);
-        }
-
-        @Override
-        public void cancel() {
-
+            this.listener.onSpeechDone(false, arguments);
         }
     }
 }

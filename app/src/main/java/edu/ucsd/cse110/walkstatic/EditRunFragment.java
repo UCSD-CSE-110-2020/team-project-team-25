@@ -22,8 +22,17 @@ import edu.ucsd.cse110.walkstatic.speech.VoiceDictation;
 
 public class EditRunFragment extends Fragment implements SpeechListener {
     private enum RunElement {
-        NAME,
-        STARTING_POINT
+        NAME(R.id.dictate_name),
+        STARTING_POINT(R.id.dictate_starting_point);
+
+        private int buttonId;
+        RunElement(int buttonId){
+            this.buttonId = buttonId;
+        }
+
+        public int getButtonId(){
+            return this.buttonId;
+        }
     }
     private static String TYPE_KEY = "runKey";
 
@@ -85,30 +94,33 @@ public class EditRunFragment extends Fragment implements SpeechListener {
 
     private void addSpeechListeners(){
         ImageButton nameButton = this.getActivity().findViewById(R.id.dictate_name);
-        Bundle nameBundle = new Bundle();
-        nameBundle.putInt(TYPE_KEY, RunElement.NAME.ordinal());
-        nameButton.setOnClickListener(new VoiceDictationClickListener(nameBundle));
+        nameButton.setOnClickListener(new VoiceDictationClickListener(RunElement.NAME));
 
         ImageButton startingPointButton = this.getActivity().findViewById(R.id.dictate_starting_point);
-        Bundle startingPointBundle = new Bundle();
-        startingPointBundle.putInt(TYPE_KEY, RunElement.STARTING_POINT.ordinal());
-        startingPointButton.setOnClickListener(new VoiceDictationClickListener(startingPointBundle));
+        startingPointButton.setOnClickListener(new VoiceDictationClickListener(RunElement.STARTING_POINT));
     }
 
     private class VoiceDictationClickListener implements View.OnClickListener {
-        Bundle bundle;
-        public VoiceDictationClickListener(Bundle bundle){
-            this.bundle = bundle;
+        RunElement runElement;
+        public VoiceDictationClickListener(RunElement runElement){
+            this.runElement = runElement;
         }
 
         @Override
         public void onClick(View v) {
-            voiceDictation.doRecognition(this.bundle);
+            Bundle bundle = new Bundle();
+            bundle.putInt(TYPE_KEY, runElement.ordinal());
+            colorMicButton(runElement, true);
+            setButtonsEnabled(false);
+            voiceDictation.doRecognition(bundle);
         }
     }
 
     @Override
     public void onSpeech(@NonNull String received, @Nullable Bundle options) {
+        if(options == null){
+            return;
+        }
         RunElement element = RunElement.values()[options.getInt(TYPE_KEY)];
         EditText editText = null;
         if(element == RunElement.NAME) {
@@ -118,5 +130,33 @@ public class EditRunFragment extends Fragment implements SpeechListener {
             editText = this.getActivity().findViewById(R.id.starting_point_text);
         }
         editText.setText(received);
+    }
+
+    @Override
+    public void onSpeechDone(boolean error, @Nullable Bundle options) {
+        if(options == null){
+            return;
+        }
+        colorMicButton(RunElement.values()[options.getInt(TYPE_KEY)], false);
+        setButtonsEnabled(true);
+    }
+
+    private void colorMicButton(RunElement element, boolean active){
+        ImageButton imageButton = this.getActivity().findViewById(element.getButtonId());
+        int background = R.color.micBackgroundOff;
+        int tint = R.color.micOff;
+        if(active){
+            background = R.color.micBackgroundActive;
+            tint = R.color.micActive;
+        }
+        imageButton.setBackgroundTintList(getContext().getResources().getColorStateList(background, null));
+        imageButton.setColorFilter(getContext().getColor(tint), android.graphics.PorterDuff.Mode.SRC_IN);
+    }
+
+    private void setButtonsEnabled(boolean enabled){
+        for(RunElement element : RunElement.values()){
+            ImageButton button = this.getActivity().findViewById(element.getButtonId());
+            button.setEnabled(enabled);
+        }
     }
 }
