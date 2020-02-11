@@ -6,21 +6,36 @@ import android.os.Bundle;
 
 import android.view.LayoutInflater;
 
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.google.gson.Gson;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.runs.RunList;
 
 public class MyRunsFragment extends Fragment implements AdapterView.OnItemClickListener {
+
+    private RunList runs;
+    private ArrayAdapter<Run> runListAdapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.initRunViewModel();
+        this.setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,15 +54,15 @@ public class MyRunsFragment extends Fragment implements AdapterView.OnItemClickL
         String preferencesName = this.getResources().getString(R.string.run_save_name);
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(
                 preferencesName, Context.MODE_PRIVATE);
-        Gson gson = new Gson();
+
         String json = sharedPreferences.getString(preferencesName, "[]");
-        Run[] runs = gson.fromJson(json, Run[].class);
-        ArrayAdapter<Run> adapter = new ArrayAdapter<Run>(this.getActivity(),
+        runs = new RunList(json);
+        runListAdapter = new ArrayAdapter<Run>(this.getActivity(),
                 R.layout.run_list_textview,
                 runs);
-        listView.setAdapter(adapter);
+        listView.setAdapter(runListAdapter);
         listView.setOnItemClickListener(this);
-        adapter.notifyDataSetChanged();
+        runListAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -56,5 +71,44 @@ public class MyRunsFragment extends Fragment implements AdapterView.OnItemClickL
         Bundle bundle = new Bundle();
         bundle.putSerializable("Run", run);
         Navigation.findNavController(this.getActivity(), this.getId()).navigate(R.id.action_myRunsFragment_to_viewRunFragment, bundle);
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        inflater.inflate(R.menu.add_menu, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.action_add){
+            this.addNewRun();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void addNewRun(){
+        Bundle bundle = new Bundle();
+        int nextUUID = this.runs.getNextUUID();
+        bundle.putInt("UUID", nextUUID);
+        Navigation.findNavController(this.getActivity(), this.getId()).navigate(R.id.action_myRunsFragment_to_editRunFragment, bundle);
+    }
+
+    private void initRunViewModel(){
+        RunViewModel runViewModel = new ViewModelProvider(this.getActivity()).get(RunViewModel.class);
+        runViewModel.sharedRun.observe(this, run -> {
+            this.addRun(run);
+        });
+    }
+
+    private void addRun(Run run){
+        this.runs.add(run);
+        this.runListAdapter.notifyDataSetChanged();
+        String preferencesName = this.getResources().getString(R.string.run_save_name);
+        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(
+                preferencesName, Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString(preferencesName, this.runs.toJSON()).apply();
     }
 }

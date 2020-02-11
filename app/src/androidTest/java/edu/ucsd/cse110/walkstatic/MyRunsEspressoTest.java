@@ -2,33 +2,26 @@ package edu.ucsd.cse110.walkstatic;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
-import com.google.gson.Gson;
-
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.junit.Before;
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
-
-import androidx.test.core.app.ApplicationProvider;
-import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
+import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.runs.RunList;
 
-import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -38,7 +31,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.anything;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -51,15 +43,19 @@ public class MyRunsEspressoTest {
     public void myRunsTest() {
         EspressoHelpers.setUserHeightRequest(mActivityTestRule, "65");
         Gson gson = new Gson();
-        ArrayList<Run> runs = new ArrayList<Run>();
-        runs.add(new Run("Run 1"));
-        runs.add(new Run("Run 2"));
+        //ArrayList<Run> runs = new ArrayList<Run>();
+        //runs.add(new Run("Run 1"));
+        //runs.add(new Run("Run 2"));
+        RunList runs = new RunList();
+        runs.add(new Run(runs.getNextUUID(),"Run 1"));
+        runs.add(new Run(runs.getNextUUID(),"Run 2"));
+
 
         Context targetContext = getInstrumentation().getTargetContext();
         String preferencesName = targetContext.getResources().getString(R.string.run_save_name);
         SharedPreferences.Editor preferencesEditor = targetContext.getSharedPreferences(preferencesName, Context.MODE_PRIVATE).edit();
 
-        preferencesEditor.putString("runs", gson.toJson(runs)).commit();
+        preferencesEditor.putString("runs", runs.toJSON()).commit();
 
 
         ViewInteraction appCompatImageButton = onView(
@@ -88,7 +84,7 @@ public class MyRunsEspressoTest {
                         childAtPosition(
                                 allOf(withId(R.id.my_runs_list),
                                         childAtPosition(
-                                                withId(R.id.nav_host_fragment),
+                                                IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class),
                                                 0)),
                                 0),
                         isDisplayed()));
@@ -99,7 +95,7 @@ public class MyRunsEspressoTest {
                         childAtPosition(
                                 allOf(withId(R.id.my_runs_list),
                                         childAtPosition(
-                                                withId(R.id.nav_host_fragment),
+                                                IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class),
                                                 0)),
                                 1),
                         isDisplayed()));

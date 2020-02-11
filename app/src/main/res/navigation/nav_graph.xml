@@ -21,6 +21,10 @@
             android:id="@+id/action_myRunsFragment_to_viewRunFragment"
             app:destination="@id/viewRunFragment"
             app:popUpTo="@+id/myRunsFragment" />
+        <action
+            android:id="@+id/action_myRunsFragment_to_editRunFragment"
+            app:destination="@id/editRunFragment"
+            app:popUpTo="@+id/myRunsFragment" />
     </fragment>
     <fragment
         android:id="@+id/viewRunFragment"
@@ -30,6 +34,10 @@
     <action
         android:id="@+id/action_global_myRunsFragment"
         app:destination="@id/myRunsFragment"
-        app:popUpTo="@+id/myRunsFragment"
         app:popUpToInclusive="true" />
+    <fragment
+        android:id="@+id/editRunFragment"
+        android:name="edu.ucsd.cse110.walkstatic.EditRunFragment"
+        android:label="Edit Run"
+        tools:layout="@layout/fragment_edit_run" />
 </navigation>

@@ -2,7 +2,6 @@ package edu.ucsd.cse110.walkstatic;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -19,6 +18,7 @@ import org.robolectric.shadows.ShadowListView;
 import java.util.ArrayList;
 
 import androidx.fragment.app.testing.FragmentScenario;
+import edu.ucsd.cse110.walkstatic.runs.Run;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -33,8 +33,8 @@ public class MyRunsTest {
                 preferencesName, Context.MODE_PRIVATE);
         Gson gson = new Gson();
         ArrayList<Run> runs = new ArrayList<Run>();
-        runs.add(new Run("Run 1"));
-        runs.add(new Run("Run 2"));
+        runs.add(new Run(1,"Run 2"));
+        runs.add(new Run(-1,"Run 1"));
         sharedPreferences.edit().putString("runs", gson.toJson(runs)).commit();
         FragmentScenario<MyRunsFragment> scenario = FragmentScenario.launchInContainer(MyRunsFragment.class);
         scenario.onFragment(activity -> {
