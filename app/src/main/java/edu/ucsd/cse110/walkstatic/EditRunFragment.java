@@ -1,6 +1,9 @@
 package edu.ucsd.cse110.walkstatic;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,6 +42,7 @@ public class EditRunFragment extends Fragment implements SpeechListener {
     private static String TYPE_KEY = "runKey";
 
     private VoiceDictation voiceDictation;
+    private boolean isValid;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,6 +50,7 @@ public class EditRunFragment extends Fragment implements SpeechListener {
         this.setHasOptionsMenu(true);
         this.voiceDictation = VoiceDictationFactory.getVoiceDictation(this.getActivity());
         this.voiceDictation.setListener(this);
+        this.isValid = false;
     }
 
     @Override
@@ -58,6 +63,7 @@ public class EditRunFragment extends Fragment implements SpeechListener {
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
         this.addSpeechListeners();
+        this.addValidators();
     }
 
     @Override
@@ -68,11 +74,20 @@ public class EditRunFragment extends Fragment implements SpeechListener {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.action_save){
+        if(item.getItemId() == R.id.action_save && this.isValid){
             this.saveRun();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu){
+        super.onPrepareOptionsMenu(menu);
+        MenuItem save = menu.findItem(R.id.action_save);
+        save.setEnabled(this.isValid);
+        int tint = this.isValid ? R.color.tintActive : R.color.tintDisabled;
+        save.setIconTintList(getContext().getResources().getColorStateList(tint, null));
     }
 
     @Override
@@ -166,5 +181,32 @@ public class EditRunFragment extends Fragment implements SpeechListener {
             ImageButton button = this.getActivity().findViewById(element.getButtonId());
             button.setEnabled(enabled);
         }
+    }
+
+    private void addValidators(){
+        EditText runName = this.getActivity().findViewById(R.id.run_name_text);
+        runName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(TextUtils.isEmpty(editable)){
+                    runName.setError(getContext().getResources().getString(R.string.name_empty_error));
+                    isValid = false;
+                } else {
+                    isValid = true;
+                    runName.setError(null);
+                }
+                getActivity().invalidateOptionsMenu();
+            }
+        });
     }
 }

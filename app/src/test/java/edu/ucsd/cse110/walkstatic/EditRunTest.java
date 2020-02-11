@@ -27,6 +27,7 @@ import edu.ucsd.cse110.walkstatic.speech.VoiceDictation;
 import edu.ucsd.cse110.walkstatic.speech.VoiceDictationFactory;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(AndroidJUnit4.class)
 public class EditRunTest {
@@ -185,6 +186,91 @@ public class EditRunTest {
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             fragment.onDestroyView();
             assertThat(voiceDictationMock.canceled).isTrue();
+        });
+    }
+
+    @Test
+    public void saveDisabledWhenNoName() {
+        TestNavHostController navController = new TestNavHostController(
+                ApplicationProvider.getApplicationContext());
+        navController.setGraph(R.navigation.nav_graph);
+
+        FragmentScenario<EditRunFragment> scenario = FragmentScenario.launchInContainer(EditRunFragment.class);
+        scenario.onFragment(fragment -> {
+            Navigation.setViewNavController(fragment.requireView(), navController);
+            MenuItem save = shadowOf(fragment.getActivity()).getOptionsMenu().findItem(R.id.action_save);
+            EditText runName = fragment.getActivity().findViewById(R.id.run_name_text);
+            assertThat(save.isEnabled()).isFalse();
+            runName.setText("Run 1");
+            //Workaround for bug in robolectric https://github.com/robolectric/robolectric/issues/3585
+            fragment.onPrepareOptionsMenu(shadowOf(fragment.getActivity()).getOptionsMenu());
+            runName.setText("");
+            //Workaround for bug in robolectric https://github.com/robolectric/robolectric/issues/3585
+            fragment.onPrepareOptionsMenu(shadowOf(fragment.getActivity()).getOptionsMenu());
+            assertThat(save.isEnabled()).isFalse();
+        });
+    }
+
+    @Test
+    public void saveEnabledWhenNameExists() {
+        TestNavHostController navController = new TestNavHostController(
+                ApplicationProvider.getApplicationContext());
+        navController.setGraph(R.navigation.nav_graph);
+
+        FragmentScenario<EditRunFragment> scenario = FragmentScenario.launchInContainer(EditRunFragment.class);
+        scenario.onFragment(fragment -> {
+            Navigation.setViewNavController(fragment.requireView(), navController);
+            MenuItem save = shadowOf(fragment.getActivity()).getOptionsMenu().findItem(R.id.action_save);
+            EditText runName = fragment.getActivity().findViewById(R.id.run_name_text);
+            runName.setText("Run 1");
+            //Workaround for bug in robolectric https://github.com/robolectric/robolectric/issues/3585
+            fragment.onPrepareOptionsMenu(shadowOf(fragment.getActivity()).getOptionsMenu());
+            assertThat(save.isEnabled()).isTrue();
+        });
+    }
+
+    @Test
+    public void runNameTextHasNoErrorWhenNoNameAtStart() {
+        TestNavHostController navController = new TestNavHostController(
+                ApplicationProvider.getApplicationContext());
+        navController.setGraph(R.navigation.nav_graph);
+
+        FragmentScenario<EditRunFragment> scenario = FragmentScenario.launchInContainer(EditRunFragment.class);
+        scenario.onFragment(fragment -> {
+            Navigation.setViewNavController(fragment.requireView(), navController);
+            EditText runName = fragment.getActivity().findViewById(R.id.run_name_text);
+            assertThat(runName.getError()).isNull();
+        });
+    }
+
+    @Test
+    public void runNameTextHasErrorWhenNoNameAfterType() {
+        TestNavHostController navController = new TestNavHostController(
+                ApplicationProvider.getApplicationContext());
+        navController.setGraph(R.navigation.nav_graph);
+
+        FragmentScenario<EditRunFragment> scenario = FragmentScenario.launchInContainer(EditRunFragment.class);
+        scenario.onFragment(fragment -> {
+            Navigation.setViewNavController(fragment.requireView(), navController);
+            EditText runName = fragment.getActivity().findViewById(R.id.run_name_text);
+            runName.setText("Run 1");
+            runName.setText("");
+            assertThat(runName.getError()).isNotNull();
+        });
+    }
+
+    @Test
+    public void runNameTextHasNoErrorWithName() {
+        TestNavHostController navController = new TestNavHostController(
+                ApplicationProvider.getApplicationContext());
+        navController.setGraph(R.navigation.nav_graph);
+
+        FragmentScenario<EditRunFragment> scenario = FragmentScenario.launchInContainer(EditRunFragment.class);
+        scenario.onFragment(fragment -> {
+            Navigation.setViewNavController(fragment.requireView(), navController);
+            EditText runName = fragment.getActivity().findViewById(R.id.run_name_text);
+            runName.setText("Run 1");
+            assertThat(runName.getError()).isNull();
         });
     }
 
