@@ -1,8 +1,6 @@
 package edu.ucsd.cse110.walkstatic;
 
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -10,8 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-
-import com.google.android.material.snackbar.Snackbar;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,13 +16,25 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.speech.SpeechListener;
+import edu.ucsd.cse110.walkstatic.speech.VoiceDictationFactory;
+import edu.ucsd.cse110.walkstatic.speech.VoiceDictation;
 
-public class EditRunFragment extends Fragment {
+public class EditRunFragment extends Fragment implements SpeechListener {
+    private enum RunElement {
+        NAME,
+        STARTING_POINT
+    }
+    private static String TYPE_KEY = "runKey";
+
+    private VoiceDictation voiceDictation;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setHasOptionsMenu(true);
+        this.voiceDictation = VoiceDictationFactory.getVoiceDictation(this.getContext());
+        this.voiceDictation.setListener(this);
     }
 
     @Override
@@ -37,6 +46,7 @@ public class EditRunFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
+        this.addSpeechListeners();
     }
 
     @Override
@@ -71,5 +81,42 @@ public class EditRunFragment extends Fragment {
             return 0;
         }
         return getArguments().getInt("UUID", 0);
+    }
+
+    private void addSpeechListeners(){
+        ImageButton nameButton = this.getActivity().findViewById(R.id.dictate_name);
+        Bundle nameBundle = new Bundle();
+        nameBundle.putInt(TYPE_KEY, RunElement.NAME.ordinal());
+        nameButton.setOnClickListener(new VoiceDictationClickListener(nameBundle));
+
+        ImageButton startingPointButton = this.getActivity().findViewById(R.id.dictate_starting_point);
+        Bundle startingPointBundle = new Bundle();
+        startingPointBundle.putInt(TYPE_KEY, RunElement.STARTING_POINT.ordinal());
+        startingPointButton.setOnClickListener(new VoiceDictationClickListener(startingPointBundle));
+    }
+
+    private class VoiceDictationClickListener implements View.OnClickListener {
+        Bundle bundle;
+        public VoiceDictationClickListener(Bundle bundle){
+            this.bundle = bundle;
+        }
+
+        @Override
+        public void onClick(View v) {
+            voiceDictation.doRecognition(this.bundle);
+        }
+    }
+
+    @Override
+    public void onSpeech(@NonNull String received, @Nullable Bundle options) {
+        RunElement element = RunElement.values()[options.getInt(TYPE_KEY)];
+        EditText editText = null;
+        if(element == RunElement.NAME) {
+            editText = this.getActivity().findViewById(R.id.run_name_text);
+        }
+        if(element == RunElement.STARTING_POINT) {
+            editText = this.getActivity().findViewById(R.id.starting_point_text);
+        }
+        editText.setText(received);
     }
 }
