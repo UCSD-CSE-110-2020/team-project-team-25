@@ -202,5 +202,10 @@ public class VoiceDictationEspressoTest {
             this.listener.onSpeech(voiceReturnString, arguments);
             this.listener.onSpeechDone(false, arguments);
         }
+
+        @Override
+        public void cancel(){
+
+        }
     }
 }

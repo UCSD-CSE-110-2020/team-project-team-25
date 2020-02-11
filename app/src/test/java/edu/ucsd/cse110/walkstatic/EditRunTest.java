@@ -160,9 +160,36 @@ public class EditRunTest {
         });
     }
 
+    @Test
+    public void onNavigateAwayCancelsActiveVoiceRequest() {
+        TestNavHostController navController = new TestNavHostController(
+                ApplicationProvider.getApplicationContext());
+        navController.setGraph(R.navigation.nav_graph);
+
+        VoiceDictationMock voiceDictationMock = new VoiceDictationMock();
+        VoiceDictationFactory.setCurrentBlueprint(context -> {
+            return voiceDictationMock;
+        });
+
+        FragmentScenario<EditRunFragment> scenario = FragmentScenario.launchInContainer(EditRunFragment.class);
+        scenario.onFragment(fragment -> {
+            Navigation.setViewNavController(fragment.requireView(), navController);
+            ImageButton runNameButton = fragment.getActivity().findViewById(R.id.dictate_name);
+            runNameButton.callOnClick();
+            voiceDictationMock.callOnSpeech("Run 1");
+            MenuItem save = new RoboMenuItem(R.id.action_save);
+            fragment.onOptionsItemSelected(save);
+
+            RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
+            fragment.onDestroyView();
+            assertThat(voiceDictationMock.canceled).isTrue();
+        });
+    }
+
     private class VoiceDictationMock implements VoiceDictation {
         SpeechListener listener;
         private Bundle bundle;
+        boolean canceled = false;
         @Override
         public void setListener(SpeechListener listener) {
             this.listener = listener;
@@ -179,6 +206,10 @@ public class EditRunTest {
 
         public void callOnFinish(boolean error){
             this.listener.onSpeechDone(error, this.bundle);
+        }
+
+        public void cancel(){
+            this.canceled = true;
         }
     }
 

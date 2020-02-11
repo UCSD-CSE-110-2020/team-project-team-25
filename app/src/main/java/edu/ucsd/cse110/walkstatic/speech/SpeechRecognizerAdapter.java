@@ -27,9 +27,9 @@ public class SpeechRecognizerAdapter implements VoiceDictation, RecognitionListe
 
     public SpeechRecognizerAdapter(Activity activity){
         if(speechRecognizer == null){
-            this.speechRecognizer = SpeechRecognizer.createSpeechRecognizer(activity);
-            this.speechRecognizer.setRecognitionListener(this);
+            SpeechRecognizerAdapter.speechRecognizer = SpeechRecognizer.createSpeechRecognizer(activity);
         }
+        SpeechRecognizerAdapter.speechRecognizer.setRecognitionListener(this);
         this.activity = activity;
     }
 
@@ -43,7 +43,7 @@ public class SpeechRecognizerAdapter implements VoiceDictation, RecognitionListe
         this.lastBundle = arguments;
         this.requestRecordAudioPermission();
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        this.speechRecognizer.startListening(intent);
+        SpeechRecognizerAdapter.speechRecognizer.startListening(intent);
     }
 
     @Override
@@ -119,5 +119,10 @@ public class SpeechRecognizerAdapter implements VoiceDictation, RecognitionListe
         }
         this.speechListener.onSpeechDone(false, this.lastBundle);
         this.lastBundle = null;
+    }
+
+    @Override
+    public void cancel(){
+        SpeechRecognizerAdapter.speechRecognizer.cancel();
     }
 }

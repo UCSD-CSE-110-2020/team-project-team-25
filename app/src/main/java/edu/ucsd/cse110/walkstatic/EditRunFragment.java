@@ -73,6 +73,12 @@ public class EditRunFragment extends Fragment implements SpeechListener {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onDestroyView(){
+        this.voiceDictation.cancel();
+        super.onDestroyView();
+    }
+
     private void saveRun(){
         EditText runName = this.getActivity().findViewById(R.id.run_name_text);
         EditText startingPoint = this.getActivity().findViewById(R.id.starting_point_text);
