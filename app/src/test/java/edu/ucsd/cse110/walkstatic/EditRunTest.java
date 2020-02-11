@@ -18,6 +18,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.fakes.RoboMenuItem;
 
+import java.util.UUID;
+
 import androidx.fragment.app.testing.FragmentScenario;
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.speech.SpeechListener;
@@ -30,7 +32,7 @@ import static com.google.common.truth.Truth.assertThat;
 public class EditRunTest {
 
     @Test
-    public void RunCreatedWithZeroUUIDAndFilledName() {
+    public void runCreatedWithRandomUUIDAndFilledName() {
         TestNavHostController navController = new TestNavHostController(
                 ApplicationProvider.getApplicationContext());
         navController.setGraph(R.navigation.nav_graph);
@@ -45,7 +47,7 @@ public class EditRunTest {
 
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             Run run = runViewModel.sharedRun.getValue();
-            assertThat(run).isEqualTo(new Run(0, "Run 1"));
+            assertThat(run).isEqualTo(new Run(run.getUUID(), "Run 1"));
         });
     }
 
@@ -55,9 +57,9 @@ public class EditRunTest {
                 ApplicationProvider.getApplicationContext());
         navController.setGraph(R.navigation.nav_graph);
 
-
+        UUID uuid = UUID.randomUUID();
         Bundle bundle = new Bundle();
-        bundle.putInt("UUID", 41);
+        bundle.putSerializable("UUID", uuid);
         FragmentScenario<EditRunFragment> scenario = FragmentScenario.launchInContainer(EditRunFragment.class, bundle);
         scenario.onFragment(fragment -> {
             Navigation.setViewNavController(fragment.requireView(), navController);
@@ -68,7 +70,7 @@ public class EditRunTest {
 
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             Run run = runViewModel.sharedRun.getValue();
-            assertThat(run).isEqualTo(new Run(41, "Run 1"));
+            assertThat(run).isEqualTo(new Run(uuid, "Run 1"));
         });
     }
 

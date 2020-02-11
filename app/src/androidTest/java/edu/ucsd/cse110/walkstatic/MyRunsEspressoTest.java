@@ -42,8 +42,8 @@ public class MyRunsEspressoTest {
     @Test
     public void myRunsTest() {
         RunList runs = new RunList();
-        runs.add(new Run(runs.getNextUUID(),"Run 1"));
-        runs.add(new Run(runs.getNextUUID(),"Run 2"));
+        runs.add(new Run("Run 1"));
+        runs.add(new Run("Run 2"));
 
         Context targetContext = getInstrumentation().getTargetContext();
         String preferencesName = targetContext.getResources().getString(R.string.run_save_name);

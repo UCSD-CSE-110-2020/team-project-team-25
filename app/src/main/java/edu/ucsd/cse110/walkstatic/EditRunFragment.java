@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import java.util.UUID;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -91,11 +93,11 @@ public class EditRunFragment extends Fragment implements SpeechListener {
         Navigation.findNavController(this.getView()).navigateUp();
     }
 
-    private int safeGetUUID(){
+    private UUID safeGetUUID(){
         if(getArguments() == null){
-            return 0;
+            return UUID.randomUUID();
         }
-        return getArguments().getInt("UUID", 0);
+        return (UUID)getArguments().getSerializable("UUID");
     }
 
     private void addSpeechListeners(){
