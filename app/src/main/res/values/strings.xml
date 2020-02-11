@@ -8,4 +8,5 @@
     <string name="run_difficulty_label">Difficulty:</string>
     <string name="save">Save</string>
     <string name="add">Add</string>
+    <string name="name_empty_error">Name can not be empty.</string>
 </resources>

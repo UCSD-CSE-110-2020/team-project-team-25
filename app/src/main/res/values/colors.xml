@@ -7,4 +7,6 @@
     <color name="micBackgroundActive">#ED4144</color>
     <color name="micOff">#272727</color>
     <color name="micBackgroundOff">#EBEBEB</color>
+    <color name="tintActive">#FFFFFF</color>
+    <color name="tintDisabled">#AAAAAA</color>
 </resources>

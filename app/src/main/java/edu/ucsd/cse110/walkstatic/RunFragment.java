@@ -135,6 +135,24 @@ public class RunFragment extends Fragment {
 
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("Run Fragment", "Pausing");
+        if(this.timer != null){
+            this.timer.stop();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("Run Fragment", "Resuming");
+        if(this.timer != null){
+            this.timer.resume();
+        }
+    }
+
     private void updateStepCount(){
         //for day
         this.stepTracker.update();
@@ -177,6 +195,11 @@ public class RunFragment extends Fragment {
             updateStepCount();
             updateMilesCount();
             timer.postDelayed(this, this.delay);
+        }
+
+        void resume(){
+            this.stop = false;
+            this.run();
         }
 
         void stop(){
