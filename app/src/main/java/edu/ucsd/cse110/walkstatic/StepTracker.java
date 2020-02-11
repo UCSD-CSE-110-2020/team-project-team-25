@@ -57,10 +57,12 @@ public class StepTracker implements FitnessListener {
         this.service.updateStepCount();
     }
 
-    public double getMilesCount(String uHeight) {
+    public double getMilesCount(String uHeight, boolean run) {
         if(uHeight == "" ) uHeight = "0";
         if(uHeight == "-1" ) uHeight = "65";
         int height = Integer.valueOf(uHeight);
-        return (stepTotal * (0.43 * (double)height/12))/5280;
+
+        if (run) return (this.getRunStep() * (0.43 * (double)height/12))/5280;
+        else return (stepTotal * (0.43 * (double)height/12))/5280;
     }
 }
