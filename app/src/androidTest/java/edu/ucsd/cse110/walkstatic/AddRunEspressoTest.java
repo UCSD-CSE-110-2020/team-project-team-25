@@ -31,6 +31,7 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.hasSibling;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
@@ -111,14 +112,7 @@ public class AddRunEspressoTest {
         actionMenuItemView.perform(click());
 
         ViewInteraction textView = onView(
-                allOf(withId(android.R.id.text1), withText("Apple Park"),
-                        childAtPosition(
-                                allOf(withId(R.id.my_runs_list),
-                                        childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class),
-                                                0)),
-                                0),
-                        isDisplayed()));
+                allOf(withId(R.id.run_name), withText("Apple Park"), isDisplayed()));
         textView.check(matches(withText("Apple Park")));
 
         ViewInteraction actionMenuItemView2 = onView(
@@ -152,14 +146,7 @@ public class AddRunEspressoTest {
         actionMenuItemView3.perform(click());
 
         ViewInteraction textView3 = onView(
-                allOf(withId(android.R.id.text1), withText("Z Park"),
-                        childAtPosition(
-                                allOf(withId(R.id.my_runs_list),
-                                        childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class),
-                                                0)),
-                                3),
-                        isDisplayed()));
+                allOf(withId(R.id.run_name), withText("Z Park"), isDisplayed()));
         textView3.check(matches(withText("Z Park")));
 
         ViewInteraction appCompatImageButton2 = onView(
@@ -195,24 +182,12 @@ public class AddRunEspressoTest {
         navigationMenuItemView2.perform(click());
 
         ViewInteraction textView4 = onView(
-                allOf(withId(android.R.id.text1), withText("Apple Park"),
-                        childAtPosition(
-                                allOf(withId(R.id.my_runs_list),
-                                        childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class),
-                                                0)),
-                                0),
+                allOf(withId(R.id.run_name), withText("Apple Park"),
                         isDisplayed()));
         textView4.check(matches(withText("Apple Park")));
 
         ViewInteraction textView5 = onView(
-                allOf(withId(android.R.id.text1), withText("Z Park"),
-                        childAtPosition(
-                                allOf(withId(R.id.my_runs_list),
-                                        childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class),
-                                                0)),
-                                3),
+                allOf(withId(R.id.run_name), withText("Z Park"),
                         isDisplayed()));
         textView5.check(matches(withText("Z Park")));
     }

@@ -74,24 +74,12 @@ public class MyRunsEspressoTest {
         navigationMenuItemView.perform(click());
 
         ViewInteraction textView = onView(
-                allOf(withId(android.R.id.text1), withText("Run 1"),
-                        childAtPosition(
-                                allOf(withId(R.id.my_runs_list),
-                                        childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class),
-                                                0)),
-                                0),
+                allOf(withId(R.id.run_name), withText("Run 1"),
                         isDisplayed()));
         textView.check(matches(withText("Run 1")));
 
         ViewInteraction textView2 = onView(
-                allOf(withId(android.R.id.text1), withText("Run 2"),
-                        childAtPosition(
-                                allOf(withId(R.id.my_runs_list),
-                                        childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class),
-                                                0)),
-                                1),
+                allOf(withId(R.id.run_name), withText("Run 2"),
                         isDisplayed()));
         textView2.check(matches(withText("Run 2")));
 
