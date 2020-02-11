@@ -124,5 +124,6 @@ public class SpeechRecognizerAdapter implements VoiceDictation, RecognitionListe
     @Override
     public void cancel(){
         SpeechRecognizerAdapter.speechRecognizer.cancel();
+        this.lastBundle = null;
     }
 }
