@@ -23,12 +23,14 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.runs.RunArrayAdapter;
 import edu.ucsd.cse110.walkstatic.runs.RunList;
 
 public class MyRunsFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private RunList runs;
-    private ArrayAdapter<Run> runListAdapter;
+    // private ArrayAdapter<Run> runListAdapter;
+    private RunArrayAdapter runListAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,9 +59,13 @@ public class MyRunsFragment extends Fragment implements AdapterView.OnItemClickL
 
         String json = sharedPreferences.getString(preferencesName, "[]");
         runs = new RunList(json);
+
+        /*
         runListAdapter = new ArrayAdapter<Run>(this.getActivity(),
                 R.layout.run_list_textview,
                 runs);
+         */
+        runListAdapter = new RunArrayAdapter(this.getActivity(), R.layout.run_list_textview, runs);
         listView.setAdapter(runListAdapter);
         listView.setOnItemClickListener(this);
         runListAdapter.notifyDataSetChanged();
