@@ -29,6 +29,10 @@ public class StepTracker implements FitnessListener {
         this.runStepTotal = stepTotal;
     }
 
+    public void setStartPressed() {
+        this.startPressed = false;
+    }
+
     public boolean isStartPressed() {
         return startPressed;
     }

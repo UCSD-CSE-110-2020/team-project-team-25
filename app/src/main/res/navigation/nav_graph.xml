@@ -12,6 +12,10 @@
     <action
         android:id="@+id/action_global_runActivity"
         app:destination="@id/runActivity" />
+    <action
+        android:id="@+id/action_runActivityFragment_to_editRunFragment"
+        app:destination="@id/editRunFragment"
+        app:popUpTo="@+id/runActivity" />
     <fragment
         android:id="@+id/myRunsFragment"
         android:name="edu.ucsd.cse110.walkstatic.MyRunsFragment"
