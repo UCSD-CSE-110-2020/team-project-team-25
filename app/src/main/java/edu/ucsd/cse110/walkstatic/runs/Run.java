@@ -57,7 +57,10 @@ public class Run implements Serializable, Comparable<Run>{
             return false;
         }
         Run otherRun = (Run) other;
-        return this.uuID.equals(((Run) other).uuID) && this.name.equals(otherRun.name);
+        boolean equalSoFar = this.uuID.equals(otherRun.uuID);
+        equalSoFar = equalSoFar && this.startingPoint.equals(otherRun.startingPoint);
+        equalSoFar = equalSoFar && (this.favorited == otherRun.favorited);
+        return equalSoFar && this.name.equals(otherRun.name);
     }
 
     @Override
