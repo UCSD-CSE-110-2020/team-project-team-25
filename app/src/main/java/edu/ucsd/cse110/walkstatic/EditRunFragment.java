@@ -83,6 +83,11 @@ public class EditRunFragment extends Fragment implements SpeechListener {
             this.isFavorited = !this.isFavorited;
             this.getActivity().invalidateOptionsMenu();
             return true;
+        } else {
+            EditText runNameElement = this.getActivity().findViewById(R.id.run_name_text);
+            EditText startingPoint = this.getActivity().findViewById(R.id.starting_point_text);
+            runNameElement.clearFocus();
+            startingPoint.clearFocus();
         }
         return super.onOptionsItemSelected(item);
     }
