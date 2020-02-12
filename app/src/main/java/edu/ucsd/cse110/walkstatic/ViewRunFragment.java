@@ -24,8 +24,8 @@ public class ViewRunFragment extends Fragment {
             Run run = (Run)this.getArguments().getSerializable("Run");
             TextView runName = this.getActivity().findViewById(R.id.run_name);
             runName.setText(run.getName());
+            TextView notes = this.getActivity().findViewById(R.id.notes);
+            notes.setText(run.getNotes());
         }
     }
-
-
 }
