@@ -8,5 +8,8 @@
     <string name="run_difficulty_label">Difficulty:</string>
     <string name="save">Save</string>
     <string name="add">Add</string>
+    <string name="miles_text">%1$s Miles</string>
+    <string name="steps_text">%1$s Steps</string>
     <string name="name_empty_error">Name can not be empty.</string>
+    <string name="favorite_indicator">favorite indicator</string>
 </resources>

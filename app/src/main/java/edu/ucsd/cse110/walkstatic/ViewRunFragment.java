@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -22,9 +23,22 @@ public class ViewRunFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         if(this.getArguments() != null && this.getArguments().getSerializable("Run") != null){
             Run run = (Run)this.getArguments().getSerializable("Run");
-            TextView runName = this.getActivity().findViewById(R.id.run_name);
-            runName.setText(run.getName());
+            this.populateWithRun(run);
         }
+    }
+
+    private void populateWithRun(Run run){
+        TextView runName = this.getActivity().findViewById(R.id.run_name);
+        runName.setText(run.getName());
+
+        TextView startingPoint = this.getActivity().findViewById(R.id.starting_point);
+        startingPoint.setText(run.getStartingPoint());
+
+        ImageView favoriteIndicator = this.getActivity().findViewById(R.id.favorite_run);
+        int starIcon = run.isFavorited() ? R.drawable.ic_star_white_24dp : R.drawable.ic_star_border_white_24dp;
+        int starColor = run.isFavorited() ? R.color.starYellow : R.color.starGrey;
+        favoriteIndicator.setImageResource(starIcon);
+        favoriteIndicator.setImageTintList(getContext().getResources().getColorStateList(starColor, null));
     }
 
 

@@ -66,4 +66,25 @@ public class RunTest {
         assertNotEquals(run1, run2);
     }
 
+    @Test
+    public void equalsReturnsFalseIfStartingPointsDiffer(){
+        Run run1 = new Run("B", "P1", false);
+        Run run2 = new Run(run1.getUUID(),"B", "P2", false);
+        assertNotEquals(run1, run2);
+    }
+
+    @Test
+    public void equalsReturnsTrueIfStartingPointsSame(){
+        Run run1 = new Run("B", "P1", false);
+        Run run2 = new Run(run1.getUUID(),"B", "P1", false);
+        assertEquals(run1, run2);
+    }
+
+    @Test
+    public void equalsReturnsFalseIfFavoriteStatusDiffers(){
+        Run run1 = new Run("B", "P1", false);
+        Run run2 = new Run(run1.getUUID(),"B", "P1", true);
+        assertNotEquals(run1, run2);
+    }
+
 }

@@ -274,6 +274,50 @@ public class EditRunTest {
         });
     }
 
+    @Test
+    public void runCreatedWithStartingPoint() {
+        TestNavHostController navController = new TestNavHostController(
+                ApplicationProvider.getApplicationContext());
+        navController.setGraph(R.navigation.nav_graph);
+
+        FragmentScenario<EditRunFragment> scenario = FragmentScenario.launchInContainer(EditRunFragment.class);
+        scenario.onFragment(fragment -> {
+            Navigation.setViewNavController(fragment.requireView(), navController);
+            EditText runName = fragment.getActivity().findViewById(R.id.run_name_text);
+            runName.setText("Run 1");
+            EditText startingPoint = fragment.getActivity().findViewById(R.id.starting_point_text);
+            startingPoint.setText("Point 1");
+            MenuItem save = new RoboMenuItem(R.id.action_save);
+            fragment.onOptionsItemSelected(save);
+
+            RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
+            Run run = runViewModel.sharedRun.getValue();
+            assertThat(run).isEqualTo(new Run(run.getUUID(), "Run 1", "Point 1", false));
+        });
+    }
+
+    @Test
+    public void runCreatedWithFavoritChecked() {
+        TestNavHostController navController = new TestNavHostController(
+                ApplicationProvider.getApplicationContext());
+        navController.setGraph(R.navigation.nav_graph);
+
+        FragmentScenario<EditRunFragment> scenario = FragmentScenario.launchInContainer(EditRunFragment.class);
+        scenario.onFragment(fragment -> {
+            Navigation.setViewNavController(fragment.requireView(), navController);
+            EditText runName = fragment.getActivity().findViewById(R.id.run_name_text);
+            runName.setText("Run 1");
+            MenuItem favorit = new RoboMenuItem(R.id.action_favorite);
+            fragment.onOptionsItemSelected(favorit);
+            MenuItem save = new RoboMenuItem(R.id.action_save);
+            fragment.onOptionsItemSelected(save);
+
+            RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
+            Run run = runViewModel.sharedRun.getValue();
+            assertThat(run).isEqualTo(new Run(run.getUUID(), "Run 1", "", true));
+        });
+    }
+
     private class VoiceDictationMock implements VoiceDictation {
         SpeechListener listener;
         private Bundle bundle;
