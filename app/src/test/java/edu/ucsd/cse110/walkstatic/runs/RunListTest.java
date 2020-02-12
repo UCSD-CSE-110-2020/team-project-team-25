@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 
 import org.junit.Test;
 
+import java.util.UUID;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -27,10 +29,10 @@ public class RunListTest {
 
     @Test
     public void fourElementRunListContainsRunsInOrder(){
-        Run runA = new Run(5,"A");
-        Run runB = new Run(1,"B");
-        Run runC = new Run(3,"C");
-        Run runD = new Run(2,"D");
+        Run runA = new Run("A");
+        Run runB = new Run("B");
+        Run runC = new Run("C");
+        Run runD = new Run("D");
 
         String json = "[" + jsonFromRun(runA) + "," +
                 jsonFromRun(runB) + "," + jsonFromRun(runD) + "," +
@@ -47,10 +49,10 @@ public class RunListTest {
     @Test
     public void addingRunKeepsSortedOrder(){
         RunList runList = new RunList();
-        Run runA = new Run(1,"A");
-        Run runB = new Run(2,"B");
-        Run runC = new Run(3,"C");
-        Run runD = new Run(4,"D");
+        Run runA = new Run("A");
+        Run runB = new Run("B");
+        Run runC = new Run("C");
+        Run runD = new Run("D");
         runList.add(runB);
         runList.add(runC);
         runList.add(runA);
@@ -70,8 +72,8 @@ public class RunListTest {
 
     @Test
     public void serializationProducesJSONListWithRuns(){
-        Run runTest = new Run(1,"Test");
-        Run runFoo = new Run(2,"Foo");
+        Run runTest = new Run("Test");
+        Run runFoo = new Run("Foo");
         RunList runList = new RunList();
         runList.add(runTest);
         runList.add(runFoo);
@@ -80,19 +82,11 @@ public class RunListTest {
     }
 
     @Test
-    public void nextUUIDReturnsOneLargerThanInList(){
-        Run runTest = new Run(5,"Test");
-        Run runFoo = new Run(10,"Foo");
-        RunList runList = new RunList();
-        runList.add(runTest);
-        runList.add(runFoo);
-        assertEquals(11, runList.getNextUUID());
-    }
-
-    @Test
     public void duplicateInsertionReplaces(){
-        Run runTest = new Run(5,"Test");
-        Run runFoo = new Run(5,"Foo");
+        UUID uuid = UUID.randomUUID();
+        UUID cloneUUID = UUID.fromString(uuid.toString());
+        Run runTest = new Run(uuid,"Test");
+        Run runFoo = new Run(cloneUUID,"Foo");
         RunList runList = new RunList();
         runList.add(runTest);
         runList.add(runFoo);

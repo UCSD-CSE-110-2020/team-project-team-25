@@ -3,4 +3,10 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="micActive">#EBEBEB</color>
+    <color name="micBackgroundActive">#ED4144</color>
+    <color name="micOff">#272727</color>
+    <color name="micBackgroundOff">#EBEBEB</color>
+    <color name="tintActive">#FFFFFF</color>
+    <color name="tintDisabled">#AAAAAA</color>
 </resources>

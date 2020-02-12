@@ -2,6 +2,7 @@ package edu.ucsd.cse110.walkstatic;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.os.Handler;
@@ -14,10 +15,15 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import java.text.DecimalFormat;
+
+import static android.content.Context.MODE_PRIVATE;
+
 import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 import edu.ucsd.cse110.walkstatic.fitness.GoogleFitAdapter;
+
 
 public class RunFragment extends Fragment {
     private static String fitnessServiceKey = "DEBUG"; //TODO change to "GOOGLE_FIT"
@@ -28,7 +34,6 @@ public class RunFragment extends Fragment {
     private StepTracker stepTracker;
     private FitnessService fitnessService;
     private SecondTimer timer;
-
 
     private static final String TAG = "StepCountActivity";
 
@@ -67,7 +72,6 @@ public class RunFragment extends Fragment {
     }
 
 
-
     private void initStepCount(){
         FitnessServiceFactory.put("GOOGLE_FIT", new FitnessServiceFactory.BluePrint() {
             @Override
@@ -87,15 +91,12 @@ public class RunFragment extends Fragment {
                     }
 
                     @Override
-                    public void setup() {
-
-                    }
+                    public void setup() {}
 
                     @Override
                     public void updateStepCount() {
-                        if(this.listener == null){
-                            return;
-                        }
+                        if(this.listener == null){ return; }
+
                         long rand = Math.round(Math.random()*1000);
                         this.listener.onNewSteps(rand);
                     }
@@ -127,7 +128,24 @@ public class RunFragment extends Fragment {
         if(this.timer != null){
             this.timer.stop();
         }
+    }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("Run Fragment", "Pausing");
+        if(this.timer != null){
+            this.timer.stop();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("Run Fragment", "Resuming");
+        if(this.timer != null){
+            this.timer.resume();
+        }
     }
 
     private void updateStepCount(){
@@ -136,9 +154,27 @@ public class RunFragment extends Fragment {
         TextView textSteps = getActivity().findViewById(R.id.steps_today);
         long steps = this.stepTracker.getStepTotal();
         textSteps.setText(Long.toString(steps));
-        if(stepTracker.isStartPressed() == true) {
+        if(stepTracker.isStartPressed() == true) { // for current run
             TextView textRunSteps = getActivity().findViewById(R.id.stepRunCount);
             textRunSteps.setText(Long.toString(stepTracker.getRunStep()));
+        }
+    }
+
+    private void updateMilesCount(){
+        TextView textMiles = getActivity().findViewById(R.id.miles_today);
+        SharedPreferences sharedPreferences = (SharedPreferences) getActivity().getSharedPreferences("userHeight", MODE_PRIVATE);
+
+        String uHeight = sharedPreferences.getString("height","-1");
+        double miles = this.stepTracker.getMilesCount(uHeight, false);
+        DecimalFormat decimalFormat = new DecimalFormat("#.00");
+        String displayMiles = decimalFormat.format(miles);
+        textMiles.setText(displayMiles);
+
+        if(stepTracker.isStartPressed() == true) { // for current run
+            TextView textRunSteps = getActivity().findViewById(R.id.mileRunCount);
+            miles = this.stepTracker.getMilesCount(uHeight, true);
+            displayMiles = decimalFormat.format(miles);
+            textRunSteps.setText(displayMiles);
         }
     }
 
@@ -158,7 +194,13 @@ public class RunFragment extends Fragment {
                 return;
             }
             updateStepCount();
+            updateMilesCount();
             timer.postDelayed(this, this.delay);
+        }
+
+        void resume(){
+            this.stop = false;
+            this.run();
         }
 
         void stop(){
