@@ -27,12 +27,12 @@ public class ViewRunFragment extends Fragment {
 
             TextView runName = this.getActivity().findViewById(R.id.run_name);
             runName.setText(run.getName());
+
             TextView notes = this.getActivity().findViewById(R.id.notes);
             notes.setText(run.getNotes());
 
             TextView difficulty = this.getActivity().findViewById(R.id.difficulty);
             difficulty.setText(run.getDifficulty());
-
 
             this.populateWithRun(run);
         }
