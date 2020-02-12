@@ -2,6 +2,7 @@ package edu.ucsd.cse110.walkstatic;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -40,12 +41,17 @@ public class MyRunsTest {
         scenario.onFragment(activity -> {
             ListView listView = activity.getActivity().findViewById(R.id.my_runs_list);
             ShadowListView shadowListView = Shadows.shadowOf(listView);
-            TextView run1 = (TextView)shadowListView.findItemContainingText("Run 1");
-            assertThat(run1).isNotNull();
-            assertThat(run1.getText().toString()).isEqualTo("Run 1");
-            TextView run2 = (TextView)shadowListView.findItemContainingText("Run 2");
-            assertThat(run2).isNotNull();
-            assertThat(run2.getText().toString()).isEqualTo("Run 2");
+
+            ViewGroup run1 = (ViewGroup) shadowListView.findItemContainingText("Run 1");
+            TextView tv1 = (TextView) run1.getChildAt(0);
+            assertThat(tv1).isNotNull();
+            assertThat(tv1.getText().toString()).isEqualTo("Run 1");
+
+            ViewGroup run2 = (ViewGroup)shadowListView.findItemContainingText("Run 2");
+            TextView tv2 = (TextView) run2.getChildAt(0);
+            assertThat(tv2).isNotNull();
+            assertThat(tv2.getText().toString()).isEqualTo("Run 2");
+
             int idxRun1 = shadowListView.findIndexOfItemContainingText("Run 1");
             int idxRun2 = shadowListView.findIndexOfItemContainingText("Run 2");
             assertThat(idxRun1).isLessThan(idxRun2);

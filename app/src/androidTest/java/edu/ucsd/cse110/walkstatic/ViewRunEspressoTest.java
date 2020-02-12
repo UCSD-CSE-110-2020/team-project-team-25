@@ -89,14 +89,7 @@ public class ViewRunEspressoTest {
                 .atPosition(1);
         appCompatTextView.perform(click());
 
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.run_name), withText("Run 2"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.nav_host_fragment),
-                                        0),
-                                0),
-                        isDisplayed()));
+        ViewInteraction textView = onView(allOf(withId(R.id.run_name), isDisplayed()));
         textView.check(matches(withText("Run 2")));
 
         ViewInteraction appCompatImageButton2 = onView(
@@ -120,11 +113,6 @@ public class ViewRunEspressoTest {
 
         ViewInteraction textView2 = onView(
                 allOf(withId(R.id.run_name), withText("Run 1"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.nav_host_fragment),
-                                        0),
-                                0),
                         isDisplayed()));
         textView2.check(matches(withText("Run 1")));
     }
