@@ -2,6 +2,8 @@ package edu.ucsd.cse110.walkstatic.runs;
 
 import org.junit.Test;
 
+import java.util.UUID;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -9,15 +11,18 @@ import static org.junit.Assert.assertTrue;
 public class RunTest {
     @Test
     public void runWithSameNameEqual(){
-        Run run1 = new Run("Test");
-        Run run2 = new Run("Test");
+        UUID uuid = UUID.randomUUID();
+        UUID cloneUUID = UUID.fromString(uuid.toString());
+        Run run1 = new Run(uuid,"Test");
+        Run run2 = new Run(cloneUUID,"Test");
         assertEquals(run1, run2);
     }
 
     @Test
     public void runWithDifferentNamesNotEqual(){
-        Run run1 = new Run("Test");
-        Run run2 = new Run("Not same");
+        UUID uuid = UUID.randomUUID();
+        Run run1 = new Run(uuid,"Test");
+        Run run2 = new Run(uuid,"Not same");
         assertNotEquals(run1, run2);
     }
 
@@ -49,15 +54,16 @@ public class RunTest {
 
     @Test
     public void uuIDNotUsedInCompare(){
-        Run run1 = new Run(1,"B");
-        Run run2 = new Run(2,"B");
+        Run run1 = new Run("B");
+        Run run2 = new Run("B");
         assertEquals(0, run1.compareTo(run2));
     }
 
     @Test
     public void equalsRespectsUUID(){
-        Run run1 = new Run(1,"B");
-        Run run2 = new Run(2,"B");
+        Run run1 = new Run("B");
+        Run run2 = new Run("B");
         assertNotEquals(run1, run2);
     }
+
 }

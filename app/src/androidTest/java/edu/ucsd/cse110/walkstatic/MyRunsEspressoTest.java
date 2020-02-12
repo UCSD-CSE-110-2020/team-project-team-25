@@ -40,13 +40,19 @@ import static org.hamcrest.Matchers.containsString;
 public class MyRunsEspressoTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
 
     @Test
     public void myRunsTest() {
+        EspressoHelpers.setUserHeightRequest(mActivityTestRule, "65");
+        //Gson gson = new Gson();
+        //ArrayList<Run> runs = new ArrayList<Run>();
+        //runs.add(new Run("Run 1"));
+        //runs.add(new Run("Run 2"));
         RunList runs = new RunList();
-        runs.add(new Run(runs.getNextUUID(),"Run 1"));
-        runs.add(new Run(runs.getNextUUID(),"Run 2"));
+        runs.add(new Run("Run 1"));
+        runs.add(new Run("Run 2"));
+
 
         Context targetContext = getInstrumentation().getTargetContext();
         String preferencesName = targetContext.getResources().getString(R.string.run_save_name);

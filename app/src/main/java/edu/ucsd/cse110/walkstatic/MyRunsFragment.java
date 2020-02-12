@@ -91,10 +91,7 @@ public class MyRunsFragment extends Fragment implements AdapterView.OnItemClickL
     }
 
     private void addNewRun(){
-        Bundle bundle = new Bundle();
-        int nextUUID = this.runs.getNextUUID();
-        bundle.putInt("UUID", nextUUID);
-        Navigation.findNavController(this.getActivity(), this.getId()).navigate(R.id.action_myRunsFragment_to_editRunFragment, bundle);
+        Navigation.findNavController(this.getActivity(), this.getId()).navigate(R.id.action_myRunsFragment_to_editRunFragment);
     }
 
     private void initRunViewModel(){

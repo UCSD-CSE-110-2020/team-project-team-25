@@ -1,20 +1,21 @@
 package edu.ucsd.cse110.walkstatic.runs;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 public class Run implements Serializable, Comparable<Run>{
 
     private String name;
-    private int uuID;
+    private UUID uuID;
 
     private int steps;
     private double miles;
 
     public Run(String name){
-        this(0, name);
+        this(UUID.randomUUID(), name);
     }
 
-    public Run(int uuID, String name){
+    public Run(UUID uuID, String name){
         this.name = name;
         this.uuID = uuID;
         this.steps = 0;
@@ -33,7 +34,7 @@ public class Run implements Serializable, Comparable<Run>{
         return this.name;
     }
 
-    public int getUUID(){
+    public UUID getUUID(){
         return this.uuID;
     }
 
@@ -43,7 +44,7 @@ public class Run implements Serializable, Comparable<Run>{
             return false;
         }
         Run otherRun = (Run) other;
-        return this.uuID == otherRun.uuID && this.name.equals(otherRun.name);
+        return this.uuID.equals(((Run) other).uuID) && this.name.equals(otherRun.name);
     }
 
     @Override
