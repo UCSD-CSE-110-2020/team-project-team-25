@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 
 import java.util.UUID;
 
@@ -43,6 +44,7 @@ public class EditRunFragment extends Fragment implements SpeechListener {
 
     private VoiceDictation voiceDictation;
     private boolean isValid;
+    private Spinner difficultySpinner;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,11 +61,14 @@ public class EditRunFragment extends Fragment implements SpeechListener {
         return inflater.inflate(R.layout.fragment_edit_run, container, false);
     }
 
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
         this.addSpeechListeners();
         this.addValidators();
+        //add spinner for difficulty
+        this.addSpinner();
     }
 
     @Override
@@ -183,6 +188,11 @@ public class EditRunFragment extends Fragment implements SpeechListener {
             ImageButton button = this.getActivity().findViewById(element.getButtonId());
             button.setEnabled(enabled);
         }
+    }
+
+    private void addSpinner(){
+        difficultySpinner = this.getActivity().findViewById(R.id.spinner1);
+      //  difficultySpinner.setOnItemSelectedListener(new CustomOnItemSelectedListener());
     }
 
     private void addValidators(){

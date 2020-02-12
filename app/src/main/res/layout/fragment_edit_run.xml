@@ -93,8 +93,40 @@
             bind:layout_constraintEnd_toEndOf="parent"
             bind:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/ic_mic_white_24dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="401dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/difficulty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:text="Difficulty:"
+            android:textSize="18sp"
+            bind:layout_constraintBottom_toBottomOf="parent"
+            bind:layout_constraintStart_toStartOf="parent"
+            bind:layout_constraintTop_toTopOf="parent" />
+
+
+        <Spinner
+            android:id="@+id/spinner1"
+            android:layout_width="283dp"
+            android:layout_height="52dp"
+            android:layout_marginStart="20dp"
+            android:entries="@array/difficulty_arrays"
+            android:prompt="@string/Difficulty_prompt"
+            bind:layout_constraintEnd_toEndOf="parent"
+            bind:layout_constraintHorizontal_bias="0.25"
+            bind:layout_constraintStart_toEndOf="@+id/difficulty"
+            bind:layout_constraintTop_toTopOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"

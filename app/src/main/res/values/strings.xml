@@ -9,4 +9,12 @@
     <string name="save">Save</string>
     <string name="add">Add</string>
     <string name="name_empty_error">Name can not be empty.</string>
+
+    <string name="Difficulty_prompt">Choose a difficulty</string>
+    <string-array name="difficulty_arrays">
+        <item>Moderate</item>
+        <item>Easy</item>
+        <item>Difficult</item>
+    </string-array>
+
 </resources>
