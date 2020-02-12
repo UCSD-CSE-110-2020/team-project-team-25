@@ -45,10 +45,11 @@ import static org.hamcrest.Matchers.is;
 public class AddRunEspressoTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class,true, false);
 
     @Test
     public void addRunEspressoTest() {
+        EspressoHelpers.setUserHeightRequest(mActivityTestRule, "65");
         RunList runs = new RunList();
         runs.add(new Run("Run 1"));
         runs.add(new Run("Run 2"));
