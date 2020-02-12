@@ -4,7 +4,7 @@
     <item
         android:id="@+id/action_favorite"
         android:icon="@drawable/ic_star_border_white_24dp"
-        android:title="@string/add"
+        android:title="Favorite"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_save"

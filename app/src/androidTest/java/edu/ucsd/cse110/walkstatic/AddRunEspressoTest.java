@@ -102,13 +102,23 @@ public class AddRunEspressoTest {
                         isDisplayed()));
         appCompatEditText.perform(replaceText("Apple Park"), closeSoftKeyboard());
 
+        ViewInteraction favorite = onView(
+                allOf(withId(R.id.action_favorite), withContentDescription("Favorite"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.action_bar),
+                                        2),
+                                0),
+                        isDisplayed()));
+        favorite.perform(click());
+
         ViewInteraction actionMenuItemView = onView(
                 allOf(withId(R.id.action_save), withContentDescription("Save"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.action_bar),
                                         2),
-                                0),
+                                1),
                         isDisplayed()));
         actionMenuItemView.perform(click());
 
@@ -142,7 +152,7 @@ public class AddRunEspressoTest {
                                 childAtPosition(
                                         withId(R.id.action_bar),
                                         2),
-                                0),
+                                1),
                         isDisplayed()));
         actionMenuItemView3.perform(click());
 

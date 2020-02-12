@@ -155,7 +155,7 @@ public class VoiceDictationEspressoTest {
                                 childAtPosition(
                                         withId(R.id.action_bar),
                                         2),
-                                0),
+                                1),
                         isDisplayed()));
         actionMenuItemView2.perform(click());
 
