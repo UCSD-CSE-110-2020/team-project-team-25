@@ -22,6 +22,10 @@ public class Run implements Serializable, Comparable<Run>{
         this(uuID, name, "", false);
     }
 
+    public Run(String name, String startingPoint, boolean favorited){
+        this(UUID.randomUUID(), name, startingPoint, favorited);
+    }
+
     public Run(UUID uuID, String name, String startingPoint, boolean favorited){
         this.name = name;
         this.uuID = uuID;
