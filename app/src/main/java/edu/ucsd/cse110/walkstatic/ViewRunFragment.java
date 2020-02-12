@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -29,10 +30,14 @@ public class ViewRunFragment extends Fragment {
             TextView notes = this.getActivity().findViewById(R.id.notes);
             notes.setText(run.getNotes());
 
+            TextView difficulty = this.getActivity().findViewById(R.id.difficulty);
+            difficulty.setText(run.getDifficulty());
+
+
             this.populateWithRun(run);
         }
     }
-    
+
     private void populateWithRun(Run run){
         TextView runName = this.getActivity().findViewById(R.id.run_name);
         runName.setText(run.getName());

@@ -11,16 +11,15 @@
     <string name="miles_text">%1$s Miles</string>
     <string name="steps_text">%1$s Steps</string>
     <string name="name_empty_error">Name can not be empty.</string>
-<<<<<<< HEAD
+
 
     <string name="Difficulty_prompt">Choose a difficulty</string>
     <string-array name="difficulty_arrays">
+        <item></item>
         <item>Moderate</item>
         <item>Easy</item>
         <item>Difficult</item>
     </string-array>
 
-=======
     <string name="favorite_indicator">favorite indicator</string>
->>>>>>> 070c811fff0487a15517892f09ab31f9cd466d43
 </resources>

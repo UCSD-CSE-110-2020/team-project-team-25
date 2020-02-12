@@ -48,7 +48,7 @@ public class EditRunTest {
 
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             Run run = runViewModel.sharedRun.getValue();
-            assertThat(run).isEqualTo(new Run(run.getUUID(), "Run 1"));
+            assertThat(run).isEqualTo(new Run().setUUID(run.getUUID()).setName("Run 1"));
         });
     }
 
@@ -71,7 +71,7 @@ public class EditRunTest {
 
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             Run run = runViewModel.sharedRun.getValue();
-            assertThat(run).isEqualTo(new Run(uuid, "Run 1"));
+            assertThat(run).isEqualTo(new Run().setUUID(uuid).setName("Run 1"));
         });
     }
 
@@ -292,7 +292,7 @@ public class EditRunTest {
 
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             Run run = runViewModel.sharedRun.getValue();
-            assertThat(run).isEqualTo(new Run(run.getUUID(), "Run 1", "Point 1", false));
+            assertThat(run).isEqualTo(new Run().setUUID(run.getUUID()).setName("Run 1").setStartingPoint("Point 1").setFavorited(false));
         });
     }
 
@@ -314,7 +314,7 @@ public class EditRunTest {
 
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             Run run = runViewModel.sharedRun.getValue();
-            assertThat(run).isEqualTo(new Run(run.getUUID(), "Run 1", "", true));
+            assertThat(run).isEqualTo(new Run().setUUID(run.getUUID()).setName("Run 1").setStartingPoint("").setFavorited(true));
         });
     }
 
