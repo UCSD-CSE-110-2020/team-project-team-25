@@ -9,30 +9,41 @@ public class Run implements Serializable, Comparable<Run>{
     private String name;
     private UUID uuID;
     private String notes;
+    private int steps;
+    private double miles;
+    private boolean favorited;
+    private String startingPoint;
 
-    public Run(String name) {
-        this(UUID.randomUUID(), name, "");
+    public Run(String name){
+        this(UUID.randomUUID(), name);
     }
 
-    public Run(String name, String notes){
-        this(UUID.randomUUID(), name, notes);
+    public Run(UUID uuID, String name){
+        this(uuID, name, "", false);
     }
 
-    public Run(String name, UUID uuID){
-        this(uuID, name, "");
+    public Run(String name, String startingPoint, boolean favorited){
+        this(UUID.randomUUID(), name, startingPoint, favorited);
     }
 
-    public Run(UUID uuID, String name, String notes){
+    public Run(UUID uuID, String name, String startingPoint, boolean favorited){
         this.name = name;
         this.uuID = uuID;
-        this.notes = notes;
+        this.steps = 0;
+        this.miles = 0;
+        this.favorited = favorited;
+        this.startingPoint = startingPoint;
     }
 
     public String getName(){
         return this.name;
     }
 
+
     public String getNotes() { return this.notes; }
+    public int getSteps() { return this.steps; }
+    public double getMiles() { return this.miles; }
+
 
     @Override
     public String toString(){
@@ -49,11 +60,22 @@ public class Run implements Serializable, Comparable<Run>{
             return false;
         }
         Run otherRun = (Run) other;
-        return this.uuID.equals(((Run) other).uuID) && this.name.equals(otherRun.name);
+        boolean equalSoFar = this.uuID.equals(otherRun.uuID);
+        equalSoFar = equalSoFar && this.startingPoint.equals(otherRun.startingPoint);
+        equalSoFar = equalSoFar && (this.favorited == otherRun.favorited);
+        return equalSoFar && this.name.equals(otherRun.name);
     }
 
     @Override
     public int compareTo(Run run) {
         return name.compareTo(run.name);
+    }
+
+    public boolean isFavorited(){
+        return this.favorited;
+    }
+
+    public String getStartingPoint(){
+        return this.startingPoint;
     }
 }

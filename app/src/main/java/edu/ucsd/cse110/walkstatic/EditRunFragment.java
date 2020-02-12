@@ -44,7 +44,9 @@ public class EditRunFragment extends Fragment implements SpeechListener {
 
     private VoiceDictation voiceDictation;
     private boolean isValid;
+
     private Spinner difficultySpinner;
+    private boolean isFavorited;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class EditRunFragment extends Fragment implements SpeechListener {
         this.voiceDictation = VoiceDictationFactory.getVoiceDictation(this.getActivity());
         this.voiceDictation.setListener(this);
         this.isValid = false;
+        this.isFavorited = false;
     }
 
     @Override
@@ -73,7 +76,7 @@ public class EditRunFragment extends Fragment implements SpeechListener {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
-        inflater.inflate(R.menu.done_menu, menu);
+        inflater.inflate(R.menu.edit_run_menu, menu);
         super.onCreateOptionsMenu(menu,inflater);
     }
 
@@ -82,6 +85,15 @@ public class EditRunFragment extends Fragment implements SpeechListener {
         if(item.getItemId() == R.id.action_save && this.isValid){
             this.saveRun();
             return true;
+        } else if(item.getItemId() == R.id.action_favorite){
+            this.isFavorited = !this.isFavorited;
+            this.getActivity().invalidateOptionsMenu();
+            return true;
+        } else {
+            EditText runNameElement = this.getActivity().findViewById(R.id.run_name_text);
+            EditText startingPoint = this.getActivity().findViewById(R.id.starting_point_text);
+            runNameElement.clearFocus();
+            startingPoint.clearFocus();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -93,6 +105,9 @@ public class EditRunFragment extends Fragment implements SpeechListener {
         save.setEnabled(this.isValid);
         int tint = this.isValid ? R.color.tintActive : R.color.tintDisabled;
         save.setIconTintList(getContext().getResources().getColorStateList(tint, null));
+        MenuItem favorite = menu.findItem(R.id.action_favorite);
+        int favoriteIcon = this.isFavorited ? R.drawable.ic_star_white_24dp : R.drawable.ic_star_border_white_24dp;
+        favorite.setIcon(favoriteIcon);
     }
 
     @Override
@@ -102,14 +117,17 @@ public class EditRunFragment extends Fragment implements SpeechListener {
     }
 
     private void saveRun(){
-        EditText runName = this.getActivity().findViewById(R.id.run_name_text);
+        EditText runNameElement = this.getActivity().findViewById(R.id.run_name_text);
         EditText startingPoint = this.getActivity().findViewById(R.id.starting_point_text);
-        String runText = runName.getText().toString() + startingPoint.getText();
         EditText notes = this.getActivity().findViewById(R.id.notes);
 
+        String runName = runNameElement.getText().toString();
+        String runStartingPoint = startingPoint.getText().toString();
+
         RunViewModel runViewModel = new ViewModelProvider(this.getActivity()).get(RunViewModel.class);
-        runViewModel.setRun(new Run(this.safeGetUUID(), runName.getText().toString(), notes.getText().toString()));
-        runName.clearFocus();
+        runViewModel.setRun(new Run(this.safeGetUUID(), runName, runStartingPoint, this.isFavorited));//, notes.getText().toString()));
+        runNameElement.clearFocus();
+
         startingPoint.clearFocus();
         notes.clearFocus();
         Navigation.findNavController(this.getView()).navigateUp();

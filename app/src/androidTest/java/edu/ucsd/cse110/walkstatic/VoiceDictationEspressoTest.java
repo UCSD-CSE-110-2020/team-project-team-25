@@ -155,20 +155,14 @@ public class VoiceDictationEspressoTest {
                                 childAtPosition(
                                         withId(R.id.action_bar),
                                         2),
-                                0),
+                                1),
                         isDisplayed()));
         actionMenuItemView2.perform(click());
 
-        ViewInteraction textView = onView(
-                allOf(withId(android.R.id.text1),
-                        childAtPosition(
-                                allOf(withId(R.id.my_runs_list),
-                                        childAtPosition(
-                                                IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class),
-                                                0)),
-                                0),
+        ViewInteraction textView4 = onView(
+                allOf(withId(R.id.listed_run_name), withText("A Run"),
                         isDisplayed()));
-        textView.check(matches(withText("A Run")));
+        textView4.check(matches(withText("A Run")));
     }
 
     private static Matcher<View> childAtPosition(
