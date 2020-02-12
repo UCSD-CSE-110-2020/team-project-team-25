@@ -25,12 +25,15 @@ import edu.ucsd.cse110.walkstatic.runs.RunList;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.hasSibling;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsString;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -82,6 +85,30 @@ public class MyRunsEspressoTest {
                 allOf(withId(R.id.listed_run_name), withText("Run 2"),
                         isDisplayed()));
         textView2.check(matches(withText("Run 2")));
+
+        ViewInteraction milesView = onView(
+                allOf(withParent(hasSibling(allOf(withId(R.id.listed_run_name), withText("Run 1")))),
+                        withText(containsString("Miles")), isDisplayed()));
+
+        milesView.check(matches(withText("0.0 Miles")));
+
+        ViewInteraction stepsView = onView(
+                allOf(withParent(hasSibling(allOf(withId(R.id.listed_run_name), withText("Run 1")))),
+                        withText(containsString("Steps")), isDisplayed()));
+
+        stepsView.check(matches(withText("0 Steps")));
+
+        ViewInteraction milesView2 = onView(
+                allOf(withParent(hasSibling(allOf(withId(R.id.listed_run_name), withText("Run 2")))),
+                        withText(containsString("Miles")), isDisplayed()));
+
+        milesView2.check(matches(withText("0.0 Miles")));
+
+        ViewInteraction stepsView2 = onView(
+                allOf(withParent(hasSibling(allOf(withId(R.id.listed_run_name), withText("Run 2")))),
+                        withText(containsString("Steps")), isDisplayed()));
+
+        stepsView2.check(matches(withText("0 Steps")));
 
     }
 

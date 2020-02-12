@@ -34,7 +34,7 @@ public class RunArrayAdapter extends ArrayAdapter<Run> {
         TextView stepsView = convertView.findViewById(R.id.run_steps);
 
         String milesText = getContext().getString(R.string.miles_text, Double.toString(run.getMiles()));
-        String stepsText = getContext().getString(R.string.steps_text, Double.toString(run.getSteps()));
+        String stepsText = getContext().getString(R.string.steps_text, Integer.toString(run.getSteps()));
 
         nameView.setText(run.toString());
         milesView.setText(milesText);

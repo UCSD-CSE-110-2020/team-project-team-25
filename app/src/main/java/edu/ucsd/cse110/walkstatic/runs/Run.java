@@ -26,7 +26,7 @@ public class Run implements Serializable, Comparable<Run>{
     }
 
     public int getSteps() { return this.steps; }
-    public double getMiles() { return miles; }
+    public double getMiles() { return this.miles; }
 
     @Override
     public String toString(){
