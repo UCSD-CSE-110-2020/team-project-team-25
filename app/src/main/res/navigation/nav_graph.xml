@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/runActivity">
+    <fragment
+        android:id="@+id/runActivity"
+        android:name="edu.ucsd.cse110.walkstatic.RunFragment"
+        android:label="RunActivity"
+        tools:layout="@layout/activity_run"/>
+    <action
+        android:id="@+id/action_global_runActivity"
+        app:destination="@id/runActivity" />
+    <action
+        android:id="@+id/action_runActivityFragment_to_editRunFragment"
+        app:destination="@id/editRunFragment"
+        app:popUpTo="@+id/runActivity" />
+    <fragment
+        android:id="@+id/myRunsFragment"
+        android:name="edu.ucsd.cse110.walkstatic.MyRunsFragment"
+        android:label="My Runs"
+        tools:layout="@layout/fragment_my_runs">
+        <action
+            android:id="@+id/action_myRunsFragment_to_viewRunFragment"
+            app:destination="@id/viewRunFragment"
+            app:popUpTo="@+id/myRunsFragment" />
+        <action
+            android:id="@+id/action_myRunsFragment_to_editRunFragment"
+            app:destination="@id/editRunFragment"
+            app:popUpTo="@+id/myRunsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewRunFragment"
+        android:name="edu.ucsd.cse110.walkstatic.ViewRunFragment"
+        android:label="View Run"
+        tools:layout="@layout/fragment_view_run" />
+    <action
+        android:id="@+id/action_global_myRunsFragment"
+        app:destination="@id/myRunsFragment"
+        app:popUpToInclusive="true" />
+    <fragment
+        android:id="@+id/editRunFragment"
+        android:name="edu.ucsd.cse110.walkstatic.EditRunFragment"
+        android:label="Edit Run"
+        tools:layout="@layout/fragment_edit_run" />
+</navigation>
