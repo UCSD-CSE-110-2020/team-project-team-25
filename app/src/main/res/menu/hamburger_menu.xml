@@ -9,6 +9,6 @@
             android:title="My Runs" />
     </group>
     <item
-    android:id="@+id/settings_dest"
-    android:title="Settings" />
+    android:id="@+id/debugFragment"
+    android:title="Debug" />
 </menu>
