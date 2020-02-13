@@ -1,46 +1,36 @@
 package edu.ucsd.cse110.walkstatic.runs;
 
+import android.text.method.ScrollingMovementMethod;
+
 import java.io.Serializable;
 import java.util.UUID;
 
 public class Run implements Serializable, Comparable<Run>{
-
     private String name;
     private UUID uuID;
+    private int steps = 0;
+    private double miles = 0;
+    private boolean favorited = false;
+    private String startingPoint = "";
+    private String notes;
+    private String difficulty = "";
 
-    private int steps;
-    private double miles;
+    public Run(){ this.uuID = UUID.randomUUID(); }
 
-    private boolean favorited;
-    private String startingPoint;
+    public Run setName(String name) { this.name=name; return this; }
+    public Run setUUID(UUID uuID) { this.uuID=uuID; return this; }
+    public Run setStartingPoint(String startingPoint) { this.startingPoint=startingPoint; return this; }
+    public Run setSteps(int steps) { this.steps=steps; return this; }
+    public Run setMiles(double miles) { this.miles=miles; return this; }
+    public Run setFavorited(Boolean favorited) { this.favorited=favorited; return this; }
+    public Run setDifficulty(String difficulty) { this.difficulty=difficulty; return this; }
 
-    public Run(String name){
-        this(UUID.randomUUID(), name);
-    }
-
-    public Run(UUID uuID, String name){
-        this(uuID, name, "", false);
-    }
-
-    public Run(String name, String startingPoint, boolean favorited){
-        this(UUID.randomUUID(), name, startingPoint, favorited);
-    }
-
-    public Run(UUID uuID, String name, String startingPoint, boolean favorited){
-        this.name = name;
-        this.uuID = uuID;
-        this.steps = 0;
-        this.miles = 0;
-        this.favorited = favorited;
-        this.startingPoint = startingPoint;
-    }
-
-    public String getName(){
-        return this.name;
-    }
-
+    public String getName(){ return this.name; }
+    public String getNotes() { return this.notes; }
     public int getSteps() { return this.steps; }
     public double getMiles() { return this.miles; }
+    public String getDifficulty() { return this.difficulty; }
+
 
     @Override
     public String toString(){

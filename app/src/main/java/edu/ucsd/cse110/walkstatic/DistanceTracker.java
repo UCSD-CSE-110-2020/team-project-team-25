@@ -13,7 +13,7 @@ import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class StepTracker implements FitnessListener {
+public class DistanceTracker implements FitnessListener {
     public static final String FITNESS_SERVICE_KEY = "FITNESS_SERVICE_KEY";
 
     private FitnessService service;
@@ -23,7 +23,7 @@ public class StepTracker implements FitnessListener {
     private boolean hasData;
     private boolean startPressed;
 
-    public StepTracker(FitnessService service){
+    public DistanceTracker(FitnessService service){
         this.service = service;
         this.service.setListener(this);
     }

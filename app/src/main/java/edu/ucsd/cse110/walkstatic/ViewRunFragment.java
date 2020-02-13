@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -23,6 +24,16 @@ public class ViewRunFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         if(this.getArguments() != null && this.getArguments().getSerializable("Run") != null){
             Run run = (Run)this.getArguments().getSerializable("Run");
+
+            TextView runName = this.getActivity().findViewById(R.id.run_name);
+            runName.setText(run.getName());
+
+            TextView notes = this.getActivity().findViewById(R.id.notes);
+            notes.setText(run.getNotes());
+
+            TextView difficulty = this.getActivity().findViewById(R.id.difficulty);
+            difficulty.setText(run.getDifficulty());
+
             this.populateWithRun(run);
         }
     }
@@ -40,6 +51,4 @@ public class ViewRunFragment extends Fragment {
         favoriteIndicator.setImageResource(starIcon);
         favoriteIndicator.setImageTintList(getContext().getResources().getColorStateList(starColor, null));
     }
-
-
 }

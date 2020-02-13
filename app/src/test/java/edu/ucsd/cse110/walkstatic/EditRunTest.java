@@ -48,7 +48,28 @@ public class EditRunTest {
 
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             Run run = runViewModel.sharedRun.getValue();
-            assertThat(run).isEqualTo(new Run(run.getUUID(), "Run 1"));
+            assertThat(run).isEqualTo(new Run().setUUID(run.getUUID()).setName("Run 1"));
+        });
+    }
+
+    @Test
+    public void runCreatedWithRandomUUIDAndFilledNameAndModerateDifficulty() {
+        TestNavHostController navController = new TestNavHostController(
+                ApplicationProvider.getApplicationContext());
+        navController.setGraph(R.navigation.nav_graph);
+
+        FragmentScenario<EditRunFragment> scenario = FragmentScenario.launchInContainer(EditRunFragment.class);
+        scenario.onFragment(fragment -> {
+            Navigation.setViewNavController(fragment.requireView(), navController);
+            EditText runName = fragment.getActivity().findViewById(R.id.run_name_text);
+            runName.setText("Run 1");
+            TextView difficulty = fragment.getActivity().findViewById(R.id.difficulty);
+            difficulty.setText("Moderate");
+            MenuItem save = new RoboMenuItem(R.id.action_save);
+            fragment.onOptionsItemSelected(save);
+            RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
+            Run run = runViewModel.sharedRun.getValue();
+            assertThat(run).isEqualTo(new Run().setUUID(run.getUUID()).setName("Run 1").setDifficulty("Moderate"));
         });
     }
 
@@ -68,10 +89,34 @@ public class EditRunTest {
             runName.setText("Run 1");
             MenuItem save = new RoboMenuItem(R.id.action_save);
             fragment.onOptionsItemSelected(save);
+            RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
+            Run run = runViewModel.sharedRun.getValue();
+            assertThat(run).isEqualTo(new Run().setUUID(uuid).setName("Run 1"));
+        });
+    }
+
+    @Test
+    public void RunCreatedWithGivenUUIDAndFilledNameAndNoDifficulty() {
+        TestNavHostController navController = new TestNavHostController(
+                ApplicationProvider.getApplicationContext());
+        navController.setGraph(R.navigation.nav_graph);
+
+        UUID uuid = UUID.randomUUID();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("UUID", uuid);
+        FragmentScenario<EditRunFragment> scenario = FragmentScenario.launchInContainer(EditRunFragment.class, bundle);
+        scenario.onFragment(fragment -> {
+            Navigation.setViewNavController(fragment.requireView(), navController);
+            EditText runName = fragment.getActivity().findViewById(R.id.run_name_text);
+            runName.setText("Run 1");
+            TextView difficulty = fragment.getActivity().findViewById(R.id.difficulty);
+            difficulty.setText("");
+            MenuItem save = new RoboMenuItem(R.id.action_save);
+            fragment.onOptionsItemSelected(save);
 
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             Run run = runViewModel.sharedRun.getValue();
-            assertThat(run).isEqualTo(new Run(uuid, "Run 1"));
+            assertThat(run).isEqualTo(new Run().setUUID(uuid).setName("Run 1").setDifficulty(""));
         });
     }
 
@@ -292,7 +337,7 @@ public class EditRunTest {
 
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             Run run = runViewModel.sharedRun.getValue();
-            assertThat(run).isEqualTo(new Run(run.getUUID(), "Run 1", "Point 1", false));
+            assertThat(run).isEqualTo(new Run().setUUID(run.getUUID()).setName("Run 1").setStartingPoint("Point 1").setFavorited(false));
         });
     }
 
@@ -314,7 +359,7 @@ public class EditRunTest {
 
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             Run run = runViewModel.sharedRun.getValue();
-            assertThat(run).isEqualTo(new Run(run.getUUID(), "Run 1", "", true));
+            assertThat(run).isEqualTo(new Run().setUUID(run.getUUID()).setName("Run 1").setStartingPoint("").setFavorited(true));
         });
     }
 

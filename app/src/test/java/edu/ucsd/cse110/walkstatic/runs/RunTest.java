@@ -13,37 +13,37 @@ public class RunTest {
     public void runWithSameNameEqual(){
         UUID uuid = UUID.randomUUID();
         UUID cloneUUID = UUID.fromString(uuid.toString());
-        Run run1 = new Run(uuid,"Test");
-        Run run2 = new Run(cloneUUID,"Test");
+        Run run1 = new Run().setUUID(uuid).setName("Test");
+        Run run2 = new Run().setUUID(cloneUUID).setName("Test");
         assertEquals(run1, run2);
     }
 
     @Test
     public void runWithDifferentNamesNotEqual(){
         UUID uuid = UUID.randomUUID();
-        Run run1 = new Run(uuid,"Test");
-        Run run2 = new Run(uuid,"Not same");
+        Run run1 = new Run().setUUID(uuid).setName("Test");
+        Run run2 = new Run().setUUID(uuid).setName("Not same");
         assertNotEquals(run1, run2);
     }
 
     @Test
     public void runWithNullNotEqual(){
-        Run run = new Run("Test");
+        Run run = new Run().setName("Test");
         assertNotEquals(run, null);
         assertNotEquals(null, run);
     }
 
     @Test
     public void runWithOtherObject(){
-        Run run = new Run("Test");
+        Run run = new Run().setName("Test");
         assertNotEquals(run, "Test");
     }
 
     @Test
     public void runsCompareInAlphabeticalOrder(){
-        Run aRun = new Run("A");
-        Run bRun = new Run("B");
-        Run cRun = new Run("C");
+        Run aRun = new Run().setName("A");
+        Run bRun = new Run().setName("B");
+        Run cRun = new Run().setName("C");
         assertTrue(aRun.compareTo(bRun) < 0);
         assertTrue(aRun.compareTo(cRun) < 0);
         assertTrue(bRun.compareTo(cRun) < 0);
@@ -54,36 +54,36 @@ public class RunTest {
 
     @Test
     public void uuIDNotUsedInCompare(){
-        Run run1 = new Run("B");
-        Run run2 = new Run("B");
+        Run run1 = new Run().setName("B");
+        Run run2 = new Run().setName("B");
         assertEquals(0, run1.compareTo(run2));
     }
 
     @Test
     public void equalsRespectsUUID(){
-        Run run1 = new Run("B");
-        Run run2 = new Run("B");
+        Run run1 = new Run().setName("B");
+        Run run2 = new Run().setName("B");
         assertNotEquals(run1, run2);
     }
 
     @Test
     public void equalsReturnsFalseIfStartingPointsDiffer(){
-        Run run1 = new Run("B", "P1", false);
-        Run run2 = new Run(run1.getUUID(),"B", "P2", false);
+        Run run1 = new Run().setName("B").setStartingPoint("P1").setFavorited(false);
+        Run run2 = new Run().setUUID(run1.getUUID()).setName("B").setStartingPoint("P2").setFavorited(false);
         assertNotEquals(run1, run2);
     }
 
     @Test
     public void equalsReturnsTrueIfStartingPointsSame(){
-        Run run1 = new Run("B", "P1", false);
-        Run run2 = new Run(run1.getUUID(),"B", "P1", false);
+        Run run1 = new Run().setName("B").setStartingPoint("P1").setFavorited(false);
+        Run run2 = new Run().setUUID(run1.getUUID()).setName("B").setStartingPoint("P1").setFavorited(false);
         assertEquals(run1, run2);
     }
 
     @Test
     public void equalsReturnsFalseIfFavoriteStatusDiffers(){
-        Run run1 = new Run("B", "P1", false);
-        Run run2 = new Run(run1.getUUID(),"B", "P1", true);
+        Run run1 = new Run().setName("B").setStartingPoint("P1").setFavorited(false);
+        Run run2 = new Run().setUUID(run1.getUUID()).setName("B").setStartingPoint("P1").setFavorited(true);
         assertNotEquals(run1, run2);
     }
 

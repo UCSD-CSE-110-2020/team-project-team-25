@@ -20,7 +20,7 @@ public class RunListTest {
 
     @Test
     public void singleElementRunListContainsRun(){
-        Run run1 = new Run("Run 1");
+        Run run1 = new Run().setName("Run 1");
         String json = "[" + jsonFromRun(run1) + "]";
         RunList runList = new RunList(json);
         assertEquals(1, runList.size());
@@ -29,10 +29,10 @@ public class RunListTest {
 
     @Test
     public void fourElementRunListContainsRunsInOrder(){
-        Run runA = new Run("A");
-        Run runB = new Run("B");
-        Run runC = new Run("C");
-        Run runD = new Run("D");
+        Run runA = new Run().setName("A");
+        Run runB = new Run().setName("B");
+        Run runC = new Run().setName("C");
+        Run runD = new Run().setName("D");
 
         String json = "[" + jsonFromRun(runA) + "," +
                 jsonFromRun(runB) + "," + jsonFromRun(runD) + "," +
@@ -49,10 +49,10 @@ public class RunListTest {
     @Test
     public void addingRunKeepsSortedOrder(){
         RunList runList = new RunList();
-        Run runA = new Run("A");
-        Run runB = new Run("B");
-        Run runC = new Run("C");
-        Run runD = new Run("D");
+        Run runA = new Run().setName("A");
+        Run runB = new Run().setName("B");
+        Run runC = new Run().setName("C");
+        Run runD = new Run().setName("D");
         runList.add(runB);
         runList.add(runC);
         runList.add(runA);
@@ -72,8 +72,8 @@ public class RunListTest {
 
     @Test
     public void serializationProducesJSONListWithRuns(){
-        Run runTest = new Run("Test");
-        Run runFoo = new Run("Foo");
+        Run runTest = new Run().setName("Test");
+        Run runFoo = new Run().setName("Foo");
         RunList runList = new RunList();
         runList.add(runTest);
         runList.add(runFoo);
@@ -85,8 +85,8 @@ public class RunListTest {
     public void duplicateInsertionReplaces(){
         UUID uuid = UUID.randomUUID();
         UUID cloneUUID = UUID.fromString(uuid.toString());
-        Run runTest = new Run(uuid,"Test");
-        Run runFoo = new Run(cloneUUID,"Foo");
+        Run runTest = new Run().setUUID(uuid).setName("Test");
+        Run runFoo = new Run().setUUID(cloneUUID).setName("Foo");
         RunList runList = new RunList();
         runList.add(runTest);
         runList.add(runFoo);

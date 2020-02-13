@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 
 import java.util.UUID;
 
@@ -43,6 +44,8 @@ public class EditRunFragment extends Fragment implements SpeechListener {
 
     private VoiceDictation voiceDictation;
     private boolean isValid;
+
+    private Spinner difficultySpinner;
     private boolean isFavorited;
 
     @Override
@@ -61,11 +64,14 @@ public class EditRunFragment extends Fragment implements SpeechListener {
         return inflater.inflate(R.layout.fragment_edit_run, container, false);
     }
 
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
         this.addSpeechListeners();
         this.addValidators();
+        //add spinner for difficulty
+        this.addSpinner();
     }
 
     @Override
@@ -113,14 +119,22 @@ public class EditRunFragment extends Fragment implements SpeechListener {
     private void saveRun(){
         EditText runNameElement = this.getActivity().findViewById(R.id.run_name_text);
         EditText startingPoint = this.getActivity().findViewById(R.id.starting_point_text);
+        EditText notes = this.getActivity().findViewById(R.id.notes);
+
         String runName = runNameElement.getText().toString();
         String runStartingPoint = startingPoint.getText().toString();
 
+        Spinner difficultySpinner = this.getActivity().findViewById(R.id.spinner1);
+        String difficulty = difficultySpinner.getSelectedItem().toString();
 
         RunViewModel runViewModel = new ViewModelProvider(this.getActivity()).get(RunViewModel.class);
-        runViewModel.setRun(new Run(this.safeGetUUID(), runName, runStartingPoint, this.isFavorited));
+        runViewModel.setRun(new Run().setUUID(this.safeGetUUID()).setName(runName).setStartingPoint(runStartingPoint).setFavorited(this.isFavorited).setDifficulty(difficulty));//, notes.getText().toString()));
+
+
+
         runNameElement.clearFocus();
         startingPoint.clearFocus();
+        notes.clearFocus();
         Navigation.findNavController(this.getView()).navigateUp();
     }
 
@@ -197,6 +211,11 @@ public class EditRunFragment extends Fragment implements SpeechListener {
             ImageButton button = this.getActivity().findViewById(element.getButtonId());
             button.setEnabled(enabled);
         }
+    }
+
+    private void addSpinner(){
+        difficultySpinner = this.getActivity().findViewById(R.id.spinner1);
+      //  difficultySpinner.setOnItemSelectedListener(new CustomOnItemSelectedListener());
     }
 
     private void addValidators(){
