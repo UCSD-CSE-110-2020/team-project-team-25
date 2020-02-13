@@ -19,7 +19,7 @@ public class GoogleFitTestRunner extends AndroidJUnitRunner {
             }
         });
 
-        RunFragment.setFitnessServiceKey(TEST_SERVICE);
+        FitnessServiceFactory.setDefaultFitnessServiceKey(TEST_SERVICE);
         super.callApplicationOnCreate(app);
     }
 }

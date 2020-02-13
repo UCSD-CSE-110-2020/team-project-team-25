@@ -56,7 +56,7 @@ public class MainActivityEspressoTest {
             }
         });
 
-        RunFragment.setFitnessServiceKey(TEST_SERVICE);
+        FitnessServiceFactory.setDefaultFitnessServiceKey(TEST_SERVICE);
     }
 
 

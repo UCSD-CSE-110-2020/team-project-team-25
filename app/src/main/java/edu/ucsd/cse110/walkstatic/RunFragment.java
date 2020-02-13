@@ -8,17 +8,24 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import java.text.DecimalFormat;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import edu.ucsd.cse110.walkstatic.fitness.DefaultBlueprints;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
@@ -26,10 +33,6 @@ import edu.ucsd.cse110.walkstatic.fitness.GoogleFitAdapter;
 
 
 public class RunFragment extends Fragment {
-    private static String fitnessServiceKey = "DEBUG"; //TODO change to "GOOGLE_FIT"
-    public static void setFitnessServiceKey(String newKey) {
-        fitnessServiceKey = newKey;
-    }
 
     private DistanceTracker stepTracker;
     private FitnessService fitnessService;
@@ -73,45 +76,10 @@ public class RunFragment extends Fragment {
 
 
     private void initStepCount(){
-        FitnessServiceFactory.put("GOOGLE_FIT", new FitnessServiceFactory.BluePrint() {
-            @Override
-            public FitnessService create(Activity activity) {
-                return new GoogleFitAdapter(activity);
-            }
-        });
-
-        FitnessServiceFactory.put("DEBUG", new FitnessServiceFactory.BluePrint() {
-            @Override
-            public FitnessService create(Activity activity) {
-                return new FitnessService() {
-                    FitnessListener listener;
-                    @Override
-                    public int getRequestCode() {
-                        return 0;
-                    }
-
-                    @Override
-                    public void setup() {}
-
-                    @Override
-                    public void updateStepCount() {
-                        if(this.listener == null){ return; }
-
-                        long rand = Math.round(Math.random()*1000);
-                        this.listener.onNewSteps(rand);
-                    }
-
-                    @Override
-                    public void setListener(FitnessListener listener) {
-                        this.listener = listener;
-                    }
-                };
-            }
-        });
 
         TextView textSteps = getActivity().findViewById(R.id.steps_today);
         textSteps.setText("--");
-        this.fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this.getActivity());
+        this.fitnessService = FitnessServiceFactory.create(this.getActivity());
         this.fitnessService.setup();
         this.stepTracker = new DistanceTracker(this.fitnessService);
 
