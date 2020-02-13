@@ -25,6 +25,7 @@ import java.text.DecimalFormat;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import edu.ucsd.cse110.walkstatic.fitness.DefaultBlueprints;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
@@ -32,7 +33,7 @@ import edu.ucsd.cse110.walkstatic.fitness.GoogleFitAdapter;
 
 
 public class RunFragment extends Fragment {
-    private static String fitnessServiceKey = "DEBUG"; //TODO change to "GOOGLE_FIT"
+    private static String fitnessServiceKey = DefaultBlueprints.INCREMENT; //TODO change to "GOOGLE_FIT"
     public static void setFitnessServiceKey(String newKey) {
         fitnessServiceKey = newKey;
     }
@@ -79,41 +80,6 @@ public class RunFragment extends Fragment {
 
 
     private void initStepCount(){
-        FitnessServiceFactory.put("GOOGLE_FIT", new FitnessServiceFactory.BluePrint() {
-            @Override
-            public FitnessService create(Activity activity) {
-                return new GoogleFitAdapter(activity);
-            }
-        });
-
-        FitnessServiceFactory.put("DEBUG", new FitnessServiceFactory.BluePrint() {
-            @Override
-            public FitnessService create(Activity activity) {
-                return new FitnessService() {
-                    FitnessListener listener;
-                    @Override
-                    public int getRequestCode() {
-                        return 0;
-                    }
-
-                    @Override
-                    public void setup() {}
-
-                    @Override
-                    public void updateStepCount() {
-                        if(this.listener == null){ return; }
-
-                        long rand = Math.round(Math.random()*1000);
-                        this.listener.onNewSteps(rand);
-                    }
-
-                    @Override
-                    public void setListener(FitnessListener listener) {
-                        this.listener = listener;
-                    }
-                };
-            }
-        });
 
         TextView textSteps = getActivity().findViewById(R.id.steps_today);
         textSteps.setText("--");

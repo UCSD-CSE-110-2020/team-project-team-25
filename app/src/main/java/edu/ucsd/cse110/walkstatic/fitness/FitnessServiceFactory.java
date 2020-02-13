@@ -18,6 +18,9 @@ public class FitnessServiceFactory {
 
     public static FitnessService create(String key, Activity activity) {
         Log.i(TAG, String.format("creating FitnessService with key %s", key));
+        if(blueprints.size() == 0){
+            DefaultBlueprints.initDefaultBlueprints();
+        }
         return blueprints.get(key).create(activity);
     }
 
