@@ -11,7 +11,11 @@
         tools:layout="@layout/activity_run"/>
     <action
         android:id="@+id/action_global_runActivity"
-        app:destination="@id/runActivity" />
+        app:destination="@id/runActivity" >
+        <action
+            android:id="@+id/action_action_global_runActivity_to_debugFragment"
+            app:destination="@id/debugFragment" />
+    </action>
     <fragment
         android:id="@+id/myRunsFragment"
         android:name="edu.ucsd.cse110.walkstatic.MyRunsFragment"
@@ -40,4 +44,12 @@
         android:name="edu.ucsd.cse110.walkstatic.EditRunFragment"
         android:label="Edit Run"
         tools:layout="@layout/fragment_edit_run" />
+    <fragment
+        android:id="@+id/debugFragment"
+        android:name="edu.ucsd.cse110.walkstatic.DebugFragment"
+        android:label="Debug Menu"
+        tools:layout="@layout/fragment_debug" />
+    <action
+        android:id="@+id/action_global_debugFragment"
+        app:destination="@id/debugFragment" />
 </navigation>
