@@ -55,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = this.getSharedPreferences(
                 preferencesName, Context.MODE_PRIVATE);
         RunList runs = new RunList();
-        runs.add(new Run("Point Loma"));
-        runs.add(new Run("Mission Trails"));
+        runs.add(new Run().setName("Point Loma"));
+        runs.add(new Run().setName("Mission Trails"));
         sharedPreferences.edit().putString("runs", runs.toJSON()).apply();
     }
 

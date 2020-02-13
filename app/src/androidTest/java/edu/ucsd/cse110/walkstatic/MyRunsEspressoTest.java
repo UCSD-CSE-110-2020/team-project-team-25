@@ -50,8 +50,8 @@ public class MyRunsEspressoTest {
         //runs.add(new Run("Run 1"));
         //runs.add(new Run("Run 2"));
         RunList runs = new RunList();
-        runs.add(new Run("Run 1"));
-        runs.add(new Run("Run 2"));
+        runs.add(new Run().setName("Run 1"));
+        runs.add(new Run().setName("Run 2"));
 
 
         Context targetContext = getInstrumentation().getTargetContext();

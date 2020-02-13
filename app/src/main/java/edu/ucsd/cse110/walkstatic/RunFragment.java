@@ -31,7 +31,7 @@ public class RunFragment extends Fragment {
         fitnessServiceKey = newKey;
     }
 
-    private StepTracker stepTracker;
+    private DistanceTracker stepTracker;
     private FitnessService fitnessService;
     private SecondTimer timer;
 
@@ -113,7 +113,7 @@ public class RunFragment extends Fragment {
         textSteps.setText("--");
         this.fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this.getActivity());
         this.fitnessService.setup();
-        this.stepTracker = new StepTracker(this.fitnessService);
+        this.stepTracker = new DistanceTracker(this.fitnessService);
 
         Handler handler = new Handler();
 

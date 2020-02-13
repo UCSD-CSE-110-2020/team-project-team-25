@@ -34,8 +34,8 @@ public class MyRunsTest {
                 preferencesName, Context.MODE_PRIVATE);
         Gson gson = new Gson();
         ArrayList<Run> runs = new ArrayList<Run>();
-        runs.add(new Run("Run 2"));
-        runs.add(new Run("Run 1"));
+        runs.add(new Run().setName("Run 2"));
+        runs.add(new Run().setName("Run 1"));
         sharedPreferences.edit().putString("runs", gson.toJson(runs)).commit();
         FragmentScenario<MyRunsFragment> scenario = FragmentScenario.launchInContainer(MyRunsFragment.class);
         scenario.onFragment(activity -> {

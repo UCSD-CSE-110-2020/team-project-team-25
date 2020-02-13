@@ -24,7 +24,7 @@ public class ViewRunTest {
     public void favoritedRunDisplayed() {
 
         Bundle bundle = new Bundle();
-        Run run = new Run("This is a run", "This is a starting point", true);
+        Run run = new Run().setName("This is a run").setStartingPoint("This is a starting point").setFavorited(true);
         bundle.putSerializable("Run", run);
         FragmentScenario<ViewRunFragment> scenario = FragmentScenario.launchInContainer(ViewRunFragment.class, bundle);
         scenario.onFragment(activity -> {
@@ -41,7 +41,7 @@ public class ViewRunTest {
     public void unfavoritedRunDisplayed() {
 
         Bundle bundle = new Bundle();
-        Run run = new Run("This is a run", "This is a starting point", false);
+        Run run = new Run().setName("This is a run").setStartingPoint("This is a starting point").setFavorited(false);
         bundle.putSerializable("Run", run);
         FragmentScenario<ViewRunFragment> scenario = FragmentScenario.launchInContainer(ViewRunFragment.class, bundle);
         scenario.onFragment(activity -> {
@@ -51,6 +51,25 @@ public class ViewRunTest {
             assertThat(runName.getText().toString()).isEqualTo("This is a run");
             assertThat(startingPoint.getText().toString()).isEqualTo("This is a starting point");
             assertThat(shadowOf(favoriteIndicator.getDrawable()).getCreatedFromResId()).isEqualTo(R.drawable.ic_star_border_white_24dp);
+        });
+    }
+
+    @Test
+    public void difficultyOfRunDisplayed() {
+
+        Bundle bundle = new Bundle();
+        Run run = new Run().setName("This is a run").setStartingPoint("This is a starting point").setFavorited(false).setDifficulty("Moderate");
+        bundle.putSerializable("Run", run);
+        FragmentScenario<ViewRunFragment> scenario = FragmentScenario.launchInContainer(ViewRunFragment.class, bundle);
+        scenario.onFragment(activity -> {
+            TextView runName = activity.getActivity().findViewById(R.id.run_name);
+            TextView startingPoint = activity.getActivity().findViewById(R.id.starting_point);
+            ImageView favoriteIndicator = activity.getActivity().findViewById(R.id.favorite_run);
+            TextView difficulty = activity.getActivity().findViewById(R.id.difficulty);
+            assertThat(runName.getText().toString()).isEqualTo("This is a run");
+            assertThat(startingPoint.getText().toString()).isEqualTo("This is a starting point");
+            assertThat(shadowOf(favoriteIndicator.getDrawable()).getCreatedFromResId()).isEqualTo(R.drawable.ic_star_border_white_24dp);
+            assertThat(difficulty.getText().toString()).isEqualTo("Moderate");
         });
     }
 
