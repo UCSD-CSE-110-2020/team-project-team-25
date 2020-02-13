@@ -27,9 +27,9 @@ public class MainActivityTest {
 
     @Before
     public void setUp() {
-        RunFragment.setFitnessServiceKey(TEST_SERVICE);
+        FitnessServiceFactory.setDefaultFitnessServiceKey(TEST_SERVICE);
         FitnessServiceFactory.put(TEST_SERVICE, (Activity a) ->{
-            fakeFitnessService = new FakeFitnessService(a);
+            fakeFitnessService = new FakeFitnessService();
             return fakeFitnessService;
         });
 

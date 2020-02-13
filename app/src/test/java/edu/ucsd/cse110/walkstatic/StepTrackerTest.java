@@ -8,7 +8,7 @@ public class StepTrackerTest {
 
     @Test
     public void whenStepTrackerIsCreatedStepsUpdatedNotifiedClientsAreToo(){
-        FakeFitnessService fakeFitnessService = new FakeFitnessService(null);
+        FakeFitnessService fakeFitnessService = new FakeFitnessService();
         DistanceTracker tracker = new DistanceTracker(fakeFitnessService);
         tracker.onNewSteps(10);
         assertEquals(10, tracker.getStepTotal());

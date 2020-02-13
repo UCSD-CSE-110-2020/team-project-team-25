@@ -33,10 +33,6 @@ import edu.ucsd.cse110.walkstatic.fitness.GoogleFitAdapter;
 
 
 public class RunFragment extends Fragment {
-    private static String fitnessServiceKey = DefaultBlueprints.INCREMENT; //TODO change to "GOOGLE_FIT"
-    public static void setFitnessServiceKey(String newKey) {
-        fitnessServiceKey = newKey;
-    }
 
     private DistanceTracker stepTracker;
     private FitnessService fitnessService;
@@ -83,7 +79,7 @@ public class RunFragment extends Fragment {
 
         TextView textSteps = getActivity().findViewById(R.id.steps_today);
         textSteps.setText("--");
-        this.fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this.getActivity());
+        this.fitnessService = FitnessServiceFactory.create(this.getActivity());
         this.fitnessService.setup();
         this.stepTracker = new DistanceTracker(this.fitnessService);
 

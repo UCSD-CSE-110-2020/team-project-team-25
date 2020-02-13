@@ -2,11 +2,11 @@ package edu.ucsd.cse110.walkstatic.fitness;
 
 public class MockFitAdapter implements FitnessService {
 
-    private int steps;
+    private long steps;
     private FitnessListener listener;
 
-    public MockFitAdapter(){
-        this.steps = 0;
+    public MockFitAdapter(long steps){
+        this.steps = steps;
     }
 
     @Override
