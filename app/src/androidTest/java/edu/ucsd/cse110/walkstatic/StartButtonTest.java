@@ -49,7 +49,7 @@ public class StartButtonTest {
             }
         });
 
-        RunFragment.setFitnessServiceKey(TEST_SERVICE);
+        FitnessServiceFactory.setDefaultFitnessServiceKey(TEST_SERVICE);
 
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.startButton), withText("Start"),

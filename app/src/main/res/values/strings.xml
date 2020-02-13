@@ -11,7 +11,7 @@
     <string name="miles_text">%1$s Miles</string>
     <string name="steps_text">%1$s Steps</string>
     <string name="name_empty_error">Name can not be empty.</string>
-
+    <string name="time_parse_error">Time must be in format HH:mm:ss.SSS.</string>
 
     <string name="Difficulty_prompt">Choose a difficulty</string>
     <string-array name="difficulty_arrays">
