@@ -7,6 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import androidx.test.espresso.ViewInteraction;
+import androidx.test.filters.LargeTest;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.runner.AndroidJUnit4;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -15,46 +20,100 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import androidx.test.espresso.DataInteraction;
-import androidx.test.espresso.ViewInteraction;
-import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunList;
 
-import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.anything;
+import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class ViewRunEspressoTest {
+public class StopRunEspressoTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
+    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class,true, false);
 
     @Test
-    public void viewRunEspressoTest() {
+    public void stopRunEspressoTest() {
+
         EspressoHelpers.setUserHeightRequest(mActivityTestRule, "65");
+
         RunList runs = new RunList();
         runs.add(new Run().setName("Run 1"));
         runs.add(new Run().setName("Run 2"));
-
 
         Context targetContext = getInstrumentation().getTargetContext();
         String preferencesName = targetContext.getResources().getString(R.string.run_save_name);
         SharedPreferences.Editor preferencesEditor = targetContext.getSharedPreferences(preferencesName, Context.MODE_PRIVATE).edit();
 
         preferencesEditor.putString("runs", runs.toJSON()).commit();
+
+
+        ViewInteraction appCompatButton2 = onView(
+                allOf(withId(R.id.startButton), withText("Start"),
+                        childAtPosition(
+                                allOf(withId(R.id.linearLayout),
+                                        childAtPosition(
+                                                withId(R.id.nav_host_fragment),
+                                                0)),
+                                9),
+                        isDisplayed()));
+        appCompatButton2.perform(click());
+
+        ViewInteraction viewGroup = onView(
+                allOf(withId(R.id.linearLayout),
+                        childAtPosition(
+                                allOf(withId(R.id.nav_host_fragment),
+                                        childAtPosition(
+                                                IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                                0)),
+                                0),
+                        isDisplayed()));
+        viewGroup.check(matches(isDisplayed()));
+
+        ViewInteraction appCompatButton3 = onView(
+                allOf(withId(R.id.stopButton), withText("Stop"),
+                        childAtPosition(
+                                allOf(withId(R.id.linearLayout),
+                                        childAtPosition(
+                                                withId(R.id.nav_host_fragment),
+                                                0)),
+                                10),
+                        isDisplayed()));
+        appCompatButton3.perform(click());
+
+        ViewInteraction appCompatEditText = onView(
+                allOf(withId(R.id.run_name_text),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.widget.LinearLayout")),
+                                        0),
+                                1),
+                        isDisplayed()));
+        appCompatEditText.perform(replaceText("abc"), closeSoftKeyboard());
+
+        ViewInteraction actionMenuItemView = onView(
+                allOf(withId(R.id.action_save), withContentDescription("Save"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.action_bar),
+                                        2),
+                                1),
+                        isDisplayed()));
+        actionMenuItemView.perform(click());
 
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
@@ -77,16 +136,15 @@ public class ViewRunEspressoTest {
                         isDisplayed()));
         navigationMenuItemView.perform(click());
 
-        DataInteraction appCompatTextView = onData(anything())
-                .inAdapterView(allOf(withId(R.id.my_runs_list),
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.listed_run_name), withText("abc"),
                         childAtPosition(
-                                IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class),
-                                0)))
-                .atPosition(1);
-        appCompatTextView.perform(click());
-
-        ViewInteraction textView = onView(allOf(withId(R.id.run_name), isDisplayed()));
-        textView.check(matches(withText("Run 2")));
+                                childAtPosition(
+                                        withId(R.id.my_runs_list),
+                                        2),
+                                0),
+                        isDisplayed()));
+        textView.check(matches(withText("abc")));
 
         ViewInteraction appCompatImageButton2 = onView(
                 allOf(withContentDescription("Navigate up"),
@@ -99,18 +157,16 @@ public class ViewRunEspressoTest {
                         isDisplayed()));
         appCompatImageButton2.perform(click());
 
-        DataInteraction appCompatTextView2 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.my_runs_list),
+        ViewInteraction button = onView(
+                allOf(withId(R.id.startButton),
                         childAtPosition(
-                                IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class),
-                                0)))
-                .atPosition(0);
-        appCompatTextView2.perform(click());
-
-        ViewInteraction textView2 = onView(
-                allOf(withId(R.id.run_name), withText("Run 1"),
+                                allOf(withId(R.id.linearLayout),
+                                        childAtPosition(
+                                                withId(R.id.nav_host_fragment),
+                                                0)),
+                                9),
                         isDisplayed()));
-        textView2.check(matches(withText("Run 1")));
+        button.check(matches(isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(

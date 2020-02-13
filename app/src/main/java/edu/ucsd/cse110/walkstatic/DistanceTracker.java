@@ -1,9 +1,19 @@
 package edu.ucsd.cse110.walkstatic;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import androidx.test.core.app.ApplicationProvider;
+
+import java.text.DecimalFormat;
+
 import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 
-public class StepTracker implements FitnessListener {
+import static android.content.Context.MODE_PRIVATE;
+
+public class DistanceTracker implements FitnessListener {
     public static final String FITNESS_SERVICE_KEY = "FITNESS_SERVICE_KEY";
 
     private FitnessService service;
@@ -13,7 +23,7 @@ public class StepTracker implements FitnessListener {
     private boolean hasData;
     private boolean startPressed;
 
-    public StepTracker(FitnessService service){
+    public DistanceTracker(FitnessService service){
         this.service = service;
         this.service.setListener(this);
     }
@@ -49,5 +59,14 @@ public class StepTracker implements FitnessListener {
 
     public void update(){
         this.service.updateStepCount();
+    }
+
+    public double getMilesCount(String uHeight, boolean run) {
+        if(uHeight == "" ) uHeight = "0";
+        if(uHeight == "-1" ) uHeight = "65";
+        int height = Integer.valueOf(uHeight);
+
+        if (run) return (this.getRunStep() * (0.43 * (double)height/12))/5280;
+        else return (stepTotal * (0.43 * (double)height/12))/5280;
     }
 }

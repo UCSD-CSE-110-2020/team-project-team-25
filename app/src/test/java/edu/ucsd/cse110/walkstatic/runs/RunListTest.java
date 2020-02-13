@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 
 import org.junit.Test;
 
+import java.util.UUID;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -18,7 +20,7 @@ public class RunListTest {
 
     @Test
     public void singleElementRunListContainsRun(){
-        Run run1 = new Run("Run 1");
+        Run run1 = new Run().setName("Run 1");
         String json = "[" + jsonFromRun(run1) + "]";
         RunList runList = new RunList(json);
         assertEquals(1, runList.size());
@@ -27,10 +29,10 @@ public class RunListTest {
 
     @Test
     public void fourElementRunListContainsRunsInOrder(){
-        Run runA = new Run(5,"A");
-        Run runB = new Run(1,"B");
-        Run runC = new Run(3,"C");
-        Run runD = new Run(2,"D");
+        Run runA = new Run().setName("A");
+        Run runB = new Run().setName("B");
+        Run runC = new Run().setName("C");
+        Run runD = new Run().setName("D");
 
         String json = "[" + jsonFromRun(runA) + "," +
                 jsonFromRun(runB) + "," + jsonFromRun(runD) + "," +
@@ -47,10 +49,10 @@ public class RunListTest {
     @Test
     public void addingRunKeepsSortedOrder(){
         RunList runList = new RunList();
-        Run runA = new Run(1,"A");
-        Run runB = new Run(2,"B");
-        Run runC = new Run(3,"C");
-        Run runD = new Run(4,"D");
+        Run runA = new Run().setName("A");
+        Run runB = new Run().setName("B");
+        Run runC = new Run().setName("C");
+        Run runD = new Run().setName("D");
         runList.add(runB);
         runList.add(runC);
         runList.add(runA);
@@ -70,8 +72,8 @@ public class RunListTest {
 
     @Test
     public void serializationProducesJSONListWithRuns(){
-        Run runTest = new Run(1,"Test");
-        Run runFoo = new Run(2,"Foo");
+        Run runTest = new Run().setName("Test");
+        Run runFoo = new Run().setName("Foo");
         RunList runList = new RunList();
         runList.add(runTest);
         runList.add(runFoo);
@@ -80,19 +82,11 @@ public class RunListTest {
     }
 
     @Test
-    public void nextUUIDReturnsOneLargerThanInList(){
-        Run runTest = new Run(5,"Test");
-        Run runFoo = new Run(10,"Foo");
-        RunList runList = new RunList();
-        runList.add(runTest);
-        runList.add(runFoo);
-        assertEquals(11, runList.getNextUUID());
-    }
-
-    @Test
     public void duplicateInsertionReplaces(){
-        Run runTest = new Run(5,"Test");
-        Run runFoo = new Run(5,"Foo");
+        UUID uuid = UUID.randomUUID();
+        UUID cloneUUID = UUID.fromString(uuid.toString());
+        Run runTest = new Run().setUUID(uuid).setName("Test");
+        Run runFoo = new Run().setUUID(cloneUUID).setName("Foo");
         RunList runList = new RunList();
         runList.add(runTest);
         runList.add(runFoo);

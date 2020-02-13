@@ -49,7 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Difficult"
-        android:textColor="#FF0000"
+        android:textColor="#000"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="@+id/starting_point"
         app:layout_constraintHorizontal_bias="0.495"
@@ -106,5 +106,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/favorite_run"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:tint="@color/starGrey"
+        app:layout_constraintBottom_toBottomOf="@+id/run_name"
+        app:layout_constraintStart_toEndOf="@+id/run_name"
+        app:layout_constraintTop_toTopOf="@+id/run_name"
+        app:srcCompat="@drawable/ic_star_border_white_24dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
