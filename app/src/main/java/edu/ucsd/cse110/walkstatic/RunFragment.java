@@ -19,6 +19,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import com.google.gson.Gson;
+
 import java.text.DecimalFormat;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -40,9 +42,8 @@ public class RunFragment extends Fragment {
     private DistanceTracker stepTracker;
     private FitnessService fitnessService;
     private SecondTimer timer;
+    private Run run;
 
-    private RunList runs;
-    private ArrayAdapter<Run> runListAdapter;
 
     public static final String FITNESS_SERVICE_KEY = "FITNESS_SERVICE_KEY";
 
@@ -58,15 +59,16 @@ public class RunFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
-
         initStepCount();
+        loadCurrentRun();
         Button startButton = getActivity().findViewById(R.id.startButton);
         Button stopButton = getActivity().findViewById(R.id.stopButton);
-        stopButton.setVisibility(View.GONE);
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                stepTracker.setRunStepTotal();
+                stepTracker.setStartPressed(true);
+                run.setInitialSteps(stepTracker.getStepTotal());
+                saveCurrentRun();
                 startButton.setVisibility(View.GONE);
                 stopButton.setVisibility(View.VISIBLE);
             }
@@ -75,10 +77,11 @@ public class RunFragment extends Fragment {
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                stepTracker.setStartPressed();
+                stepTracker.setStartPressed(false);
                 stopButton.setVisibility(View.GONE);
                 startButton.setVisibility(View.VISIBLE);
                 addNewRun();
+                deleteCurrentRun();
             }
         });
     }
@@ -122,7 +125,6 @@ public class RunFragment extends Fragment {
                     @Override
                     public void updateStepCount() {
                         if(this.listener == null){ return; }
-
                         long rand = Math.round(Math.random()*1000);
                         this.listener.onNewSteps(rand);
                     }
@@ -174,6 +176,11 @@ public class RunFragment extends Fragment {
         }
     }
 
+//    @Override
+//    public void onDestroyView() {
+//        super.onDestroyView();
+//    }
+
     private void updateStepCount(){
         //for day
         this.stepTracker.update();
@@ -182,7 +189,7 @@ public class RunFragment extends Fragment {
         textSteps.setText(Long.toString(steps));
         if(stepTracker.isStartPressed() == true) { // for current run
             TextView textRunSteps = getActivity().findViewById(R.id.stepRunCount);
-            textRunSteps.setText(Long.toString(stepTracker.getRunStep()));
+            textRunSteps.setText(Long.toString(this.run.calculateNewSteps(steps)));
         }
     }
 
@@ -202,6 +209,38 @@ public class RunFragment extends Fragment {
             displayMiles = decimalFormat.format(miles);
             textRunSteps.setText(displayMiles);
         }
+    }
+
+    private void saveCurrentRun() {
+        String preferencesName = this.getResources().getString(R.string.current_run);
+        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(
+                preferencesName, Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString(preferencesName, this.run.toJSON()).apply();
+    }
+
+    private void deleteCurrentRun() {
+        String preferencesName = this.getResources().getString(R.string.current_run);
+        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(
+                preferencesName, Context.MODE_PRIVATE);
+        sharedPreferences.edit().clear().apply();
+    }
+    private void loadCurrentRun() {
+        Run currentRun;
+        String preferencesName = this.getResources().getString(R.string.current_run);
+        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(
+                preferencesName, Context.MODE_PRIVATE);
+        String runName = sharedPreferences.getString(preferencesName, null );
+        if(runName == null){
+             currentRun = new Run();
+            Button stopButton = getActivity().findViewById(R.id.stopButton);
+            stopButton.setVisibility(View.GONE);
+        } else {
+             currentRun = new Run(runName);
+            Button startButton = getActivity().findViewById(R.id.startButton);
+            startButton.setVisibility(View.GONE);
+            this.stepTracker.setStartPressed(true);
+        }
+        this.run = currentRun;
     }
 
     private class SecondTimer implements Runnable{
@@ -235,11 +274,6 @@ public class RunFragment extends Fragment {
     }
 
     private void addNewRun(){
-        String preferencesName = this.getResources().getString(R.string.run_save_name);
-        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(
-                preferencesName, Context.MODE_PRIVATE);
-        String json = sharedPreferences.getString(preferencesName, "[]");
-        runs = new RunList(json);
         Navigation.findNavController(this.getActivity(), this.getId()).navigate(R.id.action_runActivityFragment_to_editRunFragment);
     }
 

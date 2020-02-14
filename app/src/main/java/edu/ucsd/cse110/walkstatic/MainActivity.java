@@ -61,6 +61,11 @@ public class MainActivity extends AppCompatActivity {
         runs.add(new Run().setName("Point Loma"));
         runs.add(new Run().setName("Mission Trails"));
         sharedPreferences.edit().putString("runs", runs.toJSON()).apply();
+
+        preferencesName = this.getResources().getString(R.string.current_run);
+        sharedPreferences = this.getSharedPreferences(
+                preferencesName, Context.MODE_PRIVATE);
+        sharedPreferences.edit().clear().apply();
     }
 
     private void setupNavBar(){
