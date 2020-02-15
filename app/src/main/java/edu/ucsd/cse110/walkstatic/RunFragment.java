@@ -78,7 +78,6 @@ public class RunFragment extends Fragment {
 
         chronometer = getActivity().findViewById(R.id.chronometer);
         chronometer.setText("00:00:00");
-        TextView asdf = getActivity().findViewById(R.id.asdf);
         chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
             public void onChronometerTick(Chronometer chronometer) {
@@ -87,15 +86,11 @@ public class RunFragment extends Fragment {
                 LocalDateTime currentTime = TimeMachine.now();
                 Duration runTime = Duration.between(startTime, currentTime);
                 long time = runTime.toMillis();
-                int h   = (int)(time /3600000);
-                int m = (int)(time - h*3600000)/60000;
-                int s= (int)(time - h*3600000- m*60000)/1000;
-                String t = (h < 10 ? "0"+h: h)+":"+(m < 10 ? "0"+m: m)+":"+ (s < 10 ? "0"+s: s);
+                int hours = (int)(time /3600000);
+                int minutes = (int)(time - hours * 3600000) / 60000;
+                int seconds = (int)(time - hours * 3600000 - minutes * 60000) / 1000;
+                String t = (hours < 10 ? "0"+hours: hours)+":"+(minutes < 10 ? "0"+minutes: minutes)+":"+ (seconds < 10 ? "0"+seconds: seconds);
                 chronometer.setText(t);
-                if((SystemClock.elapsedRealtime() - chronometer.getBase() >= 5000)){
-                    asdf.setText("FIVE SECONDS HAVE PASSED" +(SystemClock.elapsedRealtime() - chronometer.getBase()));
-
-                }
             }
         });
 
@@ -104,8 +99,6 @@ public class RunFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 stepTracker.setStartPressed(true);
-                //chronometer.setBase(TimeMachine.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()- System.currentTimeMillis());
-                //chronometer.setBase(TimeMachine.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
                 chronometer.setBase(SystemClock.elapsedRealtime());
                 run.setStartTime(TimeMachine.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
                 run.setInitialSteps(stepTracker.getStepTotal());

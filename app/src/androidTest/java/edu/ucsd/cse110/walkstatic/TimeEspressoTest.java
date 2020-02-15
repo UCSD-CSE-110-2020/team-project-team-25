@@ -59,29 +59,54 @@ public class TimeEspressoTest {
             }
         });
 
-        FitnessServiceFactory.setDefaultFitnessServiceKey(TEST_SERVICE);
-
-
         ViewInteraction chronometer = onView(
                 allOf(withId(R.id.chronometer),
                         isDisplayed()));
         chronometer.check(matches(isDisplayed()));
 
-
-        ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.startButton), withText("Start"),
-
+        ViewInteraction appCompatButton2 = onView(
+                allOf(withId(R.id.startButton),
                         isDisplayed()));
-        appCompatButton.perform(click());
+        appCompatButton2.perform(click());
 
-        try {
-            Thread.sleep(2100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        ViewInteraction chronometer2 = onView(
+                allOf(withId(R.id.chronometer),
+                        isDisplayed()));
+        chronometer2.check(matches(isDisplayed()));
 
-        ViewInteraction textView = onView( allOf(withId(R.id.stepRunCount), isDisplayed()));
-        textView.check(matches(not(withText(""))));
+        ViewInteraction appCompatImageButton = onView(
+                allOf(withContentDescription("Open navigation drawer"),
+                        isDisplayed()));
+        appCompatImageButton.perform(click());
+
+        ViewInteraction navigationMenuItemView = onView(
+                allOf(childAtPosition(
+                        allOf(withId(R.id.design_navigation_view),
+                                childAtPosition(
+                                        withId(R.id.nav_view),
+                                        0)),
+                        2),
+                        isDisplayed()));
+        navigationMenuItemView.perform(click());
+
+        ViewInteraction appCompatImageButton2 = onView(
+                allOf(withContentDescription("Navigate up"),
+                        childAtPosition(
+                                allOf(withId(R.id.action_bar),
+                                        childAtPosition(
+                                                withId(R.id.action_bar_container),
+                                                0)),
+                                1),
+                        isDisplayed()));
+        appCompatImageButton2.perform(click());
+
+        ViewInteraction chronometer3 = onView(
+                allOf(withId(R.id.chronometer),
+                        isDisplayed()));
+        chronometer3.check(matches(isDisplayed()));
+
+
+
     }
 
     private static Matcher<View> childAtPosition(

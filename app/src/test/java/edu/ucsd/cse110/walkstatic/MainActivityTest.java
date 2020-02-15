@@ -164,12 +164,13 @@ public class MainActivityTest {
 
             chronometer.start();
             try {
-                Thread.sleep(5100);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             chronometer.stop();
-            if((chronometer.getBase() >= (SystemClock.elapsedRealtime() - chronometer.getBase()) - 1000)){
+            long offset = SystemClock.elapsedRealtime() - chronometer.getBase();
+            if((SystemClock.elapsedRealtime() - offset) >= 100){
                 hasPassed = true;
             }
             else{
