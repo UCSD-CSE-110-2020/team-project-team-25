@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.os.Handler;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,7 +15,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.EditText;
+import android.widget.TextClock;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,6 +25,9 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import java.text.DecimalFormat;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -30,6 +36,7 @@ import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 import edu.ucsd.cse110.walkstatic.fitness.GoogleFitAdapter;
+import edu.ucsd.cse110.walkstatic.time.TimeMachine;
 
 
 public class RunFragment extends Fragment {
@@ -37,7 +44,15 @@ public class RunFragment extends Fragment {
     private DistanceTracker stepTracker;
     private FitnessService fitnessService;
     private SecondTimer timer;
+    private Chronometer chronometer;
 
+    LocalTime now;
+    Clock clock;
+    public static final String FITNESS_SERVICE_KEY = "FITNESS_SERVICE_KEY";
+    public static String fitnessServiceKey = "GOOGLE_FIT";
+    public static void setFitnessServiceKey(String newKey) {
+        fitnessServiceKey = newKey;
+    }
     private static final String TAG = "StepCountActivity";
 
     @Override
@@ -52,10 +67,37 @@ public class RunFragment extends Fragment {
 
         initStepCount();
         Button startButton = getActivity().findViewById(R.id.startButton);
+        Chronometer chronometer = getActivity().findViewById(R.id.chronometer);
+        chronometer.setText("00:00:00");
+        TextView asdf = getActivity().findViewById(R.id.asdf);
+        chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+            @Override
+            public void onChronometerTick(Chronometer chronometer) {
+                long time = SystemClock.elapsedRealtime() - chronometer.getBase();
+                int h   = (int)(time /3600000);
+                int m = (int)(time - h*3600000)/60000;
+                int s= (int)(time - h*3600000- m*60000)/1000 ;
+                String t = (h < 10 ? "0"+h: h)+":"+(m < 10 ? "0"+m: m)+":"+ (s < 10 ? "0"+s: s);
+                chronometer.setText(t);
+                if((SystemClock.elapsedRealtime() - chronometer.getBase() >= 5000)){
+                    asdf.setText("FIVE SECONDS HAVE PASSED" +(SystemClock.elapsedRealtime() - chronometer.getBase()));
+
+                }
+            }
+        });
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 stepTracker.setRunStepTotal();
+                //LocalDateTime local = LocalDateTime.of(2020, 1, 1, 0, 0);
+                //TimeMachine.useFixedClockAt(local);
+                chronometer.setBase(SystemClock.elapsedRealtime());
+
+
+
+                //chronometer.setText("00:00:00");
+                //chronometer.setBase(SystemClock.elapsedRealtime()- (1 * 60000 + 1 * 1000));
+                chronometer.start();
             }
         });
     }

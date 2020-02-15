@@ -2,7 +2,10 @@ package edu.ucsd.cse110.walkstatic;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.TextView;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -17,6 +20,7 @@ import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 import androidx.fragment.app.testing.FragmentScenario;
 
 import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.TestCase.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
 public class MainActivityTest {
@@ -24,6 +28,8 @@ public class MainActivityTest {
 
     private Intent intent;
     private FakeFitnessService fakeFitnessService;
+
+    private boolean hasPassed = false;
 
     @Before
     public void setUp() {
@@ -124,4 +130,35 @@ public class MainActivityTest {
 
     }
 
-}
+    @Test
+    public void timerHandler() {
+        FragmentScenario<RunFragment> scenario = FragmentScenario.launchInContainer(RunFragment.class);
+        scenario.onFragment(activity -> {
+            Chronometer chronometer = activity.getActivity().findViewById(R.id.chronometer);
+            chronometer.setBase(SystemClock.elapsedRealtime());
+            assertThat(chronometer.getBase()).isEqualTo(SystemClock.elapsedRealtime());
+            chronometer.setBase(SystemClock.elapsedRealtime() - (3* 60000 + 0 * 1000));
+            assertThat(chronometer.getBase()).isEqualTo(SystemClock.elapsedRealtime()- (3* 60000 + 0 * 1000));
+
+
+
+            /*chronometer.start();
+            chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+                @Override
+                public void onChronometerTick(Chronometer chronometer) {
+                    if((SystemClock.elapsedRealtime() - chronometer.getBase() >= 5000)) {
+                        hasPassed = true;
+                    }
+                    else
+                    {
+                        hasPassed = false;
+                    }
+                }
+            });
+            (new Handler()).postDelayed(this::timerHandler, 5000);
+            assertEquals(hasPassed, true);*/
+
+        });
+    }
+
+    }
