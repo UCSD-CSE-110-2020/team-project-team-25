@@ -53,12 +53,6 @@ public class StartButtonTest {
 
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.startButton), withText("Start"),
-                        childAtPosition(
-                                allOf(withId(R.id.linearLayout),
-                                        childAtPosition(
-                                                withId(R.id.nav_host_fragment),
-                                                0)),
-                                5),
                         isDisplayed()));
         appCompatButton.perform(click());
 

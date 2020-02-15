@@ -31,6 +31,9 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
+import com.google.android.material.navigation.NavigationView;
+
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunList;
 
@@ -58,6 +61,11 @@ public class MainActivity extends AppCompatActivity {
         runs.add(new Run().setName("Point Loma"));
         runs.add(new Run().setName("Mission Trails"));
         sharedPreferences.edit().putString("runs", runs.toJSON()).apply();
+
+        preferencesName = this.getResources().getString(R.string.current_run);
+        sharedPreferences = this.getSharedPreferences(
+                preferencesName, Context.MODE_PRIVATE);
+        sharedPreferences.edit().clear().apply();
     }
 
     private void setupNavBar(){
