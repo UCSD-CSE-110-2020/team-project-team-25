@@ -31,8 +31,11 @@ import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
 import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -42,6 +45,7 @@ import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 import edu.ucsd.cse110.walkstatic.fitness.GoogleFitAdapter;
 import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.time.TimeMachine;
 
 
 public class RunFragment extends Fragment {
@@ -70,19 +74,22 @@ public class RunFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
         initStepCount();
-        loadCurrentRun();
         Button startButton = getActivity().findViewById(R.id.startButton);
 
-        Chronometer chronometer = getActivity().findViewById(R.id.chronometer);
+        chronometer = getActivity().findViewById(R.id.chronometer);
         chronometer.setText("00:00:00");
         TextView asdf = getActivity().findViewById(R.id.asdf);
         chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
             public void onChronometerTick(Chronometer chronometer) {
-                long time = SystemClock.elapsedRealtime() - chronometer.getBase();
+                Instant startInstant = Instant.ofEpochMilli(run.getStartTime());
+                LocalDateTime startTime = LocalDateTime.ofInstant(startInstant,ZoneId.systemDefault());
+                LocalDateTime currentTime = TimeMachine.now();
+                Duration runTime = Duration.between(startTime, currentTime);
+                long time = runTime.toMillis();
                 int h   = (int)(time /3600000);
                 int m = (int)(time - h*3600000)/60000;
-                int s= (int)(time - h*3600000- m*60000)/1000 ;
+                int s= (int)(time - h*3600000- m*60000)/1000;
                 String t = (h < 10 ? "0"+h: h)+":"+(m < 10 ? "0"+m: m)+":"+ (s < 10 ? "0"+s: s);
                 chronometer.setText(t);
                 if((SystemClock.elapsedRealtime() - chronometer.getBase() >= 5000)){
@@ -97,10 +104,13 @@ public class RunFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 stepTracker.setStartPressed(true);
+                //chronometer.setBase(TimeMachine.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()- System.currentTimeMillis());
+                //chronometer.setBase(TimeMachine.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
                 chronometer.setBase(SystemClock.elapsedRealtime());
-                chronometer.start();
+                run.setStartTime(TimeMachine.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
                 run.setInitialSteps(stepTracker.getStepTotal());
                 saveCurrentRun();
+                chronometer.start();
                 startButton.setVisibility(View.GONE);
                 stopButton.setVisibility(View.VISIBLE);
             }
@@ -116,6 +126,8 @@ public class RunFragment extends Fragment {
                 deleteCurrentRun();
             }
         });
+        loadCurrentRun();
+
     }
 
     @Override
@@ -237,6 +249,7 @@ public class RunFragment extends Fragment {
             Button startButton = getActivity().findViewById(R.id.startButton);
             startButton.setVisibility(View.GONE);
             this.stepTracker.setStartPressed(true);
+            this.chronometer.start();
         }
         this.run = currentRun;
     }
