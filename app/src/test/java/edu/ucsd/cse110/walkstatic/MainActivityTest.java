@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -17,7 +18,17 @@ import org.junit.runner.RunWith;
 import org.robolectric.shadows.ShadowLooper;
 
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
+import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.time.TimeMachine;
+
 import androidx.fragment.app.testing.FragmentScenario;
+
+import junit.framework.Assert;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertEquals;
@@ -28,8 +39,8 @@ public class MainActivityTest {
 
     private Intent intent;
     private FakeFitnessService fakeFitnessService;
-
-    private boolean hasPassed = false;
+    private Run run;
+    private boolean hasPassed;
 
     @Before
     public void setUp() {
@@ -141,22 +152,30 @@ public class MainActivityTest {
             assertThat(chronometer.getBase()).isEqualTo(SystemClock.elapsedRealtime()- (3* 60000 + 0 * 1000));
 
 
+            long time = 800000000;
+            int h   = (int)(time /3600000);
+            int m = (int)(time - h*3600000)/60000;
+            int s= (int)(time - h*3600000- m*60000)/1000;
+            String t = (h < 10 ? "0"+h: h)+":"+(m < 10 ? "0"+m: m)+":"+ (s < 10 ? "0"+s: s);
+            chronometer.setText(t);
+            chronometer.setBase(time);
+            assertThat(chronometer.getBase()).isEqualTo(time);
+            chronometer.setBase(SystemClock.elapsedRealtime());
 
-            /*chronometer.start();
-            chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
-                @Override
-                public void onChronometerTick(Chronometer chronometer) {
-                    if((SystemClock.elapsedRealtime() - chronometer.getBase() >= 5000)) {
-                        hasPassed = true;
-                    }
-                    else
-                    {
-                        hasPassed = false;
-                    }
-                }
-            });
-            (new Handler()).postDelayed(this::timerHandler, 5000);
-            assertEquals(hasPassed, true);*/
+            chronometer.start();
+            try {
+                Thread.sleep(5100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            chronometer.stop();
+            if((chronometer.getBase() >= (SystemClock.elapsedRealtime() - chronometer.getBase()) - 1000)){
+                hasPassed = true;
+            }
+            else{
+                hasPassed = false;
+            }
+            assertEquals(hasPassed, true);
 
         });
     }
