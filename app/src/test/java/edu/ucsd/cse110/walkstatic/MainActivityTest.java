@@ -19,16 +19,8 @@ import org.robolectric.shadows.ShadowLooper;
 
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 import edu.ucsd.cse110.walkstatic.runs.Run;
-import edu.ucsd.cse110.walkstatic.time.TimeMachine;
 
 import androidx.fragment.app.testing.FragmentScenario;
-
-import junit.framework.Assert;
-
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertEquals;

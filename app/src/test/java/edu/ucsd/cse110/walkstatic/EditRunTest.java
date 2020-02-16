@@ -81,7 +81,9 @@ public class EditRunTest {
 
         UUID uuid = UUID.randomUUID();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("UUID", uuid);
+        Run run = new Run();
+        run.setUUID(uuid);
+        bundle.putSerializable("Run", run);
         FragmentScenario<EditRunFragment> scenario = FragmentScenario.launchInContainer(EditRunFragment.class, bundle);
         scenario.onFragment(fragment -> {
             Navigation.setViewNavController(fragment.requireView(), navController);
@@ -90,8 +92,8 @@ public class EditRunTest {
             MenuItem save = new RoboMenuItem(R.id.action_save);
             fragment.onOptionsItemSelected(save);
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
-            Run run = runViewModel.sharedRun.getValue();
-            assertThat(run).isEqualTo(new Run().setUUID(uuid).setName("Run 1"));
+            Run newRun = runViewModel.sharedRun.getValue();
+            assertThat(newRun).isEqualTo(new Run().setUUID(uuid).setName("Run 1"));
         });
     }
 
@@ -103,7 +105,9 @@ public class EditRunTest {
 
         UUID uuid = UUID.randomUUID();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("UUID", uuid);
+        Run uuIDRun = new Run();
+        uuIDRun.setUUID(uuid);
+        bundle.putSerializable("Run", uuIDRun);
         FragmentScenario<EditRunFragment> scenario = FragmentScenario.launchInContainer(EditRunFragment.class, bundle);
         scenario.onFragment(fragment -> {
             Navigation.setViewNavController(fragment.requireView(), navController);

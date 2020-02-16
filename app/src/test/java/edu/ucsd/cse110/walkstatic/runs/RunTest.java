@@ -87,4 +87,21 @@ public class RunTest {
         assertNotEquals(run1, run2);
     }
 
+    @Test
+    public void finalizeStepsUpdateBasedOnStartSteps(){
+        Run run = new Run();
+        run.setInitialSteps(10);
+        run.finalizeSteps(100);
+        assertEquals(90, run.getSteps());
+    }
+
+    @Test
+    public void finalizeTimeUpdateBasedOnStartTime(){
+        Run run = new Run();
+        run.setStartTime(1000);
+        run.finalizeTime(2200);
+        assertEquals(1200, run.getDuration());
+    }
+
+
 }

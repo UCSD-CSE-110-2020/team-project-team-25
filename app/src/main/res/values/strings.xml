@@ -23,4 +23,7 @@
     </string-array>
 
     <string name="favorite_indicator">favorite indicator</string>
+    <string name="start_run">Start Run</string>
+    <string name="user_height">user_height</string>
+    <string name="no_value">--</string>
 </resources>
