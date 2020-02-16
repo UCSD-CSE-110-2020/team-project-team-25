@@ -146,45 +146,50 @@
 
         <Spinner
             android:id="@+id/loopVsOut_spinner"
-            android:layout_width="205dp"
-            android:layout_height="46dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="3dp"
             android:layout_marginTop="44dp"
             android:entries="@array/loopVsOut_arrays"
             android:prompt="@string/LoopVsOutAndBack_prompt"
+            android:text="[Select a Feature..]"
             android:textAlignment="center"
-            bind:layout_constraintStart_toStartOf="parent"
-            bind:layout_constraintTop_toTopOf="parent"
-            android:textSize="18sp"
             android:textColor="#808080"
-            android:text="[Select a Planet...]"/>
+            android:textSize="18sp"
+            bind:layout_constraintStart_toStartOf="parent"
+            bind:layout_constraintEnd_toEndOf="@id/Features_Center"
+            bind:layout_constraintTop_toTopOf="parent" />
 
         <Spinner
             android:id="@+id/evenVsUneven_spinner"
-            android:layout_width="198dp"
-            android:layout_height="46dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="44dp"
             android:entries="@array/evenVsUneven_arrays"
             android:prompt="@string/EvenVsUneven_prompt"
             android:textAlignment="center"
             bind:layout_constraintEnd_toEndOf="parent"
+            bind:layout_constraintStart_toStartOf="@id/Features_Center"
             bind:layout_constraintTop_toTopOf="parent" />
 
         <Spinner
+
             android:id="@+id/flatVsHilly_spinner"
-            android:layout_width="205dp"
-            android:layout_height="46dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
             android:entries="@array/flatVsHilly_arrays"
             android:prompt="@string/FlatVsHilly_prompt"
             android:textAlignment="center"
-            bind:layout_constraintEnd_toEndOf="@id/loopVsOut_spinner"
+            bind:layout_constraintEnd_toStartOf="@+id/Features_Center"
+            bind:layout_constraintHorizontal_bias="0.079"
             bind:layout_constraintStart_toStartOf="@id/loopVsOut_spinner"
             bind:layout_constraintTop_toBottomOf="@+id/loopVsOut_spinner" />
 
         <Spinner
             android:id="@+id/streetVsTrail_spinner"
-            android:layout_width="198dp"
-            android:layout_height="46dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:entries="@array/streetVsTrail_arrays"
             android:prompt="@string/StreetsVsSTrail_prompt"
             android:textAlignment="center"
@@ -192,6 +197,13 @@
             bind:layout_constraintHorizontal_bias="0.0"
             bind:layout_constraintStart_toStartOf="@+id/evenVsUneven_spinner"
             bind:layout_constraintTop_toBottomOf="@+id/evenVsUneven_spinner" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/Features_Center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            bind:layout_constraintGuide_percent="0.50121653" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
