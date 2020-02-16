@@ -12,6 +12,8 @@ import android.widget.TextView;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import org.apache.tools.ant.taskdefs.Local;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,8 +25,7 @@ import edu.ucsd.cse110.walkstatic.time.TimeMachine;
 
 import androidx.fragment.app.testing.FragmentScenario;
 
-import junit.framework.Assert;
-
+import java.sql.Time;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -145,38 +146,20 @@ public class MainActivityTest {
     public void timerHandler() {
         FragmentScenario<RunFragment> scenario = FragmentScenario.launchInContainer(RunFragment.class);
         scenario.onFragment(activity -> {
-            Chronometer chronometer = activity.getActivity().findViewById(R.id.chronometer);
-            chronometer.setBase(SystemClock.elapsedRealtime());
-            assertThat(chronometer.getBase()).isEqualTo(SystemClock.elapsedRealtime());
-            chronometer.setBase(SystemClock.elapsedRealtime() - (3* 60000 + 0 * 1000));
-            assertThat(chronometer.getBase()).isEqualTo(SystemClock.elapsedRealtime()- (3* 60000 + 0 * 1000));
+            LocalDateTime initial = LocalDateTime.of(2020,1,1,0,0);
+            TimeMachine.useFixedClockAt(initial);
+            Assert.assertEquals(initial,TimeMachine.now());
 
+            LocalDateTime addHour = LocalDateTime.of(2020, 1, 1, 1, 0);
+            initial = initial.plusHours(1);
+            TimeMachine.useFixedClockAt(initial);
+            Assert.assertEquals(addHour, TimeMachine.now());
 
-            long time = 800000000;
-            int h   = (int)(time /3600000);
-            int m = (int)(time - h*3600000)/60000;
-            int s= (int)(time - h*3600000- m*60000)/1000;
-            String t = (h < 10 ? "0"+h: h)+":"+(m < 10 ? "0"+m: m)+":"+ (s < 10 ? "0"+s: s);
-            chronometer.setText(t);
-            chronometer.setBase(time);
-            assertThat(chronometer.getBase()).isEqualTo(time);
-            chronometer.setBase(SystemClock.elapsedRealtime());
-
-            chronometer.start();
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            chronometer.stop();
-            long offset = SystemClock.elapsedRealtime() - chronometer.getBase();
-            if((SystemClock.elapsedRealtime() - offset) >= 100){
-                hasPassed = true;
-            }
-            else{
-                hasPassed = false;
-            }
-            assertEquals(hasPassed, true);
+            LocalDateTime fake = LocalDateTime.of(4020,10,10,10,10);
+            TimeMachine.useFixedClockAt(fake);
+            TimeMachine.setNow(fake);
+            Assert.assertEquals(fake, TimeMachine.now());
+            Assert.assertEquals(fake.getMinute(),TimeMachine.now().getMinute());
 
         });
     }
