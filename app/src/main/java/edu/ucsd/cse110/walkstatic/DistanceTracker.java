@@ -34,9 +34,12 @@ public class DistanceTracker implements FitnessListener {
         this.stepTotal = newTotal;
     }
 
-    public void setRunStepTotal() {
-        this.startPressed = true;
-        this.runStepTotal = stepTotal;
+    public void setRunStepTotal(int runStepTotal) {
+        this.runStepTotal = runStepTotal;
+    }
+
+    public void setStartPressed(boolean startPressed) {
+        this.startPressed = startPressed;
     }
 
     public boolean isStartPressed() {
