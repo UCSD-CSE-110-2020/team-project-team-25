@@ -396,6 +396,7 @@ public class EditRunTest {
         });
     }
 
+
     private class VoiceDictationMock implements VoiceDictation {
         SpeechListener listener;
         private Bundle bundle;

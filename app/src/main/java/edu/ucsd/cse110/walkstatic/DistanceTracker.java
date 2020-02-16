@@ -10,9 +10,7 @@ public class DistanceTracker implements FitnessListener {
     private FitnessService service;
 
     private long stepTotal;
-    private long runStepTotal;
     private boolean hasData;
-    private boolean startPressed;
 
     public DistanceTracker(FitnessService service){
         this.service = service;
@@ -24,20 +22,6 @@ public class DistanceTracker implements FitnessListener {
         this.hasData = true;
         this.stepTotal = newTotal;
     }
-
-    public void setRunStepTotal(int runStepTotal) {
-        this.runStepTotal = runStepTotal;
-    }
-
-    public void setStartPressed(boolean startPressed) {
-        this.startPressed = startPressed;
-    }
-
-    public boolean isStartPressed() {
-        return startPressed;
-    }
-
-    public long getRunStep() { return(this.stepTotal - this.runStepTotal); }
 
     public long getStepTotal(){
         return this.stepTotal;
