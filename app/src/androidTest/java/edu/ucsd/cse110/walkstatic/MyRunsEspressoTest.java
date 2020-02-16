@@ -96,25 +96,25 @@ public class MyRunsEspressoTest {
                 allOf(withParent(hasSibling(allOf(withId(R.id.listed_run_name), withText("Run 1")))),
                         withText(containsString("Miles")), isDisplayed()));
 
-        milesView.check(matches(withText("0.0 Miles")));
+        milesView.check(matches(withText("-- Miles")));
 
         ViewInteraction stepsView = onView(
                 allOf(withParent(hasSibling(allOf(withId(R.id.listed_run_name), withText("Run 1")))),
                         withText(containsString("Steps")), isDisplayed()));
 
-        stepsView.check(matches(withText("0 Steps")));
+        stepsView.check(matches(withText("-- Steps")));
 
         ViewInteraction milesView2 = onView(
                 allOf(withParent(hasSibling(allOf(withId(R.id.listed_run_name), withText("Run 2")))),
                         withText(containsString("Miles")), isDisplayed()));
 
-        milesView2.check(matches(withText("0.0 Miles")));
+        milesView2.check(matches(withText("-- Miles")));
 
         ViewInteraction stepsView2 = onView(
                 allOf(withParent(hasSibling(allOf(withId(R.id.listed_run_name), withText("Run 2")))),
                         withText(containsString("Steps")), isDisplayed()));
 
-        stepsView2.check(matches(withText("0 Steps")));
+        stepsView2.check(matches(withText("-- Steps")));
 
     }
 
