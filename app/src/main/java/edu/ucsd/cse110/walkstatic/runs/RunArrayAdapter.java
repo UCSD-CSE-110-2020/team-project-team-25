@@ -52,7 +52,7 @@ public class RunArrayAdapter extends ArrayAdapter<Run> {
         milesView.setText(milesText);
         stepsView.setText(stepsText);
 
-        nameView.setText(run.toString());
+        nameView.setText(run.getName());
 
         int starIcon = run.isFavorited() ? R.drawable.ic_star_white_24dp : R.drawable.ic_star_border_white_24dp;
         int starColor = run.isFavorited() ? R.color.starYellow : R.color.starGrey;

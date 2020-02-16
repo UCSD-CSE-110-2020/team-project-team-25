@@ -41,6 +41,7 @@ public class Run implements Serializable, Comparable<Run>{
     public Run setSteps(int steps) { this.steps=steps; return this; }
     public Run setMiles(double miles) { this.miles=miles; return this; }
     public Run setFavorited(Boolean favorited) { this.favorited=favorited; return this; }
+    public Run setNotes(String notes) { this.notes=notes; return this; }
     public Run setDifficulty(String difficulty) { this.difficulty=difficulty; return this; }
     public Run setInitialSteps(long initialSteps) { this.initialSteps = initialSteps; return this; }
     public Run setStartTime(long startTime) { this.startTime=startTime; return this; }
@@ -71,7 +72,7 @@ public class Run implements Serializable, Comparable<Run>{
 
     @Override
     public String toString(){
-        return this.name;
+        return this.toJSON();
     }
 
     public UUID getUUID(){
@@ -84,10 +85,9 @@ public class Run implements Serializable, Comparable<Run>{
             return false;
         }
         Run otherRun = (Run) other;
-        boolean equalSoFar = this.uuID.equals(otherRun.uuID);
-        equalSoFar = equalSoFar && this.startingPoint.equals(otherRun.startingPoint);
-        equalSoFar = equalSoFar && (this.favorited == otherRun.favorited);
-        return equalSoFar && this.name.equals(otherRun.name);
+        String otherJson = otherRun.toJSON();
+        String json = this.toJSON();
+        return otherJson.equals(json);
     }
 
     @Override
