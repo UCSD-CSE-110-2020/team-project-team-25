@@ -33,6 +33,10 @@ public class TimeMachine {
         offset = Duration.between(date, now);
     }
 
+    public static long getEpochMilli(){
+        return TimeMachine.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+    }
+
     private static Clock getClock() {
         return clock ;
     }

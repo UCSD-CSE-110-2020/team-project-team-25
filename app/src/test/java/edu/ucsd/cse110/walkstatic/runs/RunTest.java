@@ -87,4 +87,102 @@ public class RunTest {
         assertNotEquals(run1, run2);
     }
 
+    @Test
+    public void equalsReturnsFalseIfStepsDiffer(){
+        Run run1 = new Run();
+        run1.setName("A").setSteps(4).setMiles(10).setInitialSteps(5).setFavorited(true);
+        run1.setStartingPoint("L").setNotes("Z").setDifficulty("V").setStartTime(10);
+        run1.finalizeTime(14);
+        Run run2 = Run.fromJSON(run1.toJSON()).setSteps(5);
+        assertNotEquals(run1, run2);
+    }
+
+    @Test
+    public void equalsReturnsFalseIfMilesDiffer(){
+        Run run1 = new Run();
+        run1.setName("A").setSteps(4).setMiles(10).setInitialSteps(5).setFavorited(true);
+        run1.setStartingPoint("L").setNotes("Z").setDifficulty("V").setStartTime(10);
+        run1.finalizeTime(14);
+        Run run2 = Run.fromJSON(run1.toJSON()).setMiles(5);
+        assertNotEquals(run1, run2);
+    }
+
+    @Test
+    public void equalsReturnsFalseIfInitialStepsDiffer(){
+        Run run1 = new Run();
+        run1.setName("A").setSteps(4).setMiles(10).setInitialSteps(5).setFavorited(true);
+        run1.setStartingPoint("L").setNotes("Z").setDifficulty("V").setStartTime(10);
+        run1.finalizeTime(14);
+        Run run2 = Run.fromJSON(run1.toJSON()).setInitialSteps(4);
+        assertNotEquals(run1, run2);
+    }
+
+    @Test
+    public void equalsReturnsFalseIfNotesDiffer(){
+        Run run1 = new Run();
+        run1.setName("A").setSteps(4).setMiles(10).setInitialSteps(5).setFavorited(true);
+        run1.setStartingPoint("L").setNotes("Z").setDifficulty("V").setStartTime(10);
+        run1.finalizeTime(14);
+        Run run2 = Run.fromJSON(run1.toJSON()).setNotes("4");
+        assertNotEquals(run1, run2);
+    }
+
+    @Test
+    public void equalsReturnsFalseIfDifficultyDiffer(){
+        Run run1 = new Run();
+        run1.setName("A").setSteps(4).setMiles(10).setInitialSteps(5).setFavorited(true);
+        run1.setStartingPoint("L").setNotes("Z").setDifficulty("V").setStartTime(10);
+        run1.finalizeTime(14);
+        Run run2 = Run.fromJSON(run1.toJSON()).setDifficulty("4");
+        assertNotEquals(run1, run2);
+    }
+
+    @Test
+    public void equalsReturnsFalseIfStartTimeDiffer(){
+        Run run1 = new Run();
+        run1.setName("A").setSteps(4).setMiles(10).setInitialSteps(5).setFavorited(true);
+        run1.setStartingPoint("L").setNotes("Z").setDifficulty("V").setStartTime(10);
+        run1.finalizeTime(14);
+        Run run2 = Run.fromJSON(run1.toJSON()).setStartTime(12);
+        assertNotEquals(run1, run2);
+    }
+
+    @Test
+    public void equalsReturnsFalseIfDurationDiffer(){
+        Run run1 = new Run();
+        run1.setName("A").setSteps(4).setMiles(10).setInitialSteps(5).setFavorited(true);
+        run1.setStartingPoint("L").setNotes("Z").setDifficulty("V").setStartTime(10);
+        run1.finalizeTime(14);
+        Run run2 = Run.fromJSON(run1.toJSON());
+        run2.finalizeTime(15);
+        assertNotEquals(run1, run2);
+    }
+
+    @Test
+    public void jSONSerializedRunsIdentical(){
+        Run run1 = new Run();
+        run1.setName("A").setSteps(4).setMiles(10).setInitialSteps(5).setFavorited(true);
+        run1.setStartingPoint("L").setNotes("Z").setDifficulty("V").setStartTime(10);
+        run1.finalizeTime(14);
+        Run run2 = Run.fromJSON(run1.toJSON());
+        assertEquals(run1, run2);
+    }
+
+    @Test
+    public void finalizeStepsUpdateBasedOnStartSteps(){
+        Run run = new Run();
+        run.setInitialSteps(10);
+        run.finalizeSteps(100);
+        assertEquals(90, run.getSteps());
+    }
+
+    @Test
+    public void finalizeTimeUpdateBasedOnStartTime(){
+        Run run = new Run();
+        run.setStartTime(1000);
+        run.finalizeTime(2200);
+        assertEquals(1200, run.getDuration());
+    }
+
+
 }

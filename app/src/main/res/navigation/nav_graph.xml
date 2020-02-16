@@ -7,8 +7,8 @@
     <fragment
         android:id="@+id/runActivity"
         android:name="edu.ucsd.cse110.walkstatic.RunFragment"
-        android:label="RunActivity"
-        tools:layout="@layout/activity_run"/>
+        android:label="Walkstatic"
+        tools:layout="@layout/activity_run" />
     <action
         android:id="@+id/action_global_runActivity"
         app:destination="@id/runActivity" >

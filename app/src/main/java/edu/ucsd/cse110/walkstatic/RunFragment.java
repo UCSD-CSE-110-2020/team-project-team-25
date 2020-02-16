@@ -10,24 +10,15 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Chronometer;
-import android.widget.EditText;
-import android.widget.TextClock;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
-
-import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
 import java.time.Clock;
@@ -39,11 +30,9 @@ import java.time.ZoneId;
 
 import static android.content.Context.MODE_PRIVATE;
 
-import edu.ucsd.cse110.walkstatic.fitness.DefaultBlueprints;
-import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
-import edu.ucsd.cse110.walkstatic.fitness.GoogleFitAdapter;
+import edu.ucsd.cse110.walkstatic.runs.MileCalculator;
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.time.TimeMachine;
 
@@ -54,11 +43,11 @@ public class RunFragment extends Fragment {
     private FitnessService fitnessService;
     private SecondTimer timer;
     private Chronometer chronometer;
+    private MileCalculator mileCalculator;
 
     LocalTime now;
     Clock clock;
     private Run run;
-
 
 
     private static final String TAG = "StepCountActivity";
@@ -73,6 +62,7 @@ public class RunFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
+        this.buildMileCalculator();
         initStepCount();
         Button startButton = getActivity().findViewById(R.id.startButton);
 
@@ -98,9 +88,9 @@ public class RunFragment extends Fragment {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                stepTracker.setStartPressed(true);
+                run = new Run();
                 chronometer.setBase(SystemClock.elapsedRealtime());
-                run.setStartTime(TimeMachine.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+                run.setStartTime(TimeMachine.getEpochMilli());
                 run.setInitialSteps(stepTracker.getStepTotal());
                 saveCurrentRun();
                 chronometer.start();
@@ -112,10 +102,9 @@ public class RunFragment extends Fragment {
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                stepTracker.setStartPressed(false);
                 stopButton.setVisibility(View.GONE);
                 startButton.setVisibility(View.VISIBLE);
-                addNewRun();
+                addRun();
                 deleteCurrentRun();
             }
         });
@@ -190,7 +179,7 @@ public class RunFragment extends Fragment {
         TextView textSteps = getActivity().findViewById(R.id.steps_today);
         long steps = this.stepTracker.getStepTotal();
         textSteps.setText(Long.toString(steps));
-        if(stepTracker.isStartPressed() == true) { // for current run
+        if(run != null) { // for current run
             TextView textRunSteps = getActivity().findViewById(R.id.stepRunCount);
             textRunSteps.setText(Long.toString(this.run.calculateNewSteps(steps)));
         }
@@ -198,17 +187,17 @@ public class RunFragment extends Fragment {
 
     private void updateMilesCount(){
         TextView textMiles = getActivity().findViewById(R.id.miles_today);
-        SharedPreferences sharedPreferences = (SharedPreferences) getActivity().getSharedPreferences("userHeight", MODE_PRIVATE);
 
-        String uHeight = sharedPreferences.getString("height","-1");
-        double miles = this.stepTracker.getMilesCount(uHeight, false);
+        long steps = this.stepTracker.getStepTotal();
+        double miles = this.mileCalculator.getMiles(steps);
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
         String displayMiles = decimalFormat.format(miles);
         textMiles.setText(displayMiles);
 
-        if(stepTracker.isStartPressed() == true) { // for current run
+        if(run != null) { // for current run
             TextView textRunSteps = getActivity().findViewById(R.id.mileRunCount);
-            miles = this.stepTracker.getMilesCount(uHeight, true);
+            long runSteps = this.run.calculateNewSteps(steps);
+            miles = this.mileCalculator.getMiles(runSteps);
             displayMiles = decimalFormat.format(miles);
             textRunSteps.setText(displayMiles);
         }
@@ -226,25 +215,32 @@ public class RunFragment extends Fragment {
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(
                 preferencesName, Context.MODE_PRIVATE);
         sharedPreferences.edit().clear().apply();
+        run = null;
     }
+
     private void loadCurrentRun() {
-        Run currentRun;
         String preferencesName = this.getResources().getString(R.string.current_run);
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(
                 preferencesName, Context.MODE_PRIVATE);
-        String runName = sharedPreferences.getString(preferencesName, null );
-        if(runName == null){
-             currentRun = new Run();
+        String runJSON = sharedPreferences.getString(preferencesName, null );
+        if(runJSON == null){
+            this.run = new Run();
             Button stopButton = getActivity().findViewById(R.id.stopButton);
             stopButton.setVisibility(View.GONE);
         } else {
-             currentRun = new Run(runName);
+            this.run = Run.fromJSON(runJSON);
             Button startButton = getActivity().findViewById(R.id.startButton);
             startButton.setVisibility(View.GONE);
-            this.stepTracker.setStartPressed(true);
+            if(this.run.getInitialSteps() == Run.INVALID_STEPS){
+                this.updateStepCount();
+                this.run.setInitialSteps(this.stepTracker.getStepTotal());
+                this.run.setStartTime(TimeMachine.getEpochMilli());
+                sharedPreferences.edit().putString(preferencesName, this.run.toJSON()).apply();
+            }
             this.chronometer.start();
+            TextView runName = this.getActivity().findViewById(R.id.run_name_display);
+            runName.setText(this.run.getName());
         }
-        this.run = currentRun;
     }
 
     private class SecondTimer implements Runnable{
@@ -277,9 +273,51 @@ public class RunFragment extends Fragment {
         }
     }
 
-    private void addNewRun(){
-        Navigation.findNavController(this.getActivity(), this.getId()).navigate(R.id.action_runActivityFragment_to_editRunFragment);
+    private void addRun(){
+        this.finalizeRun();
+        if(this.run.getName().equals("")){
+            addNewRun();
+        } else {
+            updateRun();
+        }
+        this.clearRunUI();
     }
 
+    private void finalizeRun(){
+        this.run.finalizeTime(TimeMachine.getEpochMilli());
+        this.run.finalizeSteps(this.stepTracker.getStepTotal());
+        long runSteps = this.run.getSteps();
+        double miles = this.mileCalculator.getMiles(runSteps);
+        this.run.setMiles(miles);
+    }
+
+    private void addNewRun(){
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("Run", this.run);
+        Navigation.findNavController(this.getActivity(), this.getId()).navigate(R.id.action_runActivityFragment_to_editRunFragment, bundle);
+    }
+
+    private void updateRun(){
+        RunViewModel runViewModel = new ViewModelProvider(this.getActivity()).get(RunViewModel.class);
+        runViewModel.setRun(this.run);
+    }
+
+    private void clearRunUI(){
+        this.chronometer.stop();
+        this.chronometer.setBase(SystemClock.elapsedRealtime());
+        TextView runSteps = this.getActivity().findViewById(R.id.stepRunCount);
+        TextView runMiles = this.getActivity().findViewById(R.id.mileRunCount);
+        TextView runName = this.getActivity().findViewById(R.id.run_name_display);
+        runSteps.setText("");
+        runMiles.setText("");
+        runName.setText("");
+    }
+
+    private void buildMileCalculator(){
+        String preferenceName = this.getResources().getString(R.string.user_height);
+        SharedPreferences sharedPreferences = (SharedPreferences) getActivity().getSharedPreferences(preferenceName, MODE_PRIVATE);
+        String height = sharedPreferences.getString(preferenceName,"-1");
+        this.mileCalculator = new MileCalculator(height);
+    }
 
 }

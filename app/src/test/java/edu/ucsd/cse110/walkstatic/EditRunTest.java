@@ -5,6 +5,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -63,8 +64,8 @@ public class EditRunTest {
             Navigation.setViewNavController(fragment.requireView(), navController);
             EditText runName = fragment.getActivity().findViewById(R.id.run_name_text);
             runName.setText("Run 1");
-            TextView difficulty = fragment.getActivity().findViewById(R.id.difficulty);
-            difficulty.setText("Moderate");
+            Spinner difficulty = fragment.getActivity().findViewById(R.id.spinner1);
+            difficulty.setSelection(1);
             MenuItem save = new RoboMenuItem(R.id.action_save);
             fragment.onOptionsItemSelected(save);
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
@@ -81,7 +82,9 @@ public class EditRunTest {
 
         UUID uuid = UUID.randomUUID();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("UUID", uuid);
+        Run run = new Run();
+        run.setUUID(uuid);
+        bundle.putSerializable("Run", run);
         FragmentScenario<EditRunFragment> scenario = FragmentScenario.launchInContainer(EditRunFragment.class, bundle);
         scenario.onFragment(fragment -> {
             Navigation.setViewNavController(fragment.requireView(), navController);
@@ -90,8 +93,8 @@ public class EditRunTest {
             MenuItem save = new RoboMenuItem(R.id.action_save);
             fragment.onOptionsItemSelected(save);
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
-            Run run = runViewModel.sharedRun.getValue();
-            assertThat(run).isEqualTo(new Run().setUUID(uuid).setName("Run 1"));
+            Run newRun = runViewModel.sharedRun.getValue();
+            assertThat(newRun).isEqualTo(new Run().setUUID(uuid).setName("Run 1"));
         });
     }
 
@@ -103,7 +106,9 @@ public class EditRunTest {
 
         UUID uuid = UUID.randomUUID();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("UUID", uuid);
+        Run uuIDRun = new Run();
+        uuIDRun.setUUID(uuid);
+        bundle.putSerializable("Run", uuIDRun);
         FragmentScenario<EditRunFragment> scenario = FragmentScenario.launchInContainer(EditRunFragment.class, bundle);
         scenario.onFragment(fragment -> {
             Navigation.setViewNavController(fragment.requireView(), navController);
@@ -362,6 +367,35 @@ public class EditRunTest {
             assertThat(run).isEqualTo(new Run().setUUID(run.getUUID()).setName("Run 1").setStartingPoint("").setFavorited(true));
         });
     }
+
+    @Test
+    public void existingRunSavesAllExistingData() {
+        TestNavHostController navController = new TestNavHostController(
+                ApplicationProvider.getApplicationContext());
+        navController.setGraph(R.navigation.nav_graph);
+
+        Bundle bundle = new Bundle();
+        Run baseRun = new Run();
+        baseRun.setName("A").setSteps(4).setMiles(10).setInitialSteps(5).setFavorited(true);
+        baseRun.setStartingPoint("L").setNotes("Z").setDifficulty("Easy").setStartTime(10);
+        baseRun.finalizeTime(14);
+        bundle.putSerializable("Run", baseRun);
+
+        Run cloneRun = Run.fromJSON(baseRun.toJSON());
+
+        FragmentScenario<EditRunFragment> scenario = FragmentScenario.launchInContainer(EditRunFragment.class, bundle);
+        scenario.onFragment(fragment -> {
+            Navigation.setViewNavController(fragment.requireView(), navController);
+            EditText runName = fragment.getActivity().findViewById(R.id.run_name_text);
+            MenuItem save = new RoboMenuItem(R.id.action_save);
+            fragment.onOptionsItemSelected(save);
+
+            RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
+            Run run = runViewModel.sharedRun.getValue();
+            assertThat(run).isEqualTo(cloneRun);
+        });
+    }
+
 
     private class VoiceDictationMock implements VoiceDictation {
         SpeechListener listener;
