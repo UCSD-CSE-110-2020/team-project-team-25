@@ -1,12 +1,14 @@
 package edu.ucsd.cse110.walkstatic;
 
 
+
 import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
@@ -24,46 +26,87 @@ import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
+import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withTagValue;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class StartButtonTest {
+public class TimeEspressoTest {
     private static final String TEST_SERVICE = "TEST_SERVICE";
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
 
     @Test
-    public void startButtonTest() {
+    public void TimeEspressoTest() {
         EspressoHelpers.setUserHeightRequest(mActivityTestRule, "65");
         FitnessServiceFactory.put(TEST_SERVICE, new FitnessServiceFactory.BluePrint() {
             @Override
             public FitnessService create(Activity activity) {
-                return new StartButtonTest.TestFitnessService(activity);
+                return new TimeEspressoTest.TestFitnessService(activity);
             }
         });
 
-        FitnessServiceFactory.setDefaultFitnessServiceKey(TEST_SERVICE);
-
-        ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.startButton), withText("Start"),
+        ViewInteraction chronometer = onView(
+                allOf(withId(R.id.chronometer),
                         isDisplayed()));
-        appCompatButton.perform(click());
+        chronometer.check(matches(isDisplayed()));
 
-        try {
-            Thread.sleep(2100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        ViewInteraction appCompatButton2 = onView(
+                allOf(withId(R.id.startButton),
+                        isDisplayed()));
+        appCompatButton2.perform(click());
 
-        ViewInteraction textView = onView( allOf(withId(R.id.stepRunCount), isDisplayed()));
-        textView.check(matches(not(withText(""))));
+        ViewInteraction chronometer2 = onView(
+                allOf(withId(R.id.chronometer),
+                        isDisplayed()));
+        chronometer2.check(matches(isDisplayed()));
+
+        ViewInteraction appCompatImageButton = onView(
+                allOf(withContentDescription("Open navigation drawer"),
+                        isDisplayed()));
+        appCompatImageButton.perform(click());
+
+        ViewInteraction navigationMenuItemView = onView(
+                allOf(childAtPosition(
+                        allOf(withId(R.id.design_navigation_view),
+                                childAtPosition(
+                                        withId(R.id.nav_view),
+                                        0)),
+                        2),
+                        isDisplayed()));
+        navigationMenuItemView.perform(click());
+
+        ViewInteraction appCompatImageButton2 = onView(
+                allOf(withContentDescription("Navigate up"),
+                        childAtPosition(
+                                allOf(withId(R.id.action_bar),
+                                        childAtPosition(
+                                                withId(R.id.action_bar_container),
+                                                0)),
+                                1),
+                        isDisplayed()));
+        appCompatImageButton2.perform(click());
+
+        ViewInteraction chronometer3 = onView(
+                allOf(withId(R.id.chronometer),
+                        isDisplayed()));
+        chronometer3.check(matches(isDisplayed()));
+
+
+
     }
 
     private static Matcher<View> childAtPosition(

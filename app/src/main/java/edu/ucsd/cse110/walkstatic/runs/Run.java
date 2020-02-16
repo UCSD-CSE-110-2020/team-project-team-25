@@ -1,26 +1,47 @@
 package edu.ucsd.cse110.walkstatic.runs;
 
-import android.text.method.ScrollingMovementMethod;
+import com.google.gson.Gson;
 
 import java.io.Serializable;
 import java.util.UUID;
 
 public class Run implements Serializable, Comparable<Run>{
+    public static final long INVALID_STEPS = -1;
+    public static final long INVALID_TIME = -1;
+
     private String name;
     private UUID uuID;
-    private int steps = 0;
-    private double miles = 0;
-    private boolean favorited = false;
-    private String startingPoint = "";
+    private long steps;
+    private double miles;
+    private long initialSteps;
+    private boolean favorited;
+    private String startingPoint;
     private String notes;
     private String difficulty;
+<<<<<<< HEAD
     private String loopVsOut;
     private String flatVsHilly;
     private String evenVsUneven;
     private String streetVsTrail;
 
+=======
+    private long startTime;
+    private long duration;
+>>>>>>> master
 
-    public Run(){ this.uuID = UUID.randomUUID(); }
+    public Run(){
+        this.name = "";
+        this.uuID = UUID.randomUUID();
+        this.steps = INVALID_STEPS;
+        this.miles = 0;
+        this.initialSteps = INVALID_STEPS;
+        this.favorited = false;
+        this.startingPoint = "";
+        this.notes = "";
+        this.difficulty = "";
+        this.startTime = INVALID_TIME;
+        this.duration = INVALID_TIME;
+    }
 
     public Run setName(String name) { this.name=name; return this; }
     public Run setUUID(UUID uuID) { this.uuID=uuID; return this; }
@@ -28,26 +49,52 @@ public class Run implements Serializable, Comparable<Run>{
     public Run setSteps(int steps) { this.steps=steps; return this; }
     public Run setMiles(double miles) { this.miles=miles; return this; }
     public Run setFavorited(Boolean favorited) { this.favorited=favorited; return this; }
+    public Run setNotes(String notes) { this.notes=notes; return this; }
     public Run setDifficulty(String difficulty) { this.difficulty=difficulty; return this; }
+<<<<<<< HEAD
     public Run setloopVsOut(String loopVsOut) { this.loopVsOut=loopVsOut; return this; }
     public Run setflatVsHilly(String flatVsHilly) { this.flatVsHilly=flatVsHilly; return this; }
     public Run setevenVsUneven(String evenVsUneven) { this.evenVsUneven=evenVsUneven; return this; }
     public Run setstreetVsTrail(String streetVsTrail) { this.streetVsTrail=streetVsTrail; return this; }
+=======
+    public Run setInitialSteps(long initialSteps) { this.initialSteps = initialSteps; return this; }
+    public Run setStartTime(long startTime) { this.startTime=startTime; return this; }
+
+    public void finalizeTime(long endTime) {
+        this.duration = endTime - this.startTime;
+    }
+
+    public void finalizeSteps(long newSteps){
+        long deltaSteps = newSteps - this.initialSteps;
+        this.steps = deltaSteps;
+    }
+
+>>>>>>> master
 
     public String getName(){ return this.name; }
     public String getNotes() { return this.notes; }
-    public int getSteps() { return this.steps; }
+    public long getSteps() { return this.steps; }
     public double getMiles() { return this.miles; }
     public String getDifficulty() { return this.difficulty; }
+<<<<<<< HEAD
     public String getloopVsOut() { return this.loopVsOut; }
     public String getflatVsHilly() { return this.flatVsHilly; }
     public String getevenVsUneven() { return this.evenVsUneven; }
     public String getstreetVsTrail() { return this.streetVsTrail; }
+=======
+    public long getInitialSteps () { return this.initialSteps;}
+    public long getStartTime() { return this.startTime; }
+    public long getDuration() { return this.duration; }
+>>>>>>> master
 
+
+    public long calculateNewSteps (long totalSteps) {
+        return (totalSteps - this.initialSteps);
+    }
 
     @Override
     public String toString(){
-        return this.name;
+        return this.toJSON();
     }
 
     public UUID getUUID(){
@@ -60,10 +107,9 @@ public class Run implements Serializable, Comparable<Run>{
             return false;
         }
         Run otherRun = (Run) other;
-        boolean equalSoFar = this.uuID.equals(otherRun.uuID);
-        equalSoFar = equalSoFar && this.startingPoint.equals(otherRun.startingPoint);
-        equalSoFar = equalSoFar && (this.favorited == otherRun.favorited);
-        return equalSoFar && this.name.equals(otherRun.name);
+        String otherJson = otherRun.toJSON();
+        String json = this.toJSON();
+        return otherJson.equals(json);
     }
 
     @Override
@@ -78,4 +124,16 @@ public class Run implements Serializable, Comparable<Run>{
     public String getStartingPoint(){
         return this.startingPoint;
     }
+
+    public String toJSON(){
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+
+    public static Run fromJSON(String json){
+        Gson gson = new Gson();
+        Run run = gson.fromJson(json, Run.class);
+        return run;
+    }
+
 }

@@ -11,13 +11,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import edu.ucsd.cse110.walkstatic.R;
 
 public class RunArrayAdapter extends ArrayAdapter<Run> {
 
-    public RunArrayAdapter(Context context, int resource, List objects) {
+    public RunArrayAdapter(Context context, int resource, List<Run> objects) {
         super(context, resource, objects);
     }
 
@@ -35,12 +36,23 @@ public class RunArrayAdapter extends ArrayAdapter<Run> {
         TextView stepsView = convertView.findViewById(R.id.run_steps);
         ImageView favoriteIndicator = convertView.findViewById(R.id.favorite_indicator);
 
-        String milesText = getContext().getString(R.string.miles_text, Double.toString(run.getMiles()));
-        String stepsText = getContext().getString(R.string.steps_text, Integer.toString(run.getSteps()));
+        DecimalFormat decimalFormat = new DecimalFormat("#.00");
+        String milesString = decimalFormat.format(run.getMiles());
+        String stepsString = Long.toString(run.getSteps());
 
-        nameView.setText(run.toString());
+        if(run.getSteps() == Run.INVALID_STEPS){
+            String noValue = getContext().getString(R.string.no_value);
+            milesString = noValue;
+            stepsString = noValue;
+        }
+
+        String milesText = getContext().getString(R.string.miles_text, milesString);
+        String stepsText = getContext().getString(R.string.steps_text, stepsString);
+
         milesView.setText(milesText);
         stepsView.setText(stepsText);
+
+        nameView.setText(run.getName());
 
         int starIcon = run.isFavorited() ? R.drawable.ic_star_white_24dp : R.drawable.ic_star_border_white_24dp;
         int starColor = run.isFavorited() ? R.color.starYellow : R.color.starGrey;

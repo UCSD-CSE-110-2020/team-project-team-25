@@ -7,8 +7,8 @@
     <fragment
         android:id="@+id/runActivity"
         android:name="edu.ucsd.cse110.walkstatic.RunFragment"
-        android:label="RunActivity"
-        tools:layout="@layout/activity_run"/>
+        android:label="Walkstatic"
+        tools:layout="@layout/activity_run" />
     <action
         android:id="@+id/action_global_runActivity"
         app:destination="@id/runActivity" >
@@ -16,6 +16,10 @@
             android:id="@+id/action_action_global_runActivity_to_debugFragment"
             app:destination="@id/debugFragment" />
     </action>
+    <action
+        android:id="@+id/action_runActivityFragment_to_editRunFragment"
+        app:destination="@id/editRunFragment"
+        app:popUpTo="@+id/runActivity" />
     <fragment
         android:id="@+id/myRunsFragment"
         android:name="edu.ucsd.cse110.walkstatic.MyRunsFragment"

@@ -1,22 +1,41 @@
 package edu.ucsd.cse110.walkstatic;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.opengl.Visibility;
+import android.os.Handler;
+import android.os.SystemClock;
+import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import org.apache.tools.ant.taskdefs.Local;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.shadows.ShadowLooper;
 
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
+import edu.ucsd.cse110.walkstatic.runs.Run;
+
 import androidx.fragment.app.testing.FragmentScenario;
+import edu.ucsd.cse110.walkstatic.time.TimeMachine;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 
 import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.TestCase.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
 public class MainActivityTest {
@@ -24,6 +43,8 @@ public class MainActivityTest {
 
     private Intent intent;
     private FakeFitnessService fakeFitnessService;
+    private Run run;
+    private boolean hasPassed;
 
     @Before
     public void setUp() {
@@ -124,4 +145,66 @@ public class MainActivityTest {
 
     }
 
-}
+    @Test
+    public void existingRunWorksFineAfterRestart() {
+        String preferencesName = ApplicationProvider.getApplicationContext().getResources().getString(R.string.current_run);
+        SharedPreferences sharedPreferences = ApplicationProvider.getApplicationContext().getSharedPreferences(
+                preferencesName, Context.MODE_PRIVATE);
+        Run existing = new Run();
+        existing.setName("Name");
+        existing.setInitialSteps(Run.INVALID_STEPS);
+        LocalDateTime zero = LocalDateTime.ofInstant(Instant.ofEpochSecond(0), ZoneId.systemDefault());
+        TimeMachine.useFixedClockAt(zero);
+        sharedPreferences.edit().putString(preferencesName, existing.toJSON()).commit();
+        FragmentScenario<RunFragment> scenario = FragmentScenario.launchInContainer(RunFragment.class);
+        scenario.onFragment(activity -> {
+            fakeFitnessService.nextStepCount = 0;
+            Button buttonStart = activity.getActivity().findViewById(R.id.startButton);
+            assertThat(buttonStart.getVisibility()).isEqualTo(View.GONE);
+            ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
+            fakeFitnessService.nextStepCount = 10;
+            ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
+        });
+        existing.setInitialSteps(0);
+        existing.setStartTime(0);
+        assertThat(sharedPreferences.getString(preferencesName, "")).isEqualTo(existing.toJSON());
+        scenario.onFragment(activity -> {
+            fakeFitnessService.nextStepCount = 10;
+            Button buttonStart = activity.getActivity().findViewById(R.id.startButton);
+            assertThat(buttonStart.getVisibility()).isEqualTo(View.GONE);
+            ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
+            fakeFitnessService.nextStepCount = 20;
+            ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
+            TextView runStepView = activity.getActivity().findViewById(R.id.stepRunCount);
+            assertThat(runStepView.getText().toString()).isEqualTo("20");
+            Button stopButton = activity.getActivity().findViewById(R.id.stopButton);
+            stopButton.callOnClick();
+        });
+        assertThat(sharedPreferences.getString(preferencesName, "")).isEqualTo("");
+    }
+
+    @Test
+    public void timerHandler() {
+        FragmentScenario<RunFragment> scenario = FragmentScenario.launchInContainer(RunFragment.class);
+        scenario.onFragment(activity -> {
+            LocalDateTime initial = LocalDateTime.of(2020,1,1,0,0);
+            TimeMachine.useFixedClockAt(initial);
+            TimeMachine.setNow(initial);
+            assertEquals(initial,TimeMachine.now());
+
+            LocalDateTime addHour = LocalDateTime.of(2020, 1, 1, 1, 0);
+            initial = initial.plusHours(1);
+            TimeMachine.useFixedClockAt(initial);
+            TimeMachine.setNow(initial);
+            assertEquals(addHour, TimeMachine.now());
+
+            LocalDateTime fake = LocalDateTime.of(4020,10,10,10,10);
+            TimeMachine.useFixedClockAt(fake);
+            TimeMachine.setNow(fake);
+            assertEquals(fake, TimeMachine.now());
+            assertEquals(fake.getMinute(),TimeMachine.now().getMinute());
+
+        });
+    }
+
+    }
