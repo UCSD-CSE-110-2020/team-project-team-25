@@ -148,18 +148,20 @@ public class MainActivityTest {
         scenario.onFragment(activity -> {
             LocalDateTime initial = LocalDateTime.of(2020,1,1,0,0);
             TimeMachine.useFixedClockAt(initial);
-            Assert.assertEquals(initial,TimeMachine.now());
+            TimeMachine.setNow(initial);
+            assertEquals(initial,TimeMachine.now());
 
             LocalDateTime addHour = LocalDateTime.of(2020, 1, 1, 1, 0);
             initial = initial.plusHours(1);
             TimeMachine.useFixedClockAt(initial);
-            Assert.assertEquals(addHour, TimeMachine.now());
+            TimeMachine.setNow(initial);
+            assertEquals(addHour, TimeMachine.now());
 
             LocalDateTime fake = LocalDateTime.of(4020,10,10,10,10);
             TimeMachine.useFixedClockAt(fake);
             TimeMachine.setNow(fake);
-            Assert.assertEquals(fake, TimeMachine.now());
-            Assert.assertEquals(fake.getMinute(),TimeMachine.now().getMinute());
+            assertEquals(fake, TimeMachine.now());
+            assertEquals(fake.getMinute(),TimeMachine.now().getMinute());
 
         });
     }
