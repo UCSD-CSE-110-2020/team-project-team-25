@@ -13,6 +13,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
@@ -20,6 +25,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.time.TimeHelp;
 
 public class ViewRunFragment extends Fragment {
 
@@ -95,6 +101,42 @@ public class ViewRunFragment extends Fragment {
 
         TextView streetVsTrail = this.getActivity().findViewById(R.id.urban);
         streetVsTrail.setText(run.getstreetVsTrail());
+
+        this.setStepsAndMilesAndTime(run);
+    }
+
+    private void setStepsAndMilesAndTime(Run run){
+        TextView milesView = this.getActivity().findViewById(R.id.last_miles_view);
+        TextView stepsView = this.getActivity().findViewById(R.id.last_steps_view);
+        TextView dateView = this.getActivity().findViewById(R.id.ran_on);
+        TextView timeView = this.getActivity().findViewById(R.id.run_time);
+
+        DecimalFormat decimalFormat = new DecimalFormat("#.00");
+        String milesString = decimalFormat.format(run.getMiles());
+        String stepsString = Long.toString(run.getSteps());
+
+        Instant startInstant = Instant.ofEpochMilli(run.getStartTime());
+        LocalDateTime startTime = LocalDateTime.ofInstant(startInstant, ZoneId.systemDefault());
+        String dateString = startTime.toLocalDate().toString();
+        String timeString = TimeHelp.timeToString(run.getDuration());
+
+        if(run.getSteps() == Run.INVALID_STEPS){
+            String noValue = getContext().getString(R.string.no_value);
+            milesString = noValue;
+            stepsString = noValue;
+            dateString = noValue;
+            timeString = noValue;
+        }
+
+        String milesText = getContext().getString(R.string.miles_text, milesString);
+        String stepsText = getContext().getString(R.string.steps_text, stepsString);
+        String dateText = getContext().getString(R.string.date_text, dateString);
+        String timeText = getContext().getString(R.string.time_text, timeString);
+
+        milesView.setText(milesText);
+        stepsView.setText(stepsText);
+        dateView.setText(dateText);
+        timeView.setText(timeText);
     }
 
     private void startRun(){
