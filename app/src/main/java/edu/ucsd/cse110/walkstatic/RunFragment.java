@@ -49,14 +49,12 @@ public class RunFragment extends Fragment {
     Clock clock;
     private Run run;
 
-
     private static final String TAG = "StepCountActivity";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.activity_run, container, false);
-
     }
 
     @Override
@@ -109,7 +107,6 @@ public class RunFragment extends Fragment {
             }
         });
         loadCurrentRun();
-
     }
 
     @Override
@@ -126,9 +123,7 @@ public class RunFragment extends Fragment {
         }
     }
 
-
     private void initStepCount(){
-
         TextView textSteps = getActivity().findViewById(R.id.steps_today);
         textSteps.setText("--");
         this.fitnessService = FitnessServiceFactory.create(this.getActivity());
@@ -145,33 +140,26 @@ public class RunFragment extends Fragment {
     @Override
     public void onStop(){
         super.onStop();
-        if(this.timer != null){
-            this.timer.stop();
-        }
+        if(this.timer != null) this.timer.stop();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         Log.d("Run Fragment", "Pausing");
-        if(this.timer != null){
-            this.timer.stop();
-        }
+        if(this.timer != null) this.timer.stop();
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
         Log.d("Run Fragment", "Resuming");
-        if(this.timer != null){
-            this.timer.resume();
-        }
+        if(this.timer != null)this.timer.resume();
     }
 
 //    @Override
-//    public void onDestroyView() {
-//        super.onDestroyView();
-//    }
+//    public void onDestroyView() { super.onDestroyView(); }
 
     private void updateStepCount(){
         //for day
@@ -319,5 +307,4 @@ public class RunFragment extends Fragment {
         String height = sharedPreferences.getString(preferenceName,"-1");
         this.mileCalculator = new MileCalculator(height);
     }
-
 }

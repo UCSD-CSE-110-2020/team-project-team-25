@@ -35,19 +35,13 @@ public class StepCountActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 tracker.update();
-                if(tracker.hasData()){
-                    setStepCount(tracker.getStepTotal());
-                }
+                if(tracker.hasData()) setStepCount(tracker.getStepTotal());
             }
         });
 
         fitnessService.setup();
-
     }
 
-    public void setStepCount(long stepCount) {
-        textSteps.setText(String.valueOf(stepCount));
-    }
-
+    public void setStepCount(long stepCount) { textSteps.setText(String.valueOf(stepCount)); }
 }
 

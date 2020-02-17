@@ -74,7 +74,6 @@ public class MyRunsFragment extends Fragment implements AdapterView.OnItemClickL
         Navigation.findNavController(this.getActivity(), this.getId()).navigate(R.id.action_myRunsFragment_to_viewRunFragment, bundle);
     }
 
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
         inflater.inflate(R.menu.add_menu, menu);
@@ -96,9 +95,7 @@ public class MyRunsFragment extends Fragment implements AdapterView.OnItemClickL
 
     private void initRunViewModel(){
         RunViewModel runViewModel = new ViewModelProvider(this.getActivity()).get(RunViewModel.class);
-        runViewModel.sharedRun.observe(this, run -> {
-            this.addRun(run);
-        });
+        runViewModel.sharedRun.observe(this, run -> { this.addRun(run); });
     }
 
     private void addRun(Run run){

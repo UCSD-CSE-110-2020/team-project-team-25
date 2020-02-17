@@ -10,8 +10,7 @@ public class FakeFitnessService implements FitnessService {
     public FitnessListener listener;
     public long nextStepCount = 0;
 
-    public FakeFitnessService() {
-    }
+    public FakeFitnessService() {}
 
     @Override
     public int getRequestCode() {

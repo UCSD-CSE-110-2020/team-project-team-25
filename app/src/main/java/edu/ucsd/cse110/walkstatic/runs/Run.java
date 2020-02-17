@@ -80,7 +80,6 @@ public class Run implements Serializable, Comparable<Run>{
     public long getStartTime() { return this.startTime; }
     public long getDuration() { return this.duration; }
 
-
     public long calculateNewSteps (long totalSteps) {
         return (totalSteps - this.initialSteps);
     }
@@ -96,9 +95,8 @@ public class Run implements Serializable, Comparable<Run>{
 
     @Override
     public boolean equals(Object other){
-        if(other == null || !(other instanceof Run)){
-            return false;
-        }
+        if(other == null || !(other instanceof Run)) return false;
+
         Run otherRun = (Run) other;
         String otherJson = otherRun.toJSON();
         String json = this.toJSON();
@@ -106,17 +104,11 @@ public class Run implements Serializable, Comparable<Run>{
     }
 
     @Override
-    public int compareTo(Run run) {
-        return name.compareTo(run.name);
-    }
+    public int compareTo(Run run) { return name.compareTo(run.name); }
 
-    public boolean isFavorited(){
-        return this.favorited;
-    }
+    public boolean isFavorited() { return this.favorited; }
 
-    public String getStartingPoint(){
-        return this.startingPoint;
-    }
+    public String getStartingPoint() { return this.startingPoint; }
 
     public String toJSON(){
         Gson gson = new Gson();
@@ -128,5 +120,4 @@ public class Run implements Serializable, Comparable<Run>{
         Run run = gson.fromJson(json, Run.class);
         return run;
     }
-
 }

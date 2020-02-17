@@ -21,8 +21,8 @@ import java.util.UUID;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.speech.SpeechListener;
@@ -66,7 +66,6 @@ public class EditRunFragment extends Fragment implements SpeechListener {
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_edit_run, container, false);
     }
-
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
@@ -167,9 +166,8 @@ public class EditRunFragment extends Fragment implements SpeechListener {
 
     @Override
     public void onSpeechDone(boolean error, @Nullable Bundle options) {
-        if(options == null){
-            return;
-        }
+        if(options == null) return;
+
         colorMicButton(RunElement.values()[options.getInt(TYPE_KEY)], false);
         setButtonsEnabled(true);
     }
@@ -197,14 +195,10 @@ public class EditRunFragment extends Fragment implements SpeechListener {
         EditText runName = this.getActivity().findViewById(R.id.run_name_text);
         runName.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-
-            }
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {}
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -247,6 +241,7 @@ public class EditRunFragment extends Fragment implements SpeechListener {
 
         String runName = runNameElement.getText().toString();
         String runStartingPoint = startingPoint.getText().toString();
+        String runNotes = notes.getText().toString();
 
         Spinner difficultySpinner = this.getActivity().findViewById(R.id.difficulty_spinner);
         String difficulty = difficultySpinner.getSelectedItem().toString();
@@ -271,6 +266,7 @@ public class EditRunFragment extends Fragment implements SpeechListener {
         run.setloopVsOut(loopVsOut);
         run.setstreetVsTrail(streetVsTrail);
         run.setevenVsUneven(evenVsUneven);
+        run.setNotes(runNotes);
 
         RunViewModel runViewModel = new ViewModelProvider(this.getActivity()).get(RunViewModel.class);
         runViewModel.setRun(run);
@@ -280,5 +276,4 @@ public class EditRunFragment extends Fragment implements SpeechListener {
         notes.clearFocus();
         Navigation.findNavController(this.getView()).navigateUp();
     }
-
 }
