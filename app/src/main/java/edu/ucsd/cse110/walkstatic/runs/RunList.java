@@ -54,4 +54,24 @@ public class RunList extends ArrayList<Run> {
         }
         return -1;
     }
+
+    public Run getLastRun(){
+        Run latestRun = this.get(0);
+        for(Run run : this){
+            if(run.getStartTime() == Run.INVALID_TIME){
+                continue;
+            }
+            if(latestRun.getStartTime() == Run.INVALID_TIME){
+                latestRun = run;
+                continue;
+            }
+            if(latestRun.getDuration() < run.getDuration()){
+                latestRun = run;
+            }
+        }
+        if(latestRun.getStartTime() == Run.INVALID_TIME){
+            return null;
+        }
+        return latestRun;
+    }
 }
