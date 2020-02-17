@@ -35,7 +35,6 @@ public class MyRunsFragment extends Fragment implements AdapterView.OnItemClickL
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.initRunViewModel();
         this.setHasOptionsMenu(true);
     }
 
@@ -93,17 +92,4 @@ public class MyRunsFragment extends Fragment implements AdapterView.OnItemClickL
         Navigation.findNavController(this.getActivity(), this.getId()).navigate(R.id.action_myRunsFragment_to_editRunFragment);
     }
 
-    private void initRunViewModel(){
-        RunViewModel runViewModel = new ViewModelProvider(this.getActivity()).get(RunViewModel.class);
-        runViewModel.sharedRun.observe(this, run -> { this.addRun(run); });
-    }
-
-    private void addRun(Run run){
-        this.runs.add(run);
-        this.runListAdapter.notifyDataSetChanged();
-        String preferencesName = this.getResources().getString(R.string.run_save_name);
-        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(
-                preferencesName, Context.MODE_PRIVATE);
-        sharedPreferences.edit().putString(preferencesName, this.runs.toJSON()).apply();
-    }
 }

@@ -37,6 +37,7 @@ import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 import edu.ucsd.cse110.walkstatic.runs.MileCalculator;
 import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.runs.RunList;
 import edu.ucsd.cse110.walkstatic.time.TimeMachine;
 
 
@@ -103,6 +104,7 @@ public class RunFragment extends Fragment {
 
                 for (int id : currentRunComponents)
                     getActivity().findViewById(id).setVisibility(View.VISIBLE);
+                updateLastRunUI();
 
             }
         });
@@ -112,11 +114,9 @@ public class RunFragment extends Fragment {
             public void onClick(View v) {
                 stopButton.setVisibility(View.GONE);
                 startButton.setVisibility(View.VISIBLE);
-                lastRun = run;
-                saveLastRun();
-                loadLastRun();
                 addRun();
                 deleteCurrentRun();
+                updateLastRunUI();
             }
         });
         loadCurrentRun();
@@ -220,13 +220,6 @@ public class RunFragment extends Fragment {
         run = null;
     }
 
-    private void saveLastRun() {
-        String preferencesName = this.getResources().getString(R.string.last_run);
-        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(
-                preferencesName, MODE_PRIVATE);
-        sharedPreferences.edit().putString(preferencesName, this.lastRun.toJSON()).apply();
-    }
-
     private void loadCurrentRun() {
         String preferencesName = this.getResources().getString(R.string.current_run);
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(
@@ -255,34 +248,34 @@ public class RunFragment extends Fragment {
     }
 
     private void loadLastRun() {
-        String preferencesName = this.getResources().getString(R.string.last_run);
+        String preferencesName = this.getResources().getString(R.string.run_save_name);
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(
                 preferencesName, Context.MODE_PRIVATE);
-        String runJSON = sharedPreferences.getString(preferencesName, null );
-        if (runJSON == null) return;
 
-        Run lastRun = Run.fromJSON(runJSON);
+        String json = sharedPreferences.getString(preferencesName, "[]");
+        RunList runs = new RunList(json);
+        Run lastRun = runs.getLastRun();
 
-        // Check if last run was today
-        if (LocalDate.now().equals(Instant.ofEpochMilli(
-                lastRun.getStartTime()).atZone(ZoneId.systemDefault()).toLocalDate())
-                && !lastRun.getName().equals(""))
+        this.lastRun = lastRun;
+        updateLastRunUI();
+    }
+
+    private void updateLastRunUI(){
+        int lastRunNameVisible = this.run == null ? View.VISIBLE : View.GONE;
+        if (this.lastRun != null)
         {
             for (int id : currentRunComponents)
                 getActivity().findViewById(id).setVisibility(View.VISIBLE);
-            getActivity().findViewById(R.id.lastRunName).setVisibility(View.VISIBLE);
-
-            this.lastRun = lastRun;
+            getActivity().findViewById(R.id.lastRunName).setVisibility(lastRunNameVisible);
 
             TextView lastRunName = (TextView) getActivity().findViewById(R.id.lastRunName);
             TextView stepCount = (TextView) getActivity().findViewById(R.id.stepRunCount);
             TextView mileCount = (TextView) getActivity().findViewById(R.id.mileRunCount);
 
-            lastRunName.setText("Last Run: " + lastRun.getName());
-            stepCount.setText(Long.toString(lastRun.getSteps()));
+            lastRunName.setText("Last Run: " + this.lastRun.getName());
+            stepCount.setText(Long.toString(this.lastRun.getSteps()));
             mileCount.setText(new DecimalFormat("#.00").format(lastRun.getMiles()));
         }
-
     }
 
     private class SecondTimer implements Runnable{
@@ -342,6 +335,7 @@ public class RunFragment extends Fragment {
     private void updateRun(){
         RunViewModel runViewModel = new ViewModelProvider(this.getActivity()).get(RunViewModel.class);
         runViewModel.setRun(this.run);
+        this.lastRun = run;
     }
 
     private void clearRunUI(){

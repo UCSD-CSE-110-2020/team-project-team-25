@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -45,12 +46,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setupNavBar();
 
-        //createFakeRuns();
+        createFakeRuns();
 
         SharedPreferences sharedPreferences = getSharedPreferences("userHeight", MODE_PRIVATE);
         if (sharedPreferences.getString("height","-1").equals("-1")) {
             promptHeight(MainActivity.this);
         }
+        this.addViewModelListener();
     }
 
     private void createFakeRuns(){
@@ -126,5 +128,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         return NavigationUI.navigateUp(Navigation.findNavController(this, R.id.nav_host_fragment), findViewById(R.id.drawer_layout));
+    }
+
+    private void addViewModelListener(){
+        RunViewModel runViewModel = new ViewModelProvider(this).get(RunViewModel.class);
+        runViewModel.sharedRun.observe(this, this::addRun);
+    }
+
+    private void addRun(Run run){
+        String preferencesName = this.getResources().getString(R.string.run_save_name);
+        SharedPreferences sharedPreferences = this.getSharedPreferences(
+                preferencesName, Context.MODE_PRIVATE);
+        String runJSON = sharedPreferences.getString(preferencesName, "");
+        RunList runs = new RunList(runJSON);
+        runs.add(run);
+        sharedPreferences.edit().putString(preferencesName, runs.toJSON()).commit();
     }
 }

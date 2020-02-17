@@ -123,12 +123,12 @@ public class RunListTest {
         Run runFoo = new Run().setName("Foo").setStartTime(10);
         runFoo.finalizeTime(120);
         Run runBaz = new Run().setName("Baz").setStartTime(50);
-        runFoo.finalizeTime(150);
+        runBaz.finalizeTime(150);
         RunList runList = new RunList();
         runList.add(runBaz);
         runList.add(runTest);
         runList.add(runFoo);
-        assertEquals(runFoo, runList.getLastRun());
+        assertEquals(runBaz, runList.getLastRun());
     }
 
     @Test
