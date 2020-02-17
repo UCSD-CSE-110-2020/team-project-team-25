@@ -26,6 +26,7 @@ import java.text.DecimalFormat;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -47,9 +48,8 @@ public class RunFragment extends Fragment {
     private Chronometer chronometer;
     private MileCalculator mileCalculator;
 
-    LocalTime now;
-    Clock clock;
     private Run run;
+    private Run lastRun;
 
     private static final int[] currentRunComponents = {R.id.mileRunCount, R.id.mileRunText,
             R.id.stepRunCount, R.id.stepRunText};
@@ -60,7 +60,6 @@ public class RunFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.activity_run, container, false);
-
     }
 
     @Override
@@ -114,16 +113,15 @@ public class RunFragment extends Fragment {
             public void onClick(View v) {
                 stopButton.setVisibility(View.GONE);
                 startButton.setVisibility(View.VISIBLE);
+                lastRun = run;
+                saveLastRun();
+                loadLastRun();
                 addRun();
                 deleteCurrentRun();
-
-                for (int id : currentRunComponents)
-                    getActivity().findViewById(id).setVisibility(View.INVISIBLE);
-
             }
         });
         loadCurrentRun();
-
+        loadLastRun();
     }
 
     @Override
@@ -142,7 +140,6 @@ public class RunFragment extends Fragment {
 
 
     private void initStepCount(){
-
         TextView textSteps = getActivity().findViewById(R.id.steps_today);
         textSteps.setText("--");
         this.fitnessService = FitnessServiceFactory.create(this.getActivity());
@@ -232,13 +229,19 @@ public class RunFragment extends Fragment {
         run = null;
     }
 
+    private void saveLastRun() {
+        String preferencesName = this.getResources().getString(R.string.last_run);
+        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(
+                preferencesName, MODE_PRIVATE);
+        sharedPreferences.edit().putString(preferencesName, this.lastRun.toJSON()).apply();
+    }
+
     private void loadCurrentRun() {
         String preferencesName = this.getResources().getString(R.string.current_run);
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(
                 preferencesName, Context.MODE_PRIVATE);
         String runJSON = sharedPreferences.getString(preferencesName, null );
         if(runJSON == null){
-            this.run = new Run();
             Button stopButton = getActivity().findViewById(R.id.stopButton);
             stopButton.setVisibility(View.GONE);
         } else {
@@ -258,6 +261,37 @@ public class RunFragment extends Fragment {
             for (int id : currentRunComponents)
                 getActivity().findViewById(id).setVisibility(View.VISIBLE);
         }
+    }
+
+    private void loadLastRun() {
+        String preferencesName = this.getResources().getString(R.string.last_run);
+        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(
+                preferencesName, Context.MODE_PRIVATE);
+        String runJSON = sharedPreferences.getString(preferencesName, null );
+        if (runJSON == null) return;
+
+        Run lastRun = Run.fromJSON(runJSON);
+
+        // Check if last run was today
+        if (LocalDate.now().equals(Instant.ofEpochMilli(
+                lastRun.getStartTime()).atZone(ZoneId.systemDefault()).toLocalDate())
+                && !lastRun.getName().equals(""))
+        {
+            for (int id : currentRunComponents)
+                getActivity().findViewById(id).setVisibility(View.VISIBLE);
+            getActivity().findViewById(R.id.lastRunName).setVisibility(View.VISIBLE);
+
+            this.lastRun = lastRun;
+
+            TextView lastRunName = (TextView) getActivity().findViewById(R.id.lastRunName);
+            TextView stepCount = (TextView) getActivity().findViewById(R.id.stepRunCount);
+            TextView mileCount = (TextView) getActivity().findViewById(R.id.mileRunCount);
+
+            lastRunName.setText("Last Run: " + lastRun.getName());
+            stepCount.setText(Long.toString(lastRun.getSteps()));
+            mileCount.setText(new DecimalFormat("#.00").format(lastRun.getMiles()));
+        }
+
     }
 
     private class SecondTimer implements Runnable{
