@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setupNavBar();
 
-        createFakeRuns();
+//        createFakeRuns();
 
         SharedPreferences sharedPreferences = getSharedPreferences("userHeight", MODE_PRIVATE);
         if (sharedPreferences.getString("height","-1").equals("-1")) {

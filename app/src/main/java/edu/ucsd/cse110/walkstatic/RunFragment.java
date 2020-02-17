@@ -239,6 +239,7 @@ public class RunFragment extends Fragment {
                 sharedPreferences.edit().putString(preferencesName, this.run.toJSON()).apply();
             }
             this.chronometer.start();
+            chronometer.setVisibility(View.VISIBLE);
             TextView runName = this.getActivity().findViewById(R.id.run_name_display);
             runName.setText(this.run.getName());
 
@@ -262,11 +263,13 @@ public class RunFragment extends Fragment {
 
     private void updateLastRunUI(){
         int lastRunNameVisible = this.run == null ? View.VISIBLE : View.GONE;
+        int chronometerVisible = this.run != null ? View.VISIBLE : View.GONE;
         if (this.lastRun != null)
         {
             for (int id : currentRunComponents)
                 getActivity().findViewById(id).setVisibility(View.VISIBLE);
             getActivity().findViewById(R.id.lastRunName).setVisibility(lastRunNameVisible);
+            chronometer.setVisibility(chronometerVisible);
 
             TextView lastRunName = (TextView) getActivity().findViewById(R.id.lastRunName);
             TextView stepCount = (TextView) getActivity().findViewById(R.id.stepRunCount);

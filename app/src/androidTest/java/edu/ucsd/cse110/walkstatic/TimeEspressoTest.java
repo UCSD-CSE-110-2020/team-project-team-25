@@ -53,9 +53,8 @@ public class TimeEspressoTest {
         });
 
         ViewInteraction chronometer = onView(
-                allOf(withId(R.id.chronometer),
-                        isDisplayed()));
-        chronometer.check(matches(isDisplayed()));
+                allOf(withId(R.id.chronometer)));
+        chronometer.check(matches(not(isDisplayed())));
 
         ViewInteraction appCompatButton2 = onView(
                 allOf(withId(R.id.startButton),

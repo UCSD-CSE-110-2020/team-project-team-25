@@ -217,12 +217,6 @@ public class RunExistingRunEspressoTest {
 
         ViewInteraction appCompatButton2 = onView(
                 allOf(withId(R.id.stopButton), withText("Stop"),
-                        childAtPosition(
-                                allOf(withId(R.id.linearLayout),
-                                        childAtPosition(
-                                                withId(R.id.nav_host_fragment),
-                                                0)),
-                                11),
                         isDisplayed()));
         appCompatButton2.perform(click());
 
