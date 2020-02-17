@@ -60,7 +60,6 @@ public class MainActivityTest {
 
     @Test
     public void StepsAreUpdatedPeriodically() {
-
         FragmentScenario<RunFragment> scenario = FragmentScenario.launchInContainer(RunFragment.class);
         scenario.onFragment(activity -> {
             fakeFitnessService.nextStepCount = 0;
@@ -75,7 +74,6 @@ public class MainActivityTest {
 
     @Test
     public void RunStepsUpdated() {
-
         FragmentScenario<RunFragment> scenario = FragmentScenario.launchInContainer(RunFragment.class);
         scenario.onFragment(activity -> {
             fakeFitnessService.nextStepCount = 0;
@@ -95,7 +93,6 @@ public class MainActivityTest {
 
     @Test
     public void RunStepsUpdatedDelayedStart() {
-
         FragmentScenario<RunFragment> scenario = FragmentScenario.launchInContainer(RunFragment.class);
         scenario.onFragment(activity -> {
             fakeFitnessService.nextStepCount = 0;
@@ -141,8 +138,6 @@ public class MainActivityTest {
             assertThat(textSteps.getText().toString()).isEqualTo("1000");
             assertThat(textMiles.getText().toString()).isEqualTo(".44");
         });
-
-
     }
 
     @Test
@@ -203,8 +198,6 @@ public class MainActivityTest {
             TimeMachine.setNow(fake);
             assertEquals(fake, TimeMachine.now());
             assertEquals(fake.getMinute(),TimeMachine.now().getMinute());
-
         });
     }
-
-    }
+}

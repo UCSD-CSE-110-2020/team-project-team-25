@@ -78,7 +78,8 @@ public class ViewRunFragment extends Fragment {
         favoriteIndicator.setImageTintList(getContext().getResources().getColorStateList(starColor, null));
 
         TextView notes = this.getActivity().findViewById(R.id.notes);
-        notes.setText(run.getNotes());
+        String note = run.getNotes().equals("") ? "" : "Notes:\n" + run.getNotes();
+        notes.setText(note);
 
         TextView difficulty = this.getActivity().findViewById(R.id.difficulty);
         difficulty.setText(run.getDifficulty());

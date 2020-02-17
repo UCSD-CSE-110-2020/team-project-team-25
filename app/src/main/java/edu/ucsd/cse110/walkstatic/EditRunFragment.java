@@ -241,6 +241,7 @@ public class EditRunFragment extends Fragment implements SpeechListener {
 
         String runName = runNameElement.getText().toString();
         String runStartingPoint = startingPoint.getText().toString();
+        String runNotes = notes.getText().toString();
 
         Spinner difficultySpinner = this.getActivity().findViewById(R.id.difficulty_spinner);
         String difficulty = difficultySpinner.getSelectedItem().toString();
@@ -265,6 +266,7 @@ public class EditRunFragment extends Fragment implements SpeechListener {
         run.setloopVsOut(loopVsOut);
         run.setstreetVsTrail(streetVsTrail);
         run.setevenVsUneven(evenVsUneven);
+        run.setNotes(runNotes);
 
         RunViewModel runViewModel = new ViewModelProvider(this.getActivity()).get(RunViewModel.class);
         runViewModel.setRun(run);
