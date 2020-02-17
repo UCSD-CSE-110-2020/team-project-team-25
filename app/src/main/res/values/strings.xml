@@ -15,11 +15,39 @@
     <string name="time_parse_error">Time must be in format HH:mm:ss.SSS.</string>
 
     <string name="Difficulty_prompt">Choose a difficulty</string>
-    <string-array name="difficulty_arrays">
+    <string-array name="difficulty_array">
         <item></item>
-        <item>Moderate</item>
         <item>Easy</item>
+        <item>Moderate</item>
         <item>Difficult</item>
+    </string-array>
+
+    <string name="LoopVsOutAndBack_prompt">Choose a feature</string>
+    <string-array name="loopVsOut_arrays">
+        <item></item>
+        <item>Loop</item>
+        <item>Out-and-Back</item>
+    </string-array>
+
+    <string name="FlatVsHilly_prompt">Choose a feature</string>
+    <string-array name="flatVsHilly_arrays">
+        <item></item>
+        <item>Flat</item>
+        <item>Hilly</item>
+    </string-array>
+
+    <string name="StreetsVsSTrail_prompt">Choose a feature</string>
+    <string-array name="streetVsTrail_arrays">
+        <item></item>
+        <item>Street</item>
+        <item>Trail</item>
+    </string-array>
+
+    <string name="EvenVsUneven_prompt">Choose a feature</string>
+    <string-array name="evenVsUneven_arrays">
+        <item></item>
+        <item>Even Surface</item>
+        <item>Uneven Surface</item>
     </string-array>
 
     <string name="favorite_indicator">favorite indicator</string>

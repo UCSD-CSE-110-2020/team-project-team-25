@@ -53,6 +53,7 @@ public class ViewRunFragment extends Fragment {
         super.onCreateOptionsMenu(menu,inflater);
     }
 
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.action_start_run){
@@ -81,6 +82,18 @@ public class ViewRunFragment extends Fragment {
 
         TextView difficulty = this.getActivity().findViewById(R.id.difficulty);
         difficulty.setText(run.getDifficulty());
+
+        TextView loopVsOut = this.getActivity().findViewById(R.id.endedness);
+        loopVsOut.setText(run.getloopVsOut());
+
+        TextView flatVsHilly = this.getActivity().findViewById(R.id.hillyness);
+        flatVsHilly.setText(run.getflatVsHilly());
+
+        TextView evenVsUneven = this.getActivity().findViewById(R.id.evenness);
+        evenVsUneven.setText(run.getevenVsUneven());
+
+        TextView streetVsTrail = this.getActivity().findViewById(R.id.urban);
+        streetVsTrail.setText(run.getstreetVsTrail());
     }
 
     private void startRun(){
