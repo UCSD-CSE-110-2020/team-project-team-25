@@ -131,6 +131,12 @@ public class RunListTest {
         assertEquals(runFoo, runList.getLastRun());
     }
 
+    @Test
+    public void findLastRunReturnsNullOnEmptyList(){
+        RunList runList = new RunList();
+        assertNull(runList.getLastRun());
+    }
+
     private String jsonFromRun(Run run){
         Gson gson = new Gson();
         return gson.toJson(run);

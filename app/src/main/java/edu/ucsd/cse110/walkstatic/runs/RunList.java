@@ -56,6 +56,9 @@ public class RunList extends ArrayList<Run> {
     }
 
     public Run getLastRun(){
+        if(this.size() == 0){
+            return null;
+        }
         Run latestRun = this.get(0);
         for(Run run : this){
             if(run.getStartTime() == Run.INVALID_TIME){
