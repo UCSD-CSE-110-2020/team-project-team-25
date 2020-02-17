@@ -44,7 +44,7 @@ public class ViewRunEspressoTest {
 
     @Test
     public void viewRunEspressoTest() {
-        EspressoHelpers.setUserHeightRequest(mActivityTestRule, "65");
+        EspressoHelpers.setStartupParams(mActivityTestRule, "65");
         RunList runs = new RunList();
         runs.add(new Run().setName("Run 1"));
         runs.add(new Run().setName("Run 2"));

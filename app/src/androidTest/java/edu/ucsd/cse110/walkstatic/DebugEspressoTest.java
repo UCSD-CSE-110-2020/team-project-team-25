@@ -25,7 +25,6 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
@@ -53,7 +52,7 @@ public class DebugEspressoTest {
         });
 
         FitnessServiceFactory.setDefaultFitnessServiceKey(TEST_SERVICE);
-        EspressoHelpers.setUserHeightRequest(mActivityTestRule, "65");
+        EspressoHelpers.setStartupParams(mActivityTestRule, "65");
 
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),

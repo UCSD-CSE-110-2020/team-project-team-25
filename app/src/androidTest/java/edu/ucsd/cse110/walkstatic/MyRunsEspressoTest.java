@@ -10,7 +10,6 @@ import android.view.ViewParent;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,7 +43,7 @@ public class MyRunsEspressoTest {
 
     @Test
     public void myRunsTest() {
-        EspressoHelpers.setUserHeightRequest(mActivityTestRule, "65");
+        EspressoHelpers.setStartupParams(mActivityTestRule, "65");
         //Gson gson = new Gson();
         //ArrayList<Run> runs = new ArrayList<Run>();
         //runs.add(new Run("Run 1"));

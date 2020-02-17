@@ -24,7 +24,6 @@ import androidx.test.runner.AndroidJUnit4;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
-import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunList;
 
 import static androidx.test.espresso.Espresso.onData;
@@ -32,7 +31,6 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
@@ -63,7 +61,7 @@ public class RunExistingRunEspressoTest {
         });
         FitnessServiceFactory.setDefaultFitnessServiceKey(TEST_SERVICE);
 
-        EspressoHelpers.setUserHeightRequest(mActivityTestRule, "65");
+        EspressoHelpers.setStartupParams(mActivityTestRule, "65");
         RunList runs = new RunList();
         Context targetContext = getInstrumentation().getTargetContext();
         String preferencesName = targetContext.getResources().getString(R.string.run_save_name);

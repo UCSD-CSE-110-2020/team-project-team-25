@@ -15,7 +15,6 @@ import androidx.test.runner.AndroidJUnit4;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +27,6 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.hasSibling;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
@@ -47,7 +45,7 @@ public class AddRunEspressoTest {
 
     @Test
     public void addRunEspressoTest() {
-        EspressoHelpers.setUserHeightRequest(mActivityTestRule, "65");
+        EspressoHelpers.setStartupParams(mActivityTestRule, "65");
         RunList runs = new RunList();
         runs.add(new Run().setName("Run 1"));
         runs.add(new Run().setName("Run 2"));

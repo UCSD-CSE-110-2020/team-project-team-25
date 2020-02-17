@@ -24,11 +24,9 @@ import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunList;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
@@ -48,16 +46,18 @@ public class StopRunEspressoTest {
 
     @Test
     public void stopRunEspressoTest() {
-
-        EspressoHelpers.setUserHeightRequest(mActivityTestRule, "65");
+        Context targetContext = getInstrumentation().getTargetContext();
+        String preferencesName = targetContext.getResources().getString(R.string.current_run);
+        SharedPreferences.Editor preferencesEditor = targetContext.getSharedPreferences(
+                preferencesName, Context.MODE_PRIVATE).edit();
+        EspressoHelpers.setStartupParams(mActivityTestRule, "65", preferencesEditor);
 
         RunList runs = new RunList();
         runs.add(new Run().setName("Run 1"));
         runs.add(new Run().setName("Run 2"));
 
-        Context targetContext = getInstrumentation().getTargetContext();
-        String preferencesName = targetContext.getResources().getString(R.string.run_save_name);
-        SharedPreferences.Editor preferencesEditor = targetContext.getSharedPreferences(preferencesName, Context.MODE_PRIVATE).edit();
+        preferencesName = targetContext.getResources().getString(R.string.run_save_name);
+        preferencesEditor = targetContext.getSharedPreferences(preferencesName, Context.MODE_PRIVATE).edit();
 
         preferencesEditor.putString("runs", runs.toJSON()).commit();
 
