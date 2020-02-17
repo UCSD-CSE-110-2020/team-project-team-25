@@ -4,6 +4,7 @@
     <string name="close_drawer">Close</string>
     <string name="run_save_name">runs</string>
     <string name="current_run">currentRun</string>
+    <string name="last_run">lastRun</string>
     <string name="run_name_label">Name:</string>
     <string name="run_starting_point_label">Starting Point:</string>
     <string name="run_difficulty_label">Difficulty:</string>

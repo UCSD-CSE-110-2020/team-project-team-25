@@ -20,10 +20,13 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import org.w3c.dom.Text;
+
 import java.text.DecimalFormat;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -45,10 +48,11 @@ public class RunFragment extends Fragment {
     private Chronometer chronometer;
     private MileCalculator mileCalculator;
 
-    LocalTime now;
-    Clock clock;
     private Run run;
+    private Run lastRun;
 
+    private static final int[] currentRunComponents = {R.id.mileRunCount, R.id.mileRunText,
+            R.id.stepRunCount, R.id.stepRunText};
     private static final String TAG = "StepCountActivity";
 
     @Override
@@ -94,6 +98,12 @@ public class RunFragment extends Fragment {
                 chronometer.start();
                 startButton.setVisibility(View.GONE);
                 stopButton.setVisibility(View.VISIBLE);
+
+                chronometer.setVisibility(View.VISIBLE);
+
+                for (int id : currentRunComponents)
+                    getActivity().findViewById(id).setVisibility(View.VISIBLE);
+
             }
         });
 
@@ -102,11 +112,15 @@ public class RunFragment extends Fragment {
             public void onClick(View v) {
                 stopButton.setVisibility(View.GONE);
                 startButton.setVisibility(View.VISIBLE);
+                lastRun = run;
+                saveLastRun();
+                loadLastRun();
                 addRun();
                 deleteCurrentRun();
             }
         });
         loadCurrentRun();
+        loadLastRun();
     }
 
     @Override
@@ -206,6 +220,13 @@ public class RunFragment extends Fragment {
         run = null;
     }
 
+    private void saveLastRun() {
+        String preferencesName = this.getResources().getString(R.string.last_run);
+        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(
+                preferencesName, MODE_PRIVATE);
+        sharedPreferences.edit().putString(preferencesName, this.lastRun.toJSON()).apply();
+    }
+
     private void loadCurrentRun() {
         String preferencesName = this.getResources().getString(R.string.current_run);
         SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(
@@ -227,7 +248,41 @@ public class RunFragment extends Fragment {
             this.chronometer.start();
             TextView runName = this.getActivity().findViewById(R.id.run_name_display);
             runName.setText(this.run.getName());
+
+            for (int id : currentRunComponents)
+                getActivity().findViewById(id).setVisibility(View.VISIBLE);
         }
+    }
+
+    private void loadLastRun() {
+        String preferencesName = this.getResources().getString(R.string.last_run);
+        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(
+                preferencesName, Context.MODE_PRIVATE);
+        String runJSON = sharedPreferences.getString(preferencesName, null );
+        if (runJSON == null) return;
+
+        Run lastRun = Run.fromJSON(runJSON);
+
+        // Check if last run was today
+        if (LocalDate.now().equals(Instant.ofEpochMilli(
+                lastRun.getStartTime()).atZone(ZoneId.systemDefault()).toLocalDate())
+                && !lastRun.getName().equals(""))
+        {
+            for (int id : currentRunComponents)
+                getActivity().findViewById(id).setVisibility(View.VISIBLE);
+            getActivity().findViewById(R.id.lastRunName).setVisibility(View.VISIBLE);
+
+            this.lastRun = lastRun;
+
+            TextView lastRunName = (TextView) getActivity().findViewById(R.id.lastRunName);
+            TextView stepCount = (TextView) getActivity().findViewById(R.id.stepRunCount);
+            TextView mileCount = (TextView) getActivity().findViewById(R.id.mileRunCount);
+
+            lastRunName.setText("Last Run: " + lastRun.getName());
+            stepCount.setText(Long.toString(lastRun.getSteps()));
+            mileCount.setText(new DecimalFormat("#.00").format(lastRun.getMiles()));
+        }
+
     }
 
     private class SecondTimer implements Runnable{
