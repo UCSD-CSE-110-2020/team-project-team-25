@@ -26,7 +26,6 @@ import static com.google.common.truth.Truth.assertThat;
 @RunWith(AndroidJUnit4.class)
 public class MyRunsTest {
 
-
     @Test
     public void ListPopulatedWithRuns() {
         String preferencesName = ApplicationProvider.getApplicationContext().getResources().getString(R.string.run_save_name);
@@ -67,5 +66,4 @@ public class MyRunsTest {
             assertThat(shadowListView.findItemContainingText("")).isNull();
         });
     }
-
 }

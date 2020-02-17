@@ -18,10 +18,8 @@ import static org.robolectric.Shadows.shadowOf;
 @RunWith(AndroidJUnit4.class)
 public class ViewRunTest {
 
-
     @Test
     public void favoritedRunDisplayed() {
-
         Bundle bundle = new Bundle();
         Run run = new Run().setName("This is a run").setStartingPoint("This is a starting point").setFavorited(true);
         bundle.putSerializable("Run", run);
@@ -38,7 +36,6 @@ public class ViewRunTest {
 
     @Test
     public void unfavoritedRunDisplayed() {
-
         Bundle bundle = new Bundle();
         Run run = new Run().setName("This is a run").setStartingPoint("This is a starting point").setFavorited(false);
         bundle.putSerializable("Run", run);
@@ -55,7 +52,6 @@ public class ViewRunTest {
 
     @Test
     public void difficultyOfRunDisplayed() {
-
         Bundle bundle = new Bundle();
         Run run = new Run().setName("This is a run").setStartingPoint("This is a starting point").setFavorited(false).setDifficulty("Moderate");
         bundle.putSerializable("Run", run);
@@ -73,8 +69,7 @@ public class ViewRunTest {
     }
 
     @Test
-    public void FeaturesOfRunDisplayed() {
-
+    public void featuresOfRunDisplayed() {
         Bundle bundle = new Bundle();
         Run run = new Run().setName("This is a run").setStartingPoint("This is a starting point").setFavorited(false).setDifficulty("Moderate")
                 .setstreetVsTrail("Street").setloopVsOut("Loop").setflatVsHilly("Flat").setevenVsUneven("Even Surface");
@@ -100,4 +95,61 @@ public class ViewRunTest {
         });
     }
 
+    @Test
+    public void notesOfRunDisplayed() {
+        Bundle bundle = new Bundle();
+        Run run = new Run().setName("This is a run").setStartingPoint("This is a starting point").setFavorited(false).setDifficulty("Moderate")
+                .setstreetVsTrail("Street").setloopVsOut("Loop").setflatVsHilly("Flat").setevenVsUneven("Even Surface").setNotes("Note");
+        bundle.putSerializable("Run", run);
+        FragmentScenario<ViewRunFragment> scenario = FragmentScenario.launchInContainer(ViewRunFragment.class, bundle);
+        scenario.onFragment(activity -> {
+            TextView runName = activity.getActivity().findViewById(R.id.run_name);
+            TextView startingPoint = activity.getActivity().findViewById(R.id.starting_point);
+            ImageView favoriteIndicator = activity.getActivity().findViewById(R.id.favorite_run);
+            TextView difficulty = activity.getActivity().findViewById(R.id.difficulty);
+            TextView streetVsTrail = activity.getActivity().findViewById(R.id.urban);
+            TextView loopVsOut = activity.getActivity().findViewById(R.id.endedness);
+            TextView flatVsHilly = activity.getActivity().findViewById(R.id.hillyness);
+            TextView evenVsUneven = activity.getActivity().findViewById(R.id.evenness);
+            TextView note = activity.getActivity().findViewById(R.id.notes);
+            assertThat(runName.getText().toString()).isEqualTo("This is a run");
+            assertThat(startingPoint.getText().toString()).isEqualTo("This is a starting point");
+            assertThat(shadowOf(favoriteIndicator.getDrawable()).getCreatedFromResId()).isEqualTo(R.drawable.ic_star_border_white_24dp);
+            assertThat(difficulty.getText().toString()).isEqualTo("Moderate");
+            assertThat(streetVsTrail.getText().toString()).isEqualTo("Street");
+            assertThat(loopVsOut.getText().toString()).isEqualTo("Loop");
+            assertThat(flatVsHilly.getText().toString()).isEqualTo("Flat");
+            assertThat(evenVsUneven.getText().toString()).isEqualTo("Even Surface");
+            assertThat(note.getText().toString()).isEqualTo("Notes:\nNote");
+        });
+    }
+
+    @Test
+    public void noNotesOfRunDisplayed() {
+        Bundle bundle = new Bundle();
+        Run run = new Run().setName("This is a run").setStartingPoint("This is a starting point").setFavorited(false).setDifficulty("Moderate")
+                .setstreetVsTrail("Street").setloopVsOut("Loop").setflatVsHilly("Flat").setevenVsUneven("Even Surface");
+        bundle.putSerializable("Run", run);
+        FragmentScenario<ViewRunFragment> scenario = FragmentScenario.launchInContainer(ViewRunFragment.class, bundle);
+        scenario.onFragment(activity -> {
+            TextView runName = activity.getActivity().findViewById(R.id.run_name);
+            TextView startingPoint = activity.getActivity().findViewById(R.id.starting_point);
+            ImageView favoriteIndicator = activity.getActivity().findViewById(R.id.favorite_run);
+            TextView difficulty = activity.getActivity().findViewById(R.id.difficulty);
+            TextView streetVsTrail = activity.getActivity().findViewById(R.id.urban);
+            TextView loopVsOut = activity.getActivity().findViewById(R.id.endedness);
+            TextView flatVsHilly = activity.getActivity().findViewById(R.id.hillyness);
+            TextView evenVsUneven = activity.getActivity().findViewById(R.id.evenness);
+            TextView note = activity.getActivity().findViewById(R.id.notes);
+            assertThat(runName.getText().toString()).isEqualTo("This is a run");
+            assertThat(startingPoint.getText().toString()).isEqualTo("This is a starting point");
+            assertThat(shadowOf(favoriteIndicator.getDrawable()).getCreatedFromResId()).isEqualTo(R.drawable.ic_star_border_white_24dp);
+            assertThat(difficulty.getText().toString()).isEqualTo("Moderate");
+            assertThat(streetVsTrail.getText().toString()).isEqualTo("Street");
+            assertThat(loopVsOut.getText().toString()).isEqualTo("Loop");
+            assertThat(flatVsHilly.getText().toString()).isEqualTo("Flat");
+            assertThat(evenVsUneven.getText().toString()).isEqualTo("Even Surface");
+            assertThat(note.getText().toString()).isEqualTo("");
+        });
+    }
 }

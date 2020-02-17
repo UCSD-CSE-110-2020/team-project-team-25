@@ -124,8 +124,6 @@ public class EditRunTest {
         });
     }
 
-
-
     @Test
     public void RunCreatedWithGivenUUIDAndFilledName() {
         TestNavHostController navController = new TestNavHostController(
