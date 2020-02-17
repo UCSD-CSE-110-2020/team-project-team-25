@@ -63,8 +63,7 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences.edit().putString("runs", runs.toJSON()).apply();
 
         preferencesName = this.getResources().getString(R.string.current_run);
-        sharedPreferences = this.getSharedPreferences(
-                preferencesName, Context.MODE_PRIVATE);
+        sharedPreferences = this.getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
         sharedPreferences.edit().clear().apply();
     }
 
@@ -125,9 +124,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onSupportNavigateUp(){
+    public boolean onSupportNavigateUp() {
         return NavigationUI.navigateUp(Navigation.findNavController(this, R.id.nav_host_fragment), findViewById(R.id.drawer_layout));
     }
-
-
 }

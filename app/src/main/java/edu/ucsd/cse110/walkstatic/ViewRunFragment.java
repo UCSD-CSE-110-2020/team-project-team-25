@@ -84,9 +84,8 @@ public class ViewRunFragment extends Fragment {
     }
 
     private void startRun(){
-        if(run == null){
-            return;
-        }
+        if(run == null) return;
+
         String preferencesName = this.getResources().getString(R.string.current_run);
         Activity activity = Objects.requireNonNull(this.getActivity());
         SharedPreferences sharedPreferences = activity.getSharedPreferences(

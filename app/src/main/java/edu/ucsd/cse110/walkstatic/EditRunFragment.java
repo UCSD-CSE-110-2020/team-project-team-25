@@ -69,7 +69,6 @@ public class EditRunFragment extends Fragment implements SpeechListener {
         return inflater.inflate(R.layout.fragment_edit_run, container, false);
     }
 
-
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
@@ -172,9 +171,8 @@ public class EditRunFragment extends Fragment implements SpeechListener {
 
     @Override
     public void onSpeechDone(boolean error, @Nullable Bundle options) {
-        if(options == null){
-            return;
-        }
+        if(options == null) return;
+
         colorMicButton(RunElement.values()[options.getInt(TYPE_KEY)], false);
         setButtonsEnabled(true);
     }
@@ -207,14 +205,10 @@ public class EditRunFragment extends Fragment implements SpeechListener {
         EditText runName = this.getActivity().findViewById(R.id.run_name_text);
         runName.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {}
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-
-            }
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {}
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -274,5 +268,4 @@ public class EditRunFragment extends Fragment implements SpeechListener {
         notes.clearFocus();
         Navigation.findNavController(this.getView()).navigateUp();
     }
-
 }
