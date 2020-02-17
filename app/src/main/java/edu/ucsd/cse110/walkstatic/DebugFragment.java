@@ -122,6 +122,7 @@ public class DebugFragment extends Fragment implements FitnessListener {
                 LocalDate day = TimeMachine.now().toLocalDate();
                 LocalDateTime newDateTime = day.atTime(newTime);
                 TimeMachine.setNow(newDateTime);
+                timeText.clearFocus();
             } catch (DateTimeParseException exception){
                 Log.e("Debug Fragment", exception.toString());
             }

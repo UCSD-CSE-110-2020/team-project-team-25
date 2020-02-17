@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import android.app.Activity;
 import android.content.Context;
+import android.nfc.Tag;
 import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -21,6 +22,7 @@ public class GoogleFitAdapter implements FitnessService {
     private final int GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = System.identityHashCode(this) & 0xFFFF;
     private final String TAG = "GoogleFitAdapter";
     private GoogleSignInAccount account;
+    private static boolean triedLogin = false;
 
     private Activity activity;
     private FitnessListener listener;
@@ -43,13 +45,18 @@ public class GoogleFitAdapter implements FitnessService {
 
 
         account = GoogleSignIn.getAccountForExtension(activity, fitnessOptions);
-        if (!GoogleSignIn.hasPermissions(account, fitnessOptions)) {
+        if (!GoogleSignIn.hasPermissions(account, fitnessOptions) && !triedLogin) {
             GoogleSignIn.requestPermissions(
                     activity, // your activity
                     GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
                     account,
                     fitnessOptions);
+            Log.d(TAG, "Trying to log into google fit.");
+            triedLogin = true;
         } else {
+            if(triedLogin){
+                Log.w(TAG, "Already tried logging in and failed");
+            }
             updateStepCount();
             startRecording();
         }
@@ -83,6 +90,9 @@ public class GoogleFitAdapter implements FitnessService {
      */
     public void updateStepCount() {
         if (account == null) {
+            if(listener != null){
+                listener.onNewSteps(0);
+            }
             return;
         }
 

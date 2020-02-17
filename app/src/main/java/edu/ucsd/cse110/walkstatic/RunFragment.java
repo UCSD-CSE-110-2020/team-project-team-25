@@ -224,7 +224,6 @@ public class RunFragment extends Fragment {
                 preferencesName, Context.MODE_PRIVATE);
         String runJSON = sharedPreferences.getString(preferencesName, null );
         if(runJSON == null){
-            this.run = new Run();
             Button stopButton = getActivity().findViewById(R.id.stopButton);
             stopButton.setVisibility(View.GONE);
         } else {
