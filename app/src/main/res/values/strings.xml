@@ -4,6 +4,7 @@
     <string name="close_drawer">Close</string>
     <string name="run_save_name">runs</string>
     <string name="current_run">currentRun</string>
+    <string name="last_run">lastRun</string>
     <string name="run_name_label">Name:</string>
     <string name="run_starting_point_label">Starting Point:</string>
     <string name="run_difficulty_label">Difficulty:</string>
@@ -11,6 +12,8 @@
     <string name="add">Add</string>
     <string name="miles_text">%1$s Miles</string>
     <string name="steps_text">%1$s Steps</string>
+    <string name="date_text">On: %1$s</string>
+    <string name="time_text">Time: %1$s</string>
     <string name="name_empty_error">Name can not be empty.</string>
     <string name="time_parse_error">Time must be in format HH:mm:ss.SSS.</string>
 

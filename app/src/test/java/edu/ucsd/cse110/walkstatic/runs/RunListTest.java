@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class RunListTest {
@@ -92,6 +93,48 @@ public class RunListTest {
         runList.add(runFoo);
         assertEquals(1, runList.size());
         assertEquals(runFoo, runList.get(0));
+    }
+
+    @Test
+    public void findLastRunReturnsNoRunWhenNoRunsHaveEndTime(){
+        Run runTest = new Run().setName("Test");
+        Run runFoo = new Run().setName("Foo");
+        RunList runList = new RunList();
+        runList.add(runTest);
+        runList.add(runFoo);
+        assertNull(runList.getLastRun());
+    }
+
+    @Test
+    public void findLastRunReturnsOnlyRunWithEndTime(){
+        Run runTest = new Run().setName("Test").setStartTime(0);
+        runTest.finalizeTime(100);
+        Run runFoo = new Run().setName("Foo");
+        RunList runList = new RunList();
+        runList.add(runTest);
+        runList.add(runFoo);
+        assertEquals(runTest, runList.getLastRun());
+    }
+
+    @Test
+    public void findLastRunReturnsLastestRunRun(){
+        Run runTest = new Run().setName("Test").setStartTime(0);
+        runTest.finalizeTime(100);
+        Run runFoo = new Run().setName("Foo").setStartTime(10);
+        runFoo.finalizeTime(120);
+        Run runBaz = new Run().setName("Baz").setStartTime(50);
+        runBaz.finalizeTime(150);
+        RunList runList = new RunList();
+        runList.add(runBaz);
+        runList.add(runTest);
+        runList.add(runFoo);
+        assertEquals(runBaz, runList.getLastRun());
+    }
+
+    @Test
+    public void findLastRunReturnsNullOnEmptyList(){
+        RunList runList = new RunList();
+        assertNull(runList.getLastRun());
     }
 
     private String jsonFromRun(Run run){

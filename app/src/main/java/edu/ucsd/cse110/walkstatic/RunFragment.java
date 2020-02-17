@@ -20,10 +20,13 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import org.w3c.dom.Text;
+
 import java.text.DecimalFormat;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -34,6 +37,8 @@ import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 import edu.ucsd.cse110.walkstatic.runs.MileCalculator;
 import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.runs.RunList;
+import edu.ucsd.cse110.walkstatic.time.TimeHelp;
 import edu.ucsd.cse110.walkstatic.time.TimeMachine;
 
 
@@ -45,10 +50,11 @@ public class RunFragment extends Fragment {
     private Chronometer chronometer;
     private MileCalculator mileCalculator;
 
-    LocalTime now;
-    Clock clock;
     private Run run;
+    private Run lastRun;
 
+    private static final int[] currentRunComponents = {R.id.mileRunCount, R.id.mileRunText,
+            R.id.stepRunCount, R.id.stepRunText};
     private static final String TAG = "StepCountActivity";
 
     @Override
@@ -74,10 +80,7 @@ public class RunFragment extends Fragment {
                 LocalDateTime currentTime = TimeMachine.now();
                 Duration runTime = Duration.between(startTime, currentTime);
                 long time = runTime.toMillis();
-                int hours = (int)(time /3600000);
-                int minutes = (int)(time - hours * 3600000) / 60000;
-                int seconds = (int)(time - hours * 3600000 - minutes * 60000) / 1000;
-                String t = (hours < 10 ? "0"+hours: hours)+":"+(minutes < 10 ? "0"+minutes: minutes)+":"+ (seconds < 10 ? "0"+seconds: seconds);
+                String t = TimeHelp.timeToString(time);
                 chronometer.setText(t);
             }
         });
@@ -94,6 +97,13 @@ public class RunFragment extends Fragment {
                 chronometer.start();
                 startButton.setVisibility(View.GONE);
                 stopButton.setVisibility(View.VISIBLE);
+
+                chronometer.setVisibility(View.VISIBLE);
+
+                for (int id : currentRunComponents)
+                    getActivity().findViewById(id).setVisibility(View.VISIBLE);
+                updateLastRunUI();
+
             }
         });
 
@@ -104,9 +114,11 @@ public class RunFragment extends Fragment {
                 startButton.setVisibility(View.VISIBLE);
                 addRun();
                 deleteCurrentRun();
+                updateLastRunUI();
             }
         });
         loadCurrentRun();
+        loadLastRun();
     }
 
     @Override
@@ -212,7 +224,6 @@ public class RunFragment extends Fragment {
                 preferencesName, Context.MODE_PRIVATE);
         String runJSON = sharedPreferences.getString(preferencesName, null );
         if(runJSON == null){
-            this.run = new Run();
             Button stopButton = getActivity().findViewById(R.id.stopButton);
             stopButton.setVisibility(View.GONE);
         } else {
@@ -226,8 +237,45 @@ public class RunFragment extends Fragment {
                 sharedPreferences.edit().putString(preferencesName, this.run.toJSON()).apply();
             }
             this.chronometer.start();
+            chronometer.setVisibility(View.VISIBLE);
             TextView runName = this.getActivity().findViewById(R.id.run_name_display);
             runName.setText(this.run.getName());
+
+            for (int id : currentRunComponents)
+                getActivity().findViewById(id).setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void loadLastRun() {
+        String preferencesName = this.getResources().getString(R.string.run_save_name);
+        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(
+                preferencesName, Context.MODE_PRIVATE);
+
+        String json = sharedPreferences.getString(preferencesName, "[]");
+        RunList runs = new RunList(json);
+        Run lastRun = runs.getLastRun();
+
+        this.lastRun = lastRun;
+        updateLastRunUI();
+    }
+
+    private void updateLastRunUI(){
+        int lastRunNameVisible = this.run == null ? View.VISIBLE : View.GONE;
+        int chronometerVisible = this.run != null ? View.VISIBLE : View.GONE;
+        if (this.lastRun != null)
+        {
+            for (int id : currentRunComponents)
+                getActivity().findViewById(id).setVisibility(View.VISIBLE);
+            getActivity().findViewById(R.id.lastRunName).setVisibility(lastRunNameVisible);
+            chronometer.setVisibility(chronometerVisible);
+
+            TextView lastRunName = (TextView) getActivity().findViewById(R.id.lastRunName);
+            TextView stepCount = (TextView) getActivity().findViewById(R.id.stepRunCount);
+            TextView mileCount = (TextView) getActivity().findViewById(R.id.mileRunCount);
+
+            lastRunName.setText("Last Run: " + this.lastRun.getName());
+            stepCount.setText(Long.toString(this.lastRun.getSteps()));
+            mileCount.setText(new DecimalFormat("#.00").format(lastRun.getMiles()));
         }
     }
 
@@ -288,6 +336,7 @@ public class RunFragment extends Fragment {
     private void updateRun(){
         RunViewModel runViewModel = new ViewModelProvider(this.getActivity()).get(RunViewModel.class);
         runViewModel.setRun(this.run);
+        this.lastRun = run;
     }
 
     private void clearRunUI(){

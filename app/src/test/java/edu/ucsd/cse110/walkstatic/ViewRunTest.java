@@ -152,4 +152,53 @@ public class ViewRunTest {
             assertThat(note.getText().toString()).isEqualTo("");
         });
     }
+
+    @Test
+    public void noStepsYeildsHifens() {
+        Bundle bundle = new Bundle();
+        Run run = new Run().setName("A");
+        bundle.putSerializable("Run", run);
+        FragmentScenario<ViewRunFragment> scenario = FragmentScenario.launchInContainer(ViewRunFragment.class, bundle);
+        scenario.onFragment(activity -> {
+            TextView steps = activity.getActivity().findViewById(R.id.last_steps_view);
+            TextView miles = activity.getActivity().findViewById(R.id.last_miles_view);
+            assertThat(steps.getText().toString()).isEqualTo("-- Steps");
+            assertThat(miles.getText().toString()).isEqualTo("-- Miles");
+        });
+    }
+
+    @Test
+    public void runWithStepsAndMilesProducesRightOutput() {
+        Bundle bundle = new Bundle();
+        Run run = new Run().setName("A");
+        run.setInitialSteps(0);
+        run.setSteps(55);
+        run.setMiles(0.234);
+        bundle.putSerializable("Run", run);
+        FragmentScenario<ViewRunFragment> scenario = FragmentScenario.launchInContainer(ViewRunFragment.class, bundle);
+        scenario.onFragment(activity -> {
+            TextView steps = activity.getActivity().findViewById(R.id.last_steps_view);
+            TextView miles = activity.getActivity().findViewById(R.id.last_miles_view);
+            assertThat(steps.getText().toString()).isEqualTo("55 Steps");
+            assertThat(miles.getText().toString()).isEqualTo(".23 Miles");
+        });
+    }
+
+    @Test
+    public void runWithTimeProducestime() {
+        Bundle bundle = new Bundle();
+        Run run = new Run().setName("A");
+        run.setInitialSteps(0);
+        run.setSteps(55);
+        run.setMiles(0.234);
+        run.setStartTime(0);
+        run.finalizeTime(4000);
+        bundle.putSerializable("Run", run);
+        FragmentScenario<ViewRunFragment> scenario = FragmentScenario.launchInContainer(ViewRunFragment.class, bundle);
+        scenario.onFragment(activity -> {
+            TextView time = activity.getActivity().findViewById(R.id.run_time);
+            TextView miles = activity.getActivity().findViewById(R.id.last_miles_view);
+            assertThat(time.getText().toString()).isEqualTo("Time: 00:00:04");
+        });
+    }
 }
