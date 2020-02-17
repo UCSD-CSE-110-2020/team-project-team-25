@@ -20,6 +20,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import org.w3c.dom.Text;
+
 import java.text.DecimalFormat;
 import java.time.Clock;
 import java.time.Duration;
@@ -49,6 +51,8 @@ public class RunFragment extends Fragment {
     Clock clock;
     private Run run;
 
+    private static final int[] currentRunComponents = {R.id.mileRunCount, R.id.mileRunText,
+            R.id.stepRunCount, R.id.stepRunText};
 
     private static final String TAG = "StepCountActivity";
 
@@ -96,6 +100,12 @@ public class RunFragment extends Fragment {
                 chronometer.start();
                 startButton.setVisibility(View.GONE);
                 stopButton.setVisibility(View.VISIBLE);
+
+                chronometer.setVisibility(View.VISIBLE);
+
+                for (int id : currentRunComponents)
+                    getActivity().findViewById(id).setVisibility(View.VISIBLE);
+
             }
         });
 
@@ -106,6 +116,10 @@ public class RunFragment extends Fragment {
                 startButton.setVisibility(View.VISIBLE);
                 addRun();
                 deleteCurrentRun();
+
+                for (int id : currentRunComponents)
+                    getActivity().findViewById(id).setVisibility(View.INVISIBLE);
+
             }
         });
         loadCurrentRun();
@@ -240,6 +254,9 @@ public class RunFragment extends Fragment {
             this.chronometer.start();
             TextView runName = this.getActivity().findViewById(R.id.run_name_display);
             runName.setText(this.run.getName());
+
+            for (int id : currentRunComponents)
+                getActivity().findViewById(id).setVisibility(View.VISIBLE);
         }
     }
 

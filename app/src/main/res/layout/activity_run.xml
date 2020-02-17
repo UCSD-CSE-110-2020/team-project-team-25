@@ -22,18 +22,6 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/steps_today"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="32"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        app:layout_constraintEnd_toEndOf="@+id/textView4"
-        app:layout_constraintHorizontal_bias="0.458"
-        app:layout_constraintStart_toStartOf="@+id/textView4"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
-
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
@@ -43,6 +31,16 @@
         android:text="Steps Today"
         app:layout_constraintEnd_toStartOf="@+id/space2"
         app:layout_constraintTop_toBottomOf="@+id/run_name_display" />
+
+    <TextView
+        android:id="@+id/steps_today"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="32"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        app:layout_constraintStart_toStartOf="@+id/textView4"
+        app:layout_constraintEnd_toEndOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <TextView
         android:id="@+id/textView5"
@@ -68,10 +66,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="150dp"
-        android:layout_marginBottom="71dp"
         android:text="Step Count"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/startButton"
-        app:layout_constraintStart_toStartOf="@+id/textView4"
+        app:layout_constraintEnd_toEndOf="@+id/textView4"
         app:layout_constraintTop_toBottomOf="@+id/steps_today"
         app:layout_constraintVertical_bias="0.0" />
 
@@ -80,10 +78,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="150dp"
-        android:layout_marginBottom="71dp"
         android:text="Miles Count"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/startButton"
-        app:layout_constraintEnd_toEndOf="@+id/textView5"
+        app:layout_constraintStart_toStartOf="@+id/textView5"
         app:layout_constraintTop_toBottomOf="@+id/miles_today"
         app:layout_constraintVertical_bias="0.0" />
 
@@ -91,22 +89,19 @@
         android:id="@+id/stepRunCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="168dp"
-        android:layout_marginTop="32dp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/stepRunText"
         app:layout_constraintEnd_toEndOf="@+id/stepRunText"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/stepRunText" />
 
     <TextView
         android:id="@+id/mileRunCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="168dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="@+id/mileRunText"
+        app:layout_constraintEnd_toEndOf="@+id/mileRunText"
         app:layout_constraintTop_toBottomOf="@+id/mileRunText" />
-
 
     <Chronometer
         android:id="@+id/chronometer"
@@ -114,12 +109,11 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="100dp"
         android:textSize="30sp"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <Button
         android:id="@+id/startButton"
