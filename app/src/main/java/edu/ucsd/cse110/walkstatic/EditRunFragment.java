@@ -47,9 +47,6 @@ public class EditRunFragment extends Fragment implements SpeechListener {
 
     private VoiceDictation voiceDictation;
     private boolean isValid;
-
-//    private Spinner difficultySpinner;
-  //  private Spinner loopVsoutSpinner;
     private boolean isFavorited;
 
     private Run run;
@@ -76,12 +73,6 @@ public class EditRunFragment extends Fragment implements SpeechListener {
         super.onViewCreated(view, savedInstanceState);
         this.addSpeechListeners();
         this.addValidators();
-        //add spinner for difficulty
-<<<<<<< HEAD
-        //this.addSpinners();
-=======
-        this.addSpinner();
-
         Bundle arguments = this.getArguments();
         if(arguments != null && arguments.getSerializable("Run") != null){
             Run run = (Run)this.getArguments().getSerializable("Run");
@@ -90,7 +81,6 @@ public class EditRunFragment extends Fragment implements SpeechListener {
         } else {
             this.run = new Run();
         }
->>>>>>> master
     }
 
     @Override
@@ -135,51 +125,6 @@ public class EditRunFragment extends Fragment implements SpeechListener {
         super.onDestroyView();
     }
 
-<<<<<<< HEAD
-    private void saveRun(){
-        EditText runNameElement = this.getActivity().findViewById(R.id.run_name_text);
-        EditText startingPoint = this.getActivity().findViewById(R.id.starting_point_text);
-        EditText notes = this.getActivity().findViewById(R.id.notes);
-
-        String runName = runNameElement.getText().toString();
-        String runStartingPoint = startingPoint.getText().toString();
-
-        Spinner difficultySpinner = this.getActivity().findViewById(R.id.difficulty_spinner);
-        String difficulty = difficultySpinner.getSelectedItem().toString();
-
-        Spinner loopVsOutSpinner = this.getActivity().findViewById(R.id.loopVsOut_spinner);
-        String loopVsOut = loopVsOutSpinner.getSelectedItem().toString();
-
-        Spinner flatVsHillySpinner = this.getActivity().findViewById(R.id.flatVsHilly_spinner);
-        String flatVsHilly = flatVsHillySpinner.getSelectedItem().toString();
-
-        Spinner streetVsTrailSpinner = this.getActivity().findViewById(R.id.streetVsTrail_spinner);
-        String streetVsTrail = streetVsTrailSpinner.getSelectedItem().toString();
-
-        Spinner evenVsUnevenSpinner = this.getActivity().findViewById(R.id.evenVsUneven_spinner);
-        String evenVsUneven = evenVsUnevenSpinner.getSelectedItem().toString();
-
-        RunViewModel runViewModel = new ViewModelProvider(this.getActivity()).get(RunViewModel.class);
-        runViewModel.setRun(new Run().setUUID(this.safeGetUUID()).setName(runName).setStartingPoint(runStartingPoint).setFavorited(this.isFavorited)
-                .setDifficulty(difficulty).setevenVsUneven(evenVsUneven).setflatVsHilly(flatVsHilly).setloopVsOut(loopVsOut).setstreetVsTrail(streetVsTrail));//, notes.getText().toString()));
-
-
-
-        runNameElement.clearFocus();
-        startingPoint.clearFocus();
-        notes.clearFocus();
-        Navigation.findNavController(this.getView()).navigateUp();
-    }
-
-    private UUID safeGetUUID(){
-        if(getArguments() == null){
-            return UUID.randomUUID();
-        }
-        return (UUID)getArguments().getSerializable("UUID");
-    }
-
-=======
->>>>>>> master
     private void addSpeechListeners(){
         ImageButton nameButton = this.getActivity().findViewById(R.id.dictate_name);
         nameButton.setOnClickListener(new VoiceDictationClickListener(RunElement.NAME));
@@ -247,14 +192,7 @@ public class EditRunFragment extends Fragment implements SpeechListener {
             button.setEnabled(enabled);
         }
     }
-/*
-    private void addSpinners(){
-        difficultySpinner = this.getActivity().findViewById(R.id.difficulty_spinner);
-        loopVsoutSpinner = this.getActivity().findViewById(R.id.loopVsOut_spinner);
 
-      //  difficultySpinner.setOnItemSelectedListener(new CustomOnItemSelectedListener());
-    }
-*/
     private void addValidators(){
         EditText runName = this.getActivity().findViewById(R.id.run_name_text);
         runName.addTextChangedListener(new TextWatcher() {
@@ -286,14 +224,14 @@ public class EditRunFragment extends Fragment implements SpeechListener {
         EditText runNameElement = Objects.requireNonNull(this.getActivity()).findViewById(R.id.run_name_text);
         EditText startingPoint = this.getActivity().findViewById(R.id.starting_point_text);
         EditText notes = this.getActivity().findViewById(R.id.notes);
-        Spinner difficultySpinner = this.getActivity().findViewById(R.id.spinner1);
+        Spinner difficultySpinner = this.getActivity().findViewById(R.id.difficulty_spinner);
 
         runNameElement.setText(run.getName());
         startingPoint.setText(run.getStartingPoint());
         notes.setText(run.getNotes());
         this.isFavorited = run.isFavorited();
 
-        String[] difficultyArray = this.getResources().getStringArray(R.array.difficulty_arrays);
+        String[] difficultyArray = this.getResources().getStringArray(R.array.difficulty_array);
         List<String> difficultyList = Arrays.asList(difficultyArray);
         int difficultIndex = difficultyList.indexOf(run.getDifficulty());
         if(difficultIndex != -1){
@@ -310,13 +248,29 @@ public class EditRunFragment extends Fragment implements SpeechListener {
         String runName = runNameElement.getText().toString();
         String runStartingPoint = startingPoint.getText().toString();
 
-        Spinner difficultySpinner = this.getActivity().findViewById(R.id.spinner1);
+        Spinner difficultySpinner = this.getActivity().findViewById(R.id.difficulty_spinner);
         String difficulty = difficultySpinner.getSelectedItem().toString();
+
+        Spinner loopVsOutSpinner = this.getActivity().findViewById(R.id.loopVsOut_spinner);
+        String loopVsOut = loopVsOutSpinner.getSelectedItem().toString();
+
+        Spinner flatVsHillySpinner = this.getActivity().findViewById(R.id.flatVsHilly_spinner);
+        String flatVsHilly = flatVsHillySpinner.getSelectedItem().toString();
+
+        Spinner streetVsTrailSpinner = this.getActivity().findViewById(R.id.streetVsTrail_spinner);
+        String streetVsTrail = streetVsTrailSpinner.getSelectedItem().toString();
+
+        Spinner evenVsUnevenSpinner = this.getActivity().findViewById(R.id.evenVsUneven_spinner);
+        String evenVsUneven = evenVsUnevenSpinner.getSelectedItem().toString();
 
         run.setName(runName);
         run.setStartingPoint(runStartingPoint);
         run.setFavorited(this.isFavorited);
         run.setDifficulty(difficulty);
+        run.setflatVsHilly(flatVsHilly);
+        run.setloopVsOut(loopVsOut);
+        run.setstreetVsTrail(streetVsTrail);
+        run.setevenVsUneven(evenVsUneven);
 
         RunViewModel runViewModel = new ViewModelProvider(this.getActivity()).get(RunViewModel.class);
         runViewModel.setRun(run);

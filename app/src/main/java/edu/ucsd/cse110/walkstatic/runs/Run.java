@@ -18,16 +18,12 @@ public class Run implements Serializable, Comparable<Run>{
     private String startingPoint;
     private String notes;
     private String difficulty;
-<<<<<<< HEAD
     private String loopVsOut;
     private String flatVsHilly;
     private String evenVsUneven;
     private String streetVsTrail;
-
-=======
     private long startTime;
     private long duration;
->>>>>>> master
 
     public Run(){
         this.name = "";
@@ -41,6 +37,10 @@ public class Run implements Serializable, Comparable<Run>{
         this.difficulty = "";
         this.startTime = INVALID_TIME;
         this.duration = INVALID_TIME;
+        this.loopVsOut = "";
+        this.flatVsHilly = "";
+        this.evenVsUneven = "";
+        this.streetVsTrail = "";
     }
 
     public Run setName(String name) { this.name=name; return this; }
@@ -51,12 +51,10 @@ public class Run implements Serializable, Comparable<Run>{
     public Run setFavorited(Boolean favorited) { this.favorited=favorited; return this; }
     public Run setNotes(String notes) { this.notes=notes; return this; }
     public Run setDifficulty(String difficulty) { this.difficulty=difficulty; return this; }
-<<<<<<< HEAD
     public Run setloopVsOut(String loopVsOut) { this.loopVsOut=loopVsOut; return this; }
     public Run setflatVsHilly(String flatVsHilly) { this.flatVsHilly=flatVsHilly; return this; }
     public Run setevenVsUneven(String evenVsUneven) { this.evenVsUneven=evenVsUneven; return this; }
     public Run setstreetVsTrail(String streetVsTrail) { this.streetVsTrail=streetVsTrail; return this; }
-=======
     public Run setInitialSteps(long initialSteps) { this.initialSteps = initialSteps; return this; }
     public Run setStartTime(long startTime) { this.startTime=startTime; return this; }
 
@@ -69,23 +67,18 @@ public class Run implements Serializable, Comparable<Run>{
         this.steps = deltaSteps;
     }
 
->>>>>>> master
-
     public String getName(){ return this.name; }
     public String getNotes() { return this.notes; }
     public long getSteps() { return this.steps; }
     public double getMiles() { return this.miles; }
     public String getDifficulty() { return this.difficulty; }
-<<<<<<< HEAD
     public String getloopVsOut() { return this.loopVsOut; }
     public String getflatVsHilly() { return this.flatVsHilly; }
     public String getevenVsUneven() { return this.evenVsUneven; }
     public String getstreetVsTrail() { return this.streetVsTrail; }
-=======
     public long getInitialSteps () { return this.initialSteps;}
     public long getStartTime() { return this.startTime; }
     public long getDuration() { return this.duration; }
->>>>>>> master
 
 
     public long calculateNewSteps (long totalSteps) {

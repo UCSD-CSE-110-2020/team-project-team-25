@@ -66,11 +66,12 @@ public class EditRunTest {
             runName.setText("Run 1");
             Spinner difficultySpinner = fragment.getActivity().findViewById(R.id.difficulty_spinner);
             difficultySpinner.setSelection(2);
+            String difficulty = difficultySpinner.getSelectedItem().toString();
             MenuItem save = new RoboMenuItem(R.id.action_save);
             fragment.onOptionsItemSelected(save);
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             Run run = runViewModel.sharedRun.getValue();
-            assertThat(run).isEqualTo(new Run().setUUID(run.getUUID()).setName("Run 1"));
+            assertThat(run).isEqualTo(new Run().setUUID(run.getUUID()).setName("Run 1").setDifficulty(difficulty));
             assertThat(run.getDifficulty()).isEqualTo("Moderate");
         });
     }
@@ -89,25 +90,32 @@ public class EditRunTest {
 
             Spinner difficultySpinner = fragment.getActivity().findViewById(R.id.difficulty_spinner);
             difficultySpinner.setSelection(2);
+            String difficulty = difficultySpinner.getSelectedItem().toString();
+
 
             Spinner flatVsHilly = fragment.getActivity().findViewById(R.id.flatVsHilly_spinner);
             flatVsHilly.setSelection(1);
+            String flatVHilly = flatVsHilly.getSelectedItem().toString();
 
             Spinner loopVsOut = fragment.getActivity().findViewById(R.id.loopVsOut_spinner);
             loopVsOut.setSelection(1);
+            String loopVout = loopVsOut.getSelectedItem().toString();
 
             Spinner streetVsTrail = fragment.getActivity().findViewById(R.id.streetVsTrail_spinner);
             streetVsTrail.setSelection(1);
+            String streetVTrail = streetVsTrail.getSelectedItem().toString();
 
             Spinner evenVsUneven = fragment.getActivity().findViewById(R.id.evenVsUneven_spinner);
             evenVsUneven.setSelection(1);
+            String evenVUneven = evenVsUneven.getSelectedItem().toString();
 
 
             MenuItem save = new RoboMenuItem(R.id.action_save);
             fragment.onOptionsItemSelected(save);
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             Run run = runViewModel.sharedRun.getValue();
-            assertThat(run).isEqualTo(new Run().setUUID(run.getUUID()).setName("Run 1"));
+            assertThat(run).isEqualTo(new Run().setUUID(run.getUUID()).setName("Run 1").setDifficulty(difficulty).setflatVsHilly(flatVHilly)
+                    .setevenVsUneven(evenVUneven).setloopVsOut(loopVout).setstreetVsTrail(streetVTrail));
             assertThat(run.getDifficulty()).isEqualTo("Moderate");
             assertThat(run.getevenVsUneven()).isEqualTo("Even Surface");
             assertThat(run.getflatVsHilly()).isEqualTo("Flat");
@@ -177,7 +185,9 @@ public class EditRunTest {
 
         UUID uuid = UUID.randomUUID();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("UUID", uuid);
+        Run uuIDRun = new Run();
+        uuIDRun.setUUID(uuid);
+        bundle.putSerializable("Run", uuIDRun);
         FragmentScenario<EditRunFragment> scenario = FragmentScenario.launchInContainer(EditRunFragment.class, bundle);
         scenario.onFragment(fragment -> {
             Navigation.setViewNavController(fragment.requireView(), navController);

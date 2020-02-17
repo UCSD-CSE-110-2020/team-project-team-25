@@ -123,7 +123,7 @@ public class RunExistingRunEspressoTest {
         appCompatEditText2.perform(replaceText("B"), closeSoftKeyboard());
 
         ViewInteraction appCompatSpinner = onView(
-                allOf(withId(R.id.spinner1),
+                allOf(withId(R.id.difficulty_spinner),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.LinearLayout")),
