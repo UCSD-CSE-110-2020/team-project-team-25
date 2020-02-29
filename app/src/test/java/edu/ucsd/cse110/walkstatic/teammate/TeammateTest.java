@@ -14,9 +14,9 @@ public class TeammateTest {
     }
 
     @Test
-    public void newTeammatesNotEqual(){
-        Teammate teammate = new Teammate();
-        Teammate teammate2 = new Teammate();
+    public void differingEmailsNotEqual(){
+        Teammate teammate = new Teammate("1");
+        Teammate teammate2 = new Teammate("2@gmail.com");
         assertThat(teammate).isNotEqualTo(teammate2);
     }
 

@@ -5,5 +5,5 @@ import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestListener;
 
 public interface StorageWatcher {
     public void addRunUpdateListener(RunUpdateListener runUpdateListener);
-    public void addTeammateRequestUpdateListener(TeammateRequestListener teammateRequestListener);
+    public void addTeammateRequestUpdateListener(TeammateRequestListener teammateRequestsListener);
 }

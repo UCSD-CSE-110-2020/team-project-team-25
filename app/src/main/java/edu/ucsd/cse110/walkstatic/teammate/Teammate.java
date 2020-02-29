@@ -5,13 +5,28 @@ import com.google.gson.Gson;
 import java.util.UUID;
 
 public class Teammate {
-    private UUID uuid;
+    private String name;
+    private final String email;
+
     public Teammate(){
-        uuid = UUID.randomUUID();
+        this("");
     }
 
-    public UUID getUUID(){
-        return this.uuid;
+    public Teammate(String email){
+        this.email = email;
+        this.name = "";
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public String getName(){
+        return this.name;
+    }
+
+    public String getEmail(){
+        return this.email;
     }
 
     @Override

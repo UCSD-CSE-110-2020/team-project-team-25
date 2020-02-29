@@ -24,13 +24,25 @@ public class FirebaseStore implements TeammateRequestStore {
                 .document(FirebaseConstants.REQUEST_DOCUMENT);
     }
 
-
     @Override
     public void addRequest(TeammateRequest request) {
-        String targetUUIDString = request.getTarget().getUUID().toString();
-        CollectionReference requests = teammateRequests.collection(targetUUIDString);
-        requests.add(request).addOnFailureListener(f -> {
+        String targetEmail = request.getTarget().getEmail();
+        CollectionReference targetRequests = teammateRequests.collection(targetEmail);
+        this.addToCollection(targetRequests, request);
+        String requesterEmail = request.getRequester().getEmail();
+        CollectionReference requesterRequests = teammateRequests.collection(requesterEmail);
+        this.addToCollection(requesterRequests, request);
+    }
+
+    @Override
+    public void delete(TeammateRequest request) {
+
+    }
+
+    private void addToCollection(CollectionReference reference, TeammateRequest request){
+        reference.add(request).addOnFailureListener(f -> {
             Log.e(TAG, "Unable to store request " + request + " because " + f.getLocalizedMessage());
         });
     }
+
 }

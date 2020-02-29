@@ -16,20 +16,21 @@ import edu.ucsd.cse110.walkstatic.runs.RunUpdateListener;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestListener;
+import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestsListener;
 
 public class FirebaseStorageWatcher implements StorageWatcher {
     private static String TAG = "FirebaseStorageWatcher";
     private Teammate user;
     private CollectionReference requestCollection;
-    private List<TeammateRequestListener> teammateRequestListenerList;
+    private List<TeammateRequestListener> teammateRequestsListenerList;
 
     public FirebaseStorageWatcher(Teammate user){
         this.user = user;
-        this.teammateRequestListenerList = new ArrayList<>();
-        String userUUIDString = user.getUUID().toString();
+        this.teammateRequestsListenerList = new ArrayList<>();
+        String userEmail = user.getEmail();
         this.requestCollection = FirebaseFirestore.getInstance()
                 .collection(FirebaseConstants.TEAM_COLLECTION)
-                .document(userUUIDString)
+                .document(userEmail)
                 .collection(FirebaseConstants.REQUEST_DOCUMENT);
         this.registerTeammateRequestListener();
     }
@@ -61,8 +62,8 @@ public class FirebaseStorageWatcher implements StorageWatcher {
         for (DocumentChange documentChange : documentChanges) {
             QueryDocumentSnapshot queryDocumentSnapshot = documentChange.getDocument();
             TeammateRequest request = queryDocumentSnapshot.toObject(TeammateRequest.class);
-            this.teammateRequestListenerList.forEach(listener ->{
-                listener.teammateRequestUpdated(request);
+            this.teammateRequestsListenerList.forEach(listener ->{
+                listener.onNewTeammateRequest(request);
             });
         }
     }
