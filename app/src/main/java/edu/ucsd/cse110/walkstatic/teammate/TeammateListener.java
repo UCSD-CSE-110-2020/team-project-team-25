@@ -1,9 +1,7 @@
 package edu.ucsd.cse110.walkstatic.teammate;
 
-import java.util.List;
-
-import edu.ucsd.cse110.walkstatic.teammate.Teammate;
+import java.util.Collection;
 
 public interface TeammateListener {
-    public void teammatesChanged(List<Teammate> teammates);
+    public void teammatesChanged(Collection<Teammate> teammates);
 }

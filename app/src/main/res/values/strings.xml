@@ -57,4 +57,5 @@
     <string name="start_run">Start Run</string>
     <string name="user_height">user_height</string>
     <string name="no_value">--</string>
+    <string name="user_string">user</string>
 </resources>
