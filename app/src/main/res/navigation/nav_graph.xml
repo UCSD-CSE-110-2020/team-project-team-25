@@ -56,4 +56,19 @@
     <action
         android:id="@+id/action_global_debugFragment"
         app:destination="@id/debugFragment" />
+    <fragment
+        android:id="@+id/teamFragment"
+        android:name="edu.ucsd.cse110.walkstatic.TeamFragment"
+        android:label="Teammates"
+        tools:layout="@layout/fragment_team" >
+        <action
+            android:id="@+id/action_teamFragment_to_inviteFragment"
+            app:destination="@id/inviteFragment" />
+    </fragment>
+    <action android:id="@+id/action_global_teamFragment" app:destination="@id/teamFragment" />
+    <fragment
+        android:id="@+id/inviteFragment"
+        android:name="edu.ucsd.cse110.walkstatic.InviteFragment"
+        android:label="Invite Teammate"
+        tools:layout="@layout/fragment_invite" />
 </navigation>

@@ -11,3 +11,5 @@
 .externalNativeBuild
 /.idea/
 gcloud-service-key.json
+app/google-services.json
+files.tar
