@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 
+import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
+import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -25,7 +27,9 @@ public class WalkstaticTest {
 
         Teammate user = new Teammate();
         when(mockSharedPreferences.getString("user", "")).thenReturn(user.toString());
-        Walkstatic walkstatic = new Walkstatic(sharedPreferencesContext);
+        StorageWatcher watcher = mock(StorageWatcher.class);
+        TeammateRequestStore store = mock(TeammateRequestStore.class);
+        Walkstatic walkstatic = new Walkstatic(sharedPreferencesContext, store, watcher);
         assertThat(walkstatic.getUser()).isEqualTo(user);
     }
 
@@ -39,7 +43,9 @@ public class WalkstaticTest {
         when(sharedPreferencesContext.getSharedPreferences("user", Context.MODE_PRIVATE)).thenReturn(mockSharedPreferences);
 
         when(mockSharedPreferences.getString("user", "")).thenReturn("");
-        Walkstatic walkstatic = new Walkstatic(sharedPreferencesContext);
+        StorageWatcher watcher = mock(StorageWatcher.class);
+        TeammateRequestStore store = mock(TeammateRequestStore.class);
+        Walkstatic walkstatic = new Walkstatic(sharedPreferencesContext, store, watcher);
         assertThat(walkstatic.getUser()).isNotNull();
     }
 }
