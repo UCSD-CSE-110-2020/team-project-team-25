@@ -1,8 +1,9 @@
 package edu.ucsd.cse110.walkstatic.teammate;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
 import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
@@ -10,12 +11,12 @@ import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
 public class TeammateRequests implements TeammateRequestListener {
 
     private TeammateRequestStore store;
-    private HashMap<String, TeammateRequest> requestHashMap;
+    private Set<TeammateRequest> requestHashSet;
     private List<TeammateRequestsListener> teammateRequestsListenerList;
 
     public TeammateRequests(TeammateRequestStore store, StorageWatcher storageWatcher){
         this.store = store;
-        this.requestHashMap = new HashMap<>();
+        this.requestHashSet = new HashSet<>();
         this.teammateRequestsListenerList = new ArrayList<>();
         storageWatcher.addTeammateRequestUpdateListener(this);
     }
@@ -25,7 +26,7 @@ public class TeammateRequests implements TeammateRequestListener {
     }
 
     public List<TeammateRequest> getRequests(){
-        List<TeammateRequest> requestList = new ArrayList<>(this.requestHashMap.values());
+        List<TeammateRequest> requestList = new ArrayList<>(this.requestHashSet);
         return requestList;
     }
 
@@ -35,7 +36,7 @@ public class TeammateRequests implements TeammateRequestListener {
 
     @Override
     public void onNewTeammateRequest(TeammateRequest request) {
-        this.requestHashMap.put(request.getRequester().getEmail(), request);
+        this.requestHashSet.add(request);
         this.notifyListeners();
     }
 

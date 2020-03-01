@@ -99,7 +99,35 @@ public class TeammateRequestsTest {
     }
 
     @Test
-    public void acceptingRequestRemovesThem(){
+    public void requestWithDifferentTeammatesFromSameRequesterAreSeperate(){
+        Store store = new Store();
+        FakeStorageWatcher storageWatcher = new FakeStorageWatcher();
+        TeammateRequests teammateRequests = new TeammateRequests(store, storageWatcher);
+        Teammate requester = new Teammate("g");
+        Teammate target1 = new Teammate("target1");
+        Teammate target2 = new Teammate("target2");
+        TeammateRequest request1 = new TeammateRequest(requester, target1);
+        TeammateRequest request2 = new TeammateRequest(requester, target2);
 
+        teammateRequests.onNewTeammateRequest(request1);
+        teammateRequests.onNewTeammateRequest(request2);
+        List<TeammateRequest> teammateRequestsList = teammateRequests.getRequests();
+        assertThat(teammateRequestsList.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void duplicateRequestRejected(){
+        Store store = new Store();
+        FakeStorageWatcher storageWatcher = new FakeStorageWatcher();
+        TeammateRequests teammateRequests = new TeammateRequests(store, storageWatcher);
+        Teammate requester = new Teammate("g");
+        Teammate target = new Teammate("target");
+        TeammateRequest request1 = new TeammateRequest(requester, target);
+        TeammateRequest request2 = new TeammateRequest(requester, target);
+
+        teammateRequests.onNewTeammateRequest(request1);
+        teammateRequests.onNewTeammateRequest(request2);
+        List<TeammateRequest> teammateRequestsList = teammateRequests.getRequests();
+        assertThat(teammateRequestsList.size()).isEqualTo(1);
     }
 }
