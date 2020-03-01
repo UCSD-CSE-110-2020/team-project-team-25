@@ -64,4 +64,5 @@
     <string name="teammate_email">Email:</string>
     <string name="teammate_email_hint">name@gmail.com</string>
     <string name="invite_done_text">Invite</string>
+    <string name="invite_pending">Pending</string>
 </resources>
