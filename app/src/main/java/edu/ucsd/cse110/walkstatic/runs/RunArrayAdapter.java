@@ -31,7 +31,7 @@ public class RunArrayAdapter extends ArrayAdapter<Run> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.run_list_textview, parent, false);
         }
 
-        TextView nameView = convertView.findViewById(R.id.teammate_name);
+        TextView nameView = convertView.findViewById(R.id.listed_run_name);
         TextView milesView = convertView.findViewById(R.id.run_miles);
         TextView stepsView = convertView.findViewById(R.id.run_steps);
         ImageView favoriteIndicator = convertView.findViewById(R.id.favorite_indicator);

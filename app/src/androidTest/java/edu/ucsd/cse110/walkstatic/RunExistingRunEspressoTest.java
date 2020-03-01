@@ -170,7 +170,7 @@ public class RunExistingRunEspressoTest {
         textView2.check(matches(withText("-- Miles")));
 
         ViewInteraction textView3 = onView(
-                allOf(withId(R.id.teammate_name), withText("A"),
+                allOf(withId(R.id.listed_run_name), withText("A"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.my_runs_list),
@@ -253,7 +253,7 @@ public class RunExistingRunEspressoTest {
         navigationMenuItemView2.perform(click());
 
         ViewInteraction textView6 = onView(
-                allOf(withId(R.id.teammate_name), withText("A"),
+                allOf(withId(R.id.listed_run_name), withText("A"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.my_runs_list),

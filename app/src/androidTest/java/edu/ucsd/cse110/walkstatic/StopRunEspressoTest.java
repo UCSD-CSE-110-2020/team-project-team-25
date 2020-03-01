@@ -125,7 +125,7 @@ public class StopRunEspressoTest {
         navigationMenuItemView.perform(click());
 
         ViewInteraction textView = onView(
-                allOf(withId(R.id.teammate_name), withText("abc"),
+                allOf(withId(R.id.listed_run_name), withText("abc"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.my_runs_list),

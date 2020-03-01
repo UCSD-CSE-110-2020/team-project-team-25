@@ -82,35 +82,35 @@ public class MyRunsEspressoTest {
         navigationMenuItemView.perform(click());
 
         ViewInteraction textView = onView(
-                allOf(withId(R.id.teammate_name), withText("Run 1"),
+                allOf(withId(R.id.listed_run_name), withText("Run 1"),
                         isDisplayed()));
         textView.check(matches(withText("Run 1")));
 
         ViewInteraction textView2 = onView(
-                allOf(withId(R.id.teammate_name), withText("Run 2"),
+                allOf(withId(R.id.listed_run_name), withText("Run 2"),
                         isDisplayed()));
         textView2.check(matches(withText("Run 2")));
 
         ViewInteraction milesView = onView(
-                allOf(withParent(hasSibling(allOf(withId(R.id.teammate_name), withText("Run 1")))),
+                allOf(withParent(hasSibling(allOf(withId(R.id.listed_run_name), withText("Run 1")))),
                         withText(containsString("Miles")), isDisplayed()));
 
         milesView.check(matches(withText("-- Miles")));
 
         ViewInteraction stepsView = onView(
-                allOf(withParent(hasSibling(allOf(withId(R.id.teammate_name), withText("Run 1")))),
+                allOf(withParent(hasSibling(allOf(withId(R.id.listed_run_name), withText("Run 1")))),
                         withText(containsString("Steps")), isDisplayed()));
 
         stepsView.check(matches(withText("-- Steps")));
 
         ViewInteraction milesView2 = onView(
-                allOf(withParent(hasSibling(allOf(withId(R.id.teammate_name), withText("Run 2")))),
+                allOf(withParent(hasSibling(allOf(withId(R.id.listed_run_name), withText("Run 2")))),
                         withText(containsString("Miles")), isDisplayed()));
 
         milesView2.check(matches(withText("-- Miles")));
 
         ViewInteraction stepsView2 = onView(
-                allOf(withParent(hasSibling(allOf(withId(R.id.teammate_name), withText("Run 2")))),
+                allOf(withParent(hasSibling(allOf(withId(R.id.listed_run_name), withText("Run 2")))),
                         withText(containsString("Steps")), isDisplayed()));
 
         stepsView2.check(matches(withText("-- Steps")));

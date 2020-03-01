@@ -118,7 +118,7 @@ public class AddRunEspressoTest {
         actionMenuItemView.perform(click());
 
         ViewInteraction textView = onView(
-                allOf(withId(R.id.teammate_name), withText("Apple Park"), isDisplayed()));
+                allOf(withId(R.id.listed_run_name), withText("Apple Park"), isDisplayed()));
         textView.check(matches(withText("Apple Park")));
 
         ViewInteraction actionMenuItemView2 = onView(
@@ -152,7 +152,7 @@ public class AddRunEspressoTest {
         actionMenuItemView3.perform(click());
 
         ViewInteraction textView3 = onView(
-                allOf(withId(R.id.teammate_name), withText("Z Park"), isDisplayed()));
+                allOf(withId(R.id.listed_run_name), withText("Z Park"), isDisplayed()));
         textView3.check(matches(withText("Z Park")));
 
         ViewInteraction appCompatImageButton2 = onView(
@@ -188,12 +188,12 @@ public class AddRunEspressoTest {
         navigationMenuItemView2.perform(click());
 
         ViewInteraction textView4 = onView(
-                allOf(withId(R.id.teammate_name), withText("Apple Park"),
+                allOf(withId(R.id.listed_run_name), withText("Apple Park"),
                         isDisplayed()));
         textView4.check(matches(withText("Apple Park")));
 
         ViewInteraction textView5 = onView(
-                allOf(withId(R.id.teammate_name), withText("Z Park"),
+                allOf(withId(R.id.listed_run_name), withText("Z Park"),
                         isDisplayed()));
         textView5.check(matches(withText("Z Park")));
     }
