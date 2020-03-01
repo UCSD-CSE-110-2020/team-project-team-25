@@ -27,11 +27,11 @@ public class DefaultStorage {
         return defaultTeammateRequestStore.getTeammateRequestStore();
     }
 
-    public void setDefaultStorageWatcher(StorageWatcherBlueprint defaultStorageWatcher){
+    public static void setDefaultStorageWatcher(StorageWatcherBlueprint defaultStorageWatcher){
         DefaultStorage.defaultStorageWatcher = defaultStorageWatcher;
     }
 
-    public void setDefaultTeammateRequestStore(TeammateRequestStoreBlueprint defaultTeammateRequestStore){
+    public static void setDefaultTeammateRequestStore(TeammateRequestStoreBlueprint defaultTeammateRequestStore){
         DefaultStorage.defaultTeammateRequestStore = defaultTeammateRequestStore;
     }
 }
