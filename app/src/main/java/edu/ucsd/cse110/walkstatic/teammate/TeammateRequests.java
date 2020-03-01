@@ -1,7 +1,6 @@
 package edu.ucsd.cse110.walkstatic.teammate;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,11 +24,12 @@ public class TeammateRequests implements TeammateRequestListener {
         this.store.addRequest(request);
     }
 
-    public Collection<TeammateRequest> getRequests(){
-        return this.requestHashMap.values();
+    public List<TeammateRequest> getRequests(){
+        List<TeammateRequest> requestList = new ArrayList<>(this.requestHashMap.values());
+        return requestList;
     }
 
-    public void addRequestListener(TeammateRequestsListener teammateRequestsListener){
+    public void addRequestsListener(TeammateRequestsListener teammateRequestsListener){
         this.teammateRequestsListenerList.add(teammateRequestsListener);
     }
 
@@ -41,7 +41,7 @@ public class TeammateRequests implements TeammateRequestListener {
 
     private void notifyListeners(){
         this.teammateRequestsListenerList.forEach(teammateRequestsListener -> {
-            teammateRequestsListener.teammateRequestUpdated(this.getRequests());
+            teammateRequestsListener.teammateRequestsUpdated(this.getRequests());
         });
     }
 }

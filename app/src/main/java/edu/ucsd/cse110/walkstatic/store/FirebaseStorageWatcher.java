@@ -16,22 +16,21 @@ import edu.ucsd.cse110.walkstatic.runs.RunUpdateListener;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestListener;
-import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestsListener;
 
 public class FirebaseStorageWatcher implements StorageWatcher {
     private static String TAG = "FirebaseStorageWatcher";
     private Teammate user;
     private CollectionReference requestCollection;
-    private List<TeammateRequestListener> teammateRequestsListenerList;
+    private List<TeammateRequestListener> teammateRequestListenerList;
 
     public FirebaseStorageWatcher(Teammate user){
         this.user = user;
-        this.teammateRequestsListenerList = new ArrayList<>();
+        this.teammateRequestListenerList = new ArrayList<>();
         String userEmail = user.getEmail();
         this.requestCollection = FirebaseFirestore.getInstance()
                 .collection(FirebaseConstants.TEAM_COLLECTION)
-                .document(userEmail)
-                .collection(FirebaseConstants.REQUEST_DOCUMENT);
+                .document(FirebaseConstants.REQUEST_DOCUMENT)
+                .collection(userEmail);
         this.registerTeammateRequestListener();
     }
 
@@ -48,7 +47,7 @@ public class FirebaseStorageWatcher implements StorageWatcher {
 
     @Override
     public void addTeammateRequestUpdateListener(TeammateRequestListener teammateRequestListener) {
-
+        this.teammateRequestListenerList.add(teammateRequestListener);
     }
 
     private void onTeammate(QuerySnapshot snapshot, FirebaseFirestoreException exception){
@@ -62,7 +61,7 @@ public class FirebaseStorageWatcher implements StorageWatcher {
         for (DocumentChange documentChange : documentChanges) {
             QueryDocumentSnapshot queryDocumentSnapshot = documentChange.getDocument();
             TeammateRequest request = queryDocumentSnapshot.toObject(TeammateRequest.class);
-            this.teammateRequestsListenerList.forEach(listener ->{
+            this.teammateRequestListenerList.forEach(listener ->{
                 listener.onNewTeammateRequest(request);
             });
         }

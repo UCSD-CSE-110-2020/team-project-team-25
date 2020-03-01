@@ -160,7 +160,7 @@ public class VoiceDictationEspressoTest {
         actionMenuItemView2.perform(click());
 
         ViewInteraction textView4 = onView(
-                allOf(withId(R.id.listed_run_name), withText("A Run"),
+                allOf(withId(R.id.teammate_name), withText("A Run"),
                         isDisplayed()));
         textView4.check(matches(withText("A Run")));
     }

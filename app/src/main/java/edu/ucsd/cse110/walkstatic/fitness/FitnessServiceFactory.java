@@ -10,7 +10,7 @@ public class FitnessServiceFactory {
 
     private static final String TAG = "[FitnessServiceFactory]";
 
-    private static String defaultFitnessServiceKey = DefaultBlueprints.GOOGLE_FIT;
+    private static String defaultFitnessServiceKey = DefaultBlueprints.INCREMENT;
 
     private static Map<String, BluePrint> blueprints = new HashMap<>();
 

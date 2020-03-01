@@ -1,8 +1,11 @@
 package edu.ucsd.cse110.walkstatic.teammate;
 
 public class TeammateRequest {
-    private final Teammate requester;
-    private final Teammate target;
+    private Teammate requester;
+    private Teammate target;
+
+    private TeammateRequest(){
+    }
 
     public TeammateRequest(Teammate requester, Teammate target){
         this.requester = requester;

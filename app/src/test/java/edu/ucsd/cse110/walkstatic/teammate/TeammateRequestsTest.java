@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import edu.ucsd.cse110.walkstatic.runs.RunUpdateListener;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
@@ -22,7 +23,7 @@ public class TeammateRequestsTest {
 
         @Override
         public void delete(TeammateRequest request) {
-            
+
         }
     }
 
@@ -67,10 +68,10 @@ public class TeammateRequestsTest {
     }
 
     private class TRL implements TeammateRequestsListener {
-        public Collection<TeammateRequest> lastRequests;
+        public List<TeammateRequest> lastRequests;
 
         @Override
-        public void teammateRequestUpdated(Collection<TeammateRequest> requests) {
+        public void teammateRequestsUpdated(List<TeammateRequest> requests) {
             this.lastRequests = requests;
         }
     }
@@ -81,7 +82,7 @@ public class TeammateRequestsTest {
         FakeStorageWatcher storageWatcher = new FakeStorageWatcher();
         TeammateRequests teammateRequests = new TeammateRequests(store, storageWatcher);
         TRL trl = new TRL();
-        teammateRequests.addRequestListener(trl);
+        teammateRequests.addRequestsListener(trl);
         Teammate requester = new Teammate("g");
         Teammate target = new Teammate("f");
         TeammateRequest request = new TeammateRequest(requester, target);

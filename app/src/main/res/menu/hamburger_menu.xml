@@ -7,6 +7,9 @@
         <item
             android:id="@id/action_global_myRunsFragment"
             android:title="My Runs" />
+        <item
+            android:id="@id/teamFragment"
+            android:title="Team" />
     </group>
     <item
     android:id="@+id/debugFragment"

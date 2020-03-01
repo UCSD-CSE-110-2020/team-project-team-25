@@ -56,4 +56,9 @@
     <action
         android:id="@+id/action_global_debugFragment"
         app:destination="@id/debugFragment" />
+    <fragment
+        android:id="@+id/teamFragment"
+        android:name="edu.ucsd.cse110.walkstatic.TeamFragment"
+        android:label="Teammates"
+        tools:layout="@layout/fragment_team" /><action android:id="@+id/action_global_teamFragment" app:destination="@id/teamFragment"/>
 </navigation>
