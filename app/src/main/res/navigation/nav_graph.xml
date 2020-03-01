@@ -69,6 +69,6 @@
     <fragment
         android:id="@+id/inviteFragment"
         android:name="edu.ucsd.cse110.walkstatic.InviteFragment"
-        android:label="fragment_invite"
+        android:label="Invite Teammate"
         tools:layout="@layout/fragment_invite" />
 </navigation>
