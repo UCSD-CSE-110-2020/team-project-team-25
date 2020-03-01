@@ -61,8 +61,13 @@ public class FirebaseStorageWatcher implements StorageWatcher {
         for (DocumentChange documentChange : documentChanges) {
             QueryDocumentSnapshot queryDocumentSnapshot = documentChange.getDocument();
             TeammateRequest request = queryDocumentSnapshot.toObject(TeammateRequest.class);
+            final boolean removed = documentChange.getType() == DocumentChange.Type.REMOVED;
             this.teammateRequestListenerList.forEach(listener ->{
-                listener.onNewTeammateRequest(request);
+                if(removed){
+                    listener.onTeammateRequestDeleted(request);
+                } else {
+                    listener.onNewTeammateRequest(request);
+                }
             });
         }
     }

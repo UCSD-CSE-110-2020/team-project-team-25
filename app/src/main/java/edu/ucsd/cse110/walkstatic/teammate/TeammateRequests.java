@@ -1,5 +1,7 @@
 package edu.ucsd.cse110.walkstatic.teammate;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -14,7 +16,7 @@ public class TeammateRequests implements TeammateRequestListener {
     private Set<TeammateRequest> requestHashSet;
     private List<TeammateRequestsListener> teammateRequestsListenerList;
 
-    public TeammateRequests(TeammateRequestStore store, StorageWatcher storageWatcher){
+    public TeammateRequests(@NotNull TeammateRequestStore store, @NotNull StorageWatcher storageWatcher){
         this.store = store;
         this.requestHashSet = new HashSet<>();
         this.teammateRequestsListenerList = new ArrayList<>();
@@ -22,7 +24,10 @@ public class TeammateRequests implements TeammateRequestListener {
     }
 
     public void addRequest(TeammateRequest request){
-        this.store.addRequest(request);
+        if(!this.requestHashSet.contains(request)){
+            this.store.addRequest(request);
+            this.requestHashSet.add(request);
+        }
     }
 
     public List<TeammateRequest> getRequests(){
@@ -37,6 +42,12 @@ public class TeammateRequests implements TeammateRequestListener {
     @Override
     public void onNewTeammateRequest(TeammateRequest request) {
         this.requestHashSet.add(request);
+        this.notifyListeners();
+    }
+
+    @Override
+    public void onTeammateRequestDeleted(TeammateRequest request) {
+        this.requestHashSet.remove(request);
         this.notifyListeners();
     }
 

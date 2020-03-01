@@ -7,7 +7,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.List;
@@ -16,14 +15,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
-import edu.ucsd.cse110.walkstatic.runs.Run;
-import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateArrayAdapter;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
-import edu.ucsd.cse110.walkstatic.teammate.TeammateRequests;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestsListener;
 
-public class TeamFragment extends Fragment implements AdapterView.OnItemClickListener, TeammateRequestsListener {
+public class TeamFragment extends Fragment implements TeammateRequestsListener {
 
     private TeammateArrayAdapter teammateListAdapter;
     private List<TeammateRequest> requestsList;
@@ -53,17 +49,8 @@ public class TeamFragment extends Fragment implements AdapterView.OnItemClickLis
         this.requestsList = this.app.getTeammateRequests().getRequests();
         teammateListAdapter = new TeammateArrayAdapter(this.getActivity(), R.layout.teammate_request_textview, requestsList);
         listView.setAdapter(teammateListAdapter);
-//            listView.setOnItemClickListener(this);
         teammateListAdapter.notifyDataSetChanged();
         this.app.getTeammateRequests().addRequestsListener(this);
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
-        Run run = (Run) parent.getItemAtPosition(pos);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("Run", run);
-        Navigation.findNavController(this.getActivity(), this.getId()).navigate(R.id.action_myRunsFragment_to_viewRunFragment, bundle);
     }
 
     @Override
@@ -75,17 +62,14 @@ public class TeamFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_add) {
-            this.addNewRun();
+            this.inviteTeammate();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void addNewRun() {
-        Teammate other = new Teammate("other@gmail.com");
-        TeammateRequest teammateRequest = new TeammateRequest(this.app.getUser(), other);
-        this.app.getTeammateRequests().addRequest(teammateRequest);
-//        Navigation.findNavController(this.getActivity(), this.getId()).navigate(R.id.action_myRunsFragment_to_editRunFragment);
+    private void inviteTeammate() {
+        Navigation.findNavController(this.getActivity(), this.getId()).navigate(R.id.action_teamFragment_to_inviteFragment);
     }
 
 

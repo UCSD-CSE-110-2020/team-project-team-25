@@ -99,7 +99,7 @@ public class TeammateRequestsTest {
     }
 
     @Test
-    public void requestWithDifferentTeammatesFromSameRequesterAreSeperate(){
+    public void requestWithDifferentTeammatesFromSameRequesterAreSeparate(){
         Store store = new Store();
         FakeStorageWatcher storageWatcher = new FakeStorageWatcher();
         TeammateRequests teammateRequests = new TeammateRequests(store, storageWatcher);
@@ -129,5 +129,38 @@ public class TeammateRequestsTest {
         teammateRequests.onNewTeammateRequest(request2);
         List<TeammateRequest> teammateRequestsList = teammateRequests.getRequests();
         assertThat(teammateRequestsList.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void addRequestRejectsDuplicates(){
+        Store store = new Store();
+        FakeStorageWatcher storageWatcher = new FakeStorageWatcher();
+        TeammateRequests teammateRequests = new TeammateRequests(store, storageWatcher);
+        Teammate requester = new Teammate("g");
+        Teammate target = new Teammate("target");
+        TeammateRequest request1 = new TeammateRequest(requester, target);
+        TeammateRequest request2 = new TeammateRequest(requester, target);
+
+        teammateRequests.addRequest(request1);
+        store.lastRequest = null;
+        teammateRequests.addRequest(request2);
+        assertThat(store.lastRequest).isNull();
+    }
+
+    @Test
+    public void teammateRequestDeletedRemovesAndUpdatesListeners(){
+        Store store = new Store();
+        FakeStorageWatcher storageWatcher = new FakeStorageWatcher();
+        TeammateRequests teammateRequests = new TeammateRequests(store, storageWatcher);
+        TRL trl = new TRL();
+        teammateRequests.addRequestsListener(trl);
+        Teammate requester = new Teammate("g");
+        Teammate target = new Teammate("f");
+        TeammateRequest request = new TeammateRequest(requester, target);
+        TeammateRequest request2 = new TeammateRequest(requester, target);
+        storageWatcher.lastListener.onNewTeammateRequest(request);
+        storageWatcher.lastListener.onTeammateRequestDeleted(request);
+
+        assertThat(trl.lastRequests.contains(request)).isFalse();
     }
 }

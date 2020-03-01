@@ -34,7 +34,7 @@ public class TeammateArrayAdapter extends ArrayAdapter<TeammateRequest> {
         TextView nameView = convertView.findViewById(R.id.teammate_name);
         TextView initialView = convertView.findViewById(R.id.teammate_initials);
 
-        nameView.setText(teammateRequest.getTarget().getEmail());
+        nameView.setText(teammateRequest.getTarget().getName());
         initialView.setText("!!");
 
         return convertView;

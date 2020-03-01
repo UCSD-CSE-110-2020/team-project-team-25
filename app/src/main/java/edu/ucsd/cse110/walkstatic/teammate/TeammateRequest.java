@@ -6,7 +6,12 @@ public class TeammateRequest {
     private Teammate requester;
     private Teammate target;
 
+    /**
+     * Called via reflection in Firebase. If a parse error occurs only this constructor is called
+     * which is why a default Teammate is specified.
+     */
     private TeammateRequest(){
+        this.target = this.requester = new Teammate();
     }
 
     public TeammateRequest(Teammate requester, Teammate target){
@@ -23,7 +28,7 @@ public class TeammateRequest {
 
     @Override
     public boolean equals(Object other){
-        if(other == null || !(other instanceof TeammateRequest)){
+        if(!(other instanceof TeammateRequest)){
             return false;
         }
         TeammateRequest request = (TeammateRequest) other;
