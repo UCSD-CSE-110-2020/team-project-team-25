@@ -21,7 +21,7 @@ public class Walkstatic {
 
     public Walkstatic(Context context){
         this.readUser(context);
-        TeammateRequestStore defaultStore = DefaultStorage.getDefaultTeammateRequestStore();
+        TeammateRequestStore defaultStore = DefaultStorage.getDefaultTeammateRequestStore(context);
         StorageWatcher defaultStorageWatcher = DefaultStorage.getDefaultStorageWatcher(this.user);
         this.teammateRequests = new TeammateRequests(defaultStore, defaultStorageWatcher);
     }
