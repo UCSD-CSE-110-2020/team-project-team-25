@@ -33,7 +33,7 @@ import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 import edu.ucsd.cse110.walkstatic.runs.MileCalculator;
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunList;
-import edu.ucsd.cse110.walkstatic.store.FirebaseStorageWatcher;
+import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestListener;
@@ -402,6 +402,6 @@ public class RunFragment extends Fragment {
     }
 
     private void buildStorageWatcher(){
-        this.storageWatcher = new FirebaseStorageWatcher(app.getUser());
+        this.storageWatcher = DefaultStorage.getDefaultStorageWatcher(app.getUser());
     }
 }

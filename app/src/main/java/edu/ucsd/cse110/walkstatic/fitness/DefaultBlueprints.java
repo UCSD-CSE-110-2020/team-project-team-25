@@ -1,6 +1,6 @@
 package edu.ucsd.cse110.walkstatic.fitness;
 
-import android.app.Activity;
+import edu.ucsd.cse110.walkstatic.mocks.MockFitAdapter;
 
 public class DefaultBlueprints {
     public static final String GOOGLE_FIT = "GOOGLE_FIT";
