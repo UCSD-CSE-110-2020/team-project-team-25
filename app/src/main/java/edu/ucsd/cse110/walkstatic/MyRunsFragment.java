@@ -12,15 +12,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunArrayAdapter;
@@ -29,7 +25,6 @@ import edu.ucsd.cse110.walkstatic.runs.RunList;
 public class MyRunsFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private RunList runs;
-    // private ArrayAdapter<Run> runListAdapter;
     private RunArrayAdapter runListAdapter;
 
     @Override
