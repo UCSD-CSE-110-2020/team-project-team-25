@@ -40,9 +40,18 @@
         android:label="View Run"
         tools:layout="@layout/fragment_view_run" />
     <action
+        android:id="@+id/action_viewRunFragment_to_proposeRunFragment"
+        app:destination="@id/proposeRunFragment"
+        app:popUpTo="@+id/viewRunFragment" />
+    <action
         android:id="@+id/action_global_myRunsFragment"
         app:destination="@id/myRunsFragment"
         app:popUpToInclusive="true" />
+    <fragment
+        android:id="@+id/proposeRunFragment"
+        android:name="edu.ucsd.cse110.walkstatic.proposeRunFragment"
+        android:label="Propose Run"
+        tools:layout="@layout/fragment_propose_run" />
     <fragment
         android:id="@+id/editRunFragment"
         android:name="edu.ucsd.cse110.walkstatic.EditRunFragment"
