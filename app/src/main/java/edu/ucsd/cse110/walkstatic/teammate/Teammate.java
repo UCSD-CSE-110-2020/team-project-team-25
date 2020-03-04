@@ -54,4 +54,9 @@ public class Teammate {
         Teammate result = gson.fromJson(json, Teammate.class);
         return result;
     }
+
+    @Override
+    public int hashCode(){
+        return this.toString().hashCode();
+    }
 }

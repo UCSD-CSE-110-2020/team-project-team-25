@@ -1,9 +1,12 @@
 package edu.ucsd.cse110.walkstatic.runs;
 
+import com.google.firebase.firestore.DocumentId;
 import com.google.gson.Gson;
 
 import java.io.Serializable;
 import java.util.UUID;
+
+import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 
 public class Run implements Serializable, Comparable<Run>{
     public static final long INVALID_STEPS = -1;
@@ -24,6 +27,10 @@ public class Run implements Serializable, Comparable<Run>{
     private String streetVsTrail;
     private long startTime;
     private long duration;
+    private Teammate author;
+
+    @DocumentId
+    private String documentID;
 
     public Run(){
         this.name = "";
@@ -58,6 +65,13 @@ public class Run implements Serializable, Comparable<Run>{
     public Run setInitialSteps(long initialSteps) { this.initialSteps = initialSteps; return this; }
     public Run setStartTime(long startTime) { this.startTime=startTime; return this; }
 
+    public void setAuthor(Teammate author){
+        this.author = author;
+    }
+    public void setDocumentID(String documentID){
+        this.documentID = documentID;
+    }
+
     public void finalizeTime(long endTime) {
         this.duration = endTime - this.startTime;
     }
@@ -79,6 +93,8 @@ public class Run implements Serializable, Comparable<Run>{
     public long getInitialSteps () { return this.initialSteps;}
     public long getStartTime() { return this.startTime; }
     public long getDuration() { return this.duration; }
+    public Teammate getAuthor() { return this.author; }
+    public String getDocumentID() { return this.documentID; }
 
     public long calculateNewSteps (long totalSteps) {
         return (totalSteps - this.initialSteps);

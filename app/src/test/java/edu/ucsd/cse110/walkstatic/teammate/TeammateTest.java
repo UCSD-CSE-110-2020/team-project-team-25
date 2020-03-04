@@ -31,4 +31,11 @@ public class TeammateTest {
         Teammate teammate = new Teammate();
         assertThat(teammate).isNotEqualTo("");
     }
+
+    @Test
+    public void hashCodeRepresentsObject(){
+        Teammate teammate = new Teammate();
+        Teammate teammateClone = new Teammate();
+        assertThat(teammate.hashCode()).isEqualTo(teammateClone.hashCode());
+    }
 }
