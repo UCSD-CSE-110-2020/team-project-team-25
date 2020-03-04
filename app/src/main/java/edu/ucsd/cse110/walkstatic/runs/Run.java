@@ -48,6 +48,8 @@ public class Run implements Serializable, Comparable<Run>{
         this.flatVsHilly = "";
         this.evenVsUneven = "";
         this.streetVsTrail = "";
+        this.author = new Teammate();
+        this.documentID = "";
     }
 
     public Run setName(String name) { this.name=name; return this; }

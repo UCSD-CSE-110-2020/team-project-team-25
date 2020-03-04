@@ -140,4 +140,95 @@ public class RunsTest {
         assertThat(runList.size()).isEqualTo(1);
         assertThat(runList.get(0)).isEqualTo(newRun2);
     }
+
+    @Test
+    public void whenNotifiedOfTeammateRunTeammateRunsListenerCalled(){
+        RunStore mockRunStore = mock(RunStore.class);
+        RunsListener runsListener = mock(RunsListener.class);
+        ArgumentCaptor<List<Run>> runListCaptor = ArgumentCaptor.forClass(List.class);
+        Runs runs = new Runs(mockRunStore, new Teammate("email"));
+        runs.addRunsListener(runsListener);
+        Teammate user = new Teammate("email");
+        Run newRun = new Run().setName("1");
+        newRun.setAuthor(user);
+        Teammate otherTeammate = new Teammate("bad guy");
+        Run newRun2 = new Run().setName("2");
+        newRun2.setAuthor(otherTeammate);
+        runs.onNewRun(newRun);
+        runs.onNewRun(newRun2);
+        verify(runsListener).teammateRunsChanged(runListCaptor.capture());
+        List<Run> runList = runListCaptor.getValue();
+        assertThat(runList.size()).isEqualTo(1);
+        assertThat(runList.get(0)).isEqualTo(newRun2);
+    }
+
+    @Test
+    public void notifiedOfUserRunWhenUserRunAdded(){
+        RunStore mockRunStore = mock(RunStore.class);
+        RunsListener runsListener = mock(RunsListener.class);
+        ArgumentCaptor<List<Run>> runListCaptor = ArgumentCaptor.forClass(List.class);
+        Runs runs = new Runs(mockRunStore, new Teammate("email"));
+        runs.addRunsListener(runsListener);
+        Teammate user = new Teammate("email");
+        Run newRun = new Run().setName("1");
+        newRun.setAuthor(user);
+        Teammate otherTeammate = new Teammate("bad guy");
+        Run newRun2 = new Run().setName("2");
+        newRun2.setAuthor(otherTeammate);
+        runs.onNewRun(newRun);
+        runs.onNewRun(newRun2);
+        verify(runsListener).myRunsChanged(runListCaptor.capture());
+        List<Run> runList = runListCaptor.getValue();
+        assertThat(runList.size()).isEqualTo(1);
+        assertThat(runList.get(0)).isEqualTo(newRun);
+    }
+
+    @Test
+    public void findLastRunReturnsLastestRunRun(){
+        Teammate author = new Teammate("email");
+        Run runTest = new Run().setName("Test").setStartTime(0);
+        runTest.finalizeTime(100);
+        runTest.setAuthor(author);
+        Run runFoo = new Run().setName("Foo").setStartTime(10);
+        runFoo.finalizeTime(120);
+        runFoo.setAuthor(author);
+        Run runBaz = new Run().setName("Baz").setStartTime(50);
+        runBaz.finalizeTime(150);
+        runBaz.setAuthor(author);
+        RunStore mockRunStore = mock(RunStore.class);
+        Runs runs = new Runs(mockRunStore, author);
+        runs.onNewRun(runBaz);
+        runs.onNewRun(runTest);
+        runs.onNewRun(runFoo);
+        assertThat(runs.getLastRun()).isEqualTo(runBaz);
+    }
+
+    @Test
+    public void findLastRunReturnsNoRunWhenNoRunsHaveEndTime(){
+        Teammate author = new Teammate("email");
+        Run runTest = new Run().setName("Test");
+        runTest.setAuthor(author);
+        Run runFoo = new Run().setName("Foo");
+        runFoo.setAuthor(author);
+        RunStore mockRunStore = mock(RunStore.class);
+        Runs runs = new Runs(mockRunStore, author);
+        runs.onNewRun(runTest);
+        runs.onNewRun(runFoo);
+        assertThat(runs.getLastRun()).isNull();
+    }
+
+    @Test
+    public void findLastRunReturnsOnlyRunWithEndTime(){
+        Teammate author = new Teammate("email");
+        Run runTest = new Run().setName("Test").setStartTime(0);
+        runTest.finalizeTime(100);
+        runTest.setAuthor(author);
+        Run runFoo = new Run().setName("Foo");
+        runFoo.setAuthor(author);
+        RunStore mockRunStore = mock(RunStore.class);
+        Runs runs = new Runs(mockRunStore, author);
+        runs.onNewRun(runTest);
+        runs.onNewRun(runFoo);
+        assertThat(runs.getLastRun()).isEqualTo(runTest);
+    }
 }

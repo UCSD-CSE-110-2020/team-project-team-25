@@ -27,24 +27,23 @@ public class FirebaseStorageWatcher implements StorageWatcher {
     private static String TAG = "FirebaseStorageWatcher";
     private Teammate user;
     private CollectionReference requestCollection;
-    private DocumentReference runsDocument;
+    private CollectionReference runsCollection;
     private List<TeammateRequestListener> teammateRequestListenerList;
     private List<RunUpdateListener> runUpdateListeners;
-    private Set<String> registeredMaps;
 
     public FirebaseStorageWatcher(Teammate user){
         this.user = user;
         this.teammateRequestListenerList = new ArrayList<>();
         this.runUpdateListeners = new ArrayList<>();
-        this.registeredMaps = new HashSet<>();
         String userEmail = user.getEmail();
         this.requestCollection = FirebaseFirestore.getInstance()
                 .collection(FirebaseConstants.TEAM_COLLECTION)
                 .document(FirebaseConstants.REQUEST_DOCUMENT)
                 .collection(userEmail);
-        this.runsDocument = FirebaseFirestore.getInstance()
+        this.runsCollection = FirebaseFirestore.getInstance()
                 .collection(FirebaseConstants.TEAM_COLLECTION)
-                .document(FirebaseConstants.RUNS_DOCUMENT);
+                .document(FirebaseConstants.RUNS_DOCUMENT)
+                .collection(FirebaseConstants.RUNS_DOCUMENT);
         this.registerTeammateRequestListener();
         this.registerRunsListener();
     }
@@ -54,13 +53,13 @@ public class FirebaseStorageWatcher implements StorageWatcher {
     }
 
     private void registerRunsListener(){
-        this.runsDocument.addSnapshotListener(this::onRunCollection);
+        this.runsCollection.addSnapshotListener(this::onRun);
     }
 
 
     @Override
     public void addRunUpdateListener(RunUpdateListener runUpdateListener) {
-
+        this.runUpdateListeners.add(runUpdateListener);
     }
 
     @Override
@@ -88,23 +87,6 @@ public class FirebaseStorageWatcher implements StorageWatcher {
                 }
             });
         }
-    }
-
-    private void onRunCollection(DocumentSnapshot snapshot, FirebaseFirestoreException exception){
-        if(exception != null){
-            Log.e(TAG, exception.getLocalizedMessage());
-        }
-        if(snapshot == null){
-            return;
-        }
-        Map<String, Object> collections = snapshot.getData();
-        collections.forEach((string, object) -> {
-            if(!this.registeredMaps.contains(string)){
-                CollectionReference reference = (CollectionReference)object;
-                reference.addSnapshotListener(this::onRun);
-                this.registeredMaps.add(string);
-            }
-        });
     }
 
     private void onRun(QuerySnapshot snapshot, FirebaseFirestoreException exception){

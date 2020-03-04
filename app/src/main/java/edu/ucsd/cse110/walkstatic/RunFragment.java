@@ -30,6 +30,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -37,7 +38,7 @@ import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 import edu.ucsd.cse110.walkstatic.runs.MileCalculator;
 import edu.ucsd.cse110.walkstatic.runs.Run;
-import edu.ucsd.cse110.walkstatic.runs.RunList;
+import edu.ucsd.cse110.walkstatic.runs.RunsListener;
 import edu.ucsd.cse110.walkstatic.time.TimeHelp;
 import edu.ucsd.cse110.walkstatic.time.TimeMachine;
 
@@ -53,6 +54,8 @@ public class RunFragment extends Fragment {
     private Run run;
     private Run lastRun;
 
+    private Walkstatic app;
+
     private static final int[] currentRunComponents = {R.id.mileRunCount, R.id.mileRunText,
             R.id.stepRunCount, R.id.stepRunText};
     private static final String TAG = "StepCountActivity";
@@ -66,6 +69,7 @@ public class RunFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
+        this.app = new Walkstatic(this.getContext());
         this.buildMileCalculator();
         initStepCount();
         Button startButton = getActivity().findViewById(R.id.startButton);
@@ -247,15 +251,19 @@ public class RunFragment extends Fragment {
     }
 
     private void loadLastRun() {
-        String preferencesName = this.getResources().getString(R.string.run_save_name);
-        SharedPreferences sharedPreferences = this.getActivity().getSharedPreferences(
-                preferencesName, Context.MODE_PRIVATE);
+        this.lastRun = this.app.getRuns().getLastRun();
+        this.app.getRuns().addRunsListener(new RunsListener() {
+            @Override
+            public void myRunsChanged(List<Run> myRuns) {
+                lastRun = app.getRuns().getLastRun();
+                updateLastRunUI();
+            }
 
-        String json = sharedPreferences.getString(preferencesName, "[]");
-        RunList runs = new RunList(json);
-        Run lastRun = runs.getLastRun();
+            @Override
+            public void teammateRunsChanged(List<Run> teammateRuns) {
 
-        this.lastRun = lastRun;
+            }
+        });
         updateLastRunUI();
     }
 

@@ -54,6 +54,11 @@ public class TeammateRunsFragment extends Fragment implements RunsListener {
     }
 
     @Override
+    public void myRunsChanged(List<Run> myRuns) {
+
+    }
+
+    @Override
     public void teammateRunsChanged(List<Run> teammateRuns) {
 
     }

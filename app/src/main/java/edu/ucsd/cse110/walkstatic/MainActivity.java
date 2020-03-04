@@ -36,15 +36,18 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.navigation.NavigationView;
 
 import edu.ucsd.cse110.walkstatic.runs.Run;
-import edu.ucsd.cse110.walkstatic.runs.RunList;
 
 
 public class MainActivity extends AppCompatActivity {
+    private Walkstatic app;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupNavBar();
+        this.app = new Walkstatic(this.getApplicationContext());
+
 
 //        createFakeRuns();
 
@@ -56,16 +59,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createFakeRuns(){
-        String preferencesName = this.getResources().getString(R.string.run_save_name);
-        SharedPreferences sharedPreferences = this.getSharedPreferences(
-                preferencesName, Context.MODE_PRIVATE);
-        RunList runs = new RunList();
-        runs.add(new Run().setName("Point Loma"));
-        runs.add(new Run().setName("Mission Trails"));
-        sharedPreferences.edit().putString("runs", runs.toJSON()).apply();
 
-        preferencesName = this.getResources().getString(R.string.current_run);
-        sharedPreferences = this.getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
+        this.app.getRuns().addRun(new Run().setName("Point Loma"));
+        this.app.getRuns().addRun(new Run().setName("Mission Trails"));
+
+        String preferencesName = this.getResources().getString(R.string.current_run);
+        SharedPreferences sharedPreferences = this.getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
         sharedPreferences.edit().clear().apply();
     }
 
@@ -132,16 +131,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void addViewModelListener(){
         RunViewModel runViewModel = new ViewModelProvider(this).get(RunViewModel.class);
-        runViewModel.sharedRun.observe(this, this::addRun);
-    }
-
-    private void addRun(Run run){
-        String preferencesName = this.getResources().getString(R.string.run_save_name);
-        SharedPreferences sharedPreferences = this.getSharedPreferences(
-                preferencesName, Context.MODE_PRIVATE);
-        String runJSON = sharedPreferences.getString(preferencesName, "");
-        RunList runs = new RunList(runJSON);
-        runs.add(run);
-        sharedPreferences.edit().putString(preferencesName, runs.toJSON()).commit();
+        runViewModel.sharedRun.observe(this, this.app.getRuns()::addRun);
     }
 }
