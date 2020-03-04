@@ -56,6 +56,7 @@ public class MainActivityTest {
 
         intent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
         intent.putExtra(StepCountActivity.FITNESS_SERVICE_KEY, TEST_SERVICE);
+        MockFirebaseHelpers.mockStorage();
     }
 
     @Test

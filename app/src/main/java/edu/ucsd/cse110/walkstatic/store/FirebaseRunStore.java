@@ -35,8 +35,4 @@ public class FirebaseRunStore implements RunStore{
         }
 
     }
-
-    private void addToCollection(CollectionReference reference, Run run){
-
-    }
 }

@@ -20,34 +20,49 @@ import java.util.ArrayList;
 
 import androidx.fragment.app.testing.FragmentScenario;
 import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.runs.RunUpdateListener;
+import edu.ucsd.cse110.walkstatic.runs.RunsListener;
+import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
+import edu.ucsd.cse110.walkstatic.store.RunStore;
+import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
+import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
+import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
 
 @RunWith(AndroidJUnit4.class)
 public class MyRunsTest {
 
     @Test
     public void ListPopulatedWithRuns() {
-        String preferencesName = ApplicationProvider.getApplicationContext().getResources().getString(R.string.run_save_name);
+        Teammate user = new Teammate("tester@gmail.com");
+        String preferencesName = ApplicationProvider.getApplicationContext().getResources().getString(R.string.user_string);
         SharedPreferences sharedPreferences = ApplicationProvider.getApplicationContext().getSharedPreferences(
                 preferencesName, Context.MODE_PRIVATE);
-        Gson gson = new Gson();
-        ArrayList<Run> runs = new ArrayList<Run>();
-        runs.add(new Run().setName("Run 2"));
-        runs.add(new Run().setName("Run 1"));
-        sharedPreferences.edit().putString("runs", gson.toJson(runs)).commit();
+        sharedPreferences.edit().putString(preferencesName, user.toString()).commit();
+
+        Run run2 = new Run().setName("Run 2");
+        Run run1 = new Run().setName("Run 1");
+        run2.setAuthor(user);
+        run1.setAuthor(user);
+
+        MockFirebaseHelpers.mockStorage(run2, run1);
+
         FragmentScenario<MyRunsFragment> scenario = FragmentScenario.launchInContainer(MyRunsFragment.class);
         scenario.onFragment(activity -> {
             ListView listView = activity.getActivity().findViewById(R.id.my_runs_list);
             ShadowListView shadowListView = Shadows.shadowOf(listView);
 
-            ViewGroup run1 = (ViewGroup) shadowListView.findItemContainingText("Run 1");
-            TextView tv1 = (TextView) run1.getChildAt(0);
+            ViewGroup run1View = (ViewGroup) shadowListView.findItemContainingText("Run 1");
+            TextView tv1 = (TextView) run1View.getChildAt(0);
             assertThat(tv1).isNotNull();
             assertThat(tv1.getText().toString()).isEqualTo("Run 1");
 
-            ViewGroup run2 = (ViewGroup)shadowListView.findItemContainingText("Run 2");
-            TextView tv2 = (TextView) run2.getChildAt(0);
+            ViewGroup run2View = (ViewGroup)shadowListView.findItemContainingText("Run 2");
+            TextView tv2 = (TextView) run2View.getChildAt(0);
             assertThat(tv2).isNotNull();
             assertThat(tv2.getText().toString()).isEqualTo("Run 2");
 
@@ -59,6 +74,7 @@ public class MyRunsTest {
 
     @Test
     public void NoListSetGivesNoRuns() {
+        MockFirebaseHelpers.mockStorage();
         FragmentScenario<MyRunsFragment> scenario = FragmentScenario.launchInContainer(MyRunsFragment.class);
         scenario.onFragment(activity -> {
             ListView listView = activity.getActivity().findViewById(R.id.my_runs_list);

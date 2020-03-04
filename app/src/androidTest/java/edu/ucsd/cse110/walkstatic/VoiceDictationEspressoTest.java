@@ -23,7 +23,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import edu.ucsd.cse110.walkstatic.runs.Run;
-import edu.ucsd.cse110.walkstatic.runs.RunList;
 import edu.ucsd.cse110.walkstatic.speech.SpeechListener;
 import edu.ucsd.cse110.walkstatic.speech.VoiceDictation;
 import edu.ucsd.cse110.walkstatic.speech.VoiceDictationFactory;
