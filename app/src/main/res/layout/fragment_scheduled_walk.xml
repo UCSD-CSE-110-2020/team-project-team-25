@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/run_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Run Name"
+        android:textSize="36sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/starting_point"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Starting Point"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/run_name"
+        app:layout_constraintStart_toStartOf="@+id/run_name"
+        app:layout_constraintTop_toBottomOf="@+id/run_name" />
+
+    <TextView
+        android:id="@+id/notes"
+        android:layout_width="345dp"
+        android:layout_height="93dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="150dp"
+        android:text="Notes!"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ran_on"
+        app:layout_constraintVertical_bias="0.021" />
+
+    <TextView
+        android:id="@+id/difficulty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Difficult"
+        android:textColor="#000"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/starting_point"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="@+id/starting_point"
+        app:layout_constraintTop_toBottomOf="@+id/starting_point" />
+
+    <TextView
+        android:id="@+id/endedness"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="out-and-back"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/space"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/difficulty" />
+
+    <TextView
+        android:id="@+id/hillyness"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="hilly"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/endedness"
+        app:layout_constraintStart_toStartOf="@+id/endedness"
+        app:layout_constraintTop_toBottomOf="@+id/endedness" />
+
+    <TextView
+        android:id="@+id/urban"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="streets"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/evenness"
+        app:layout_constraintStart_toStartOf="@+id/evenness"
+        app:layout_constraintTop_toTopOf="@+id/hillyness" />
+
+    <TextView
+        android:id="@+id/evenness"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="uneven surface"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/space"
+        app:layout_constraintTop_toTopOf="@+id/endedness" />
+
+    <Space
+        android:id="@+id/space"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/last_steps_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/steps_text"
+        app:layout_constraintEnd_toEndOf="@+id/endedness"
+        app:layout_constraintStart_toStartOf="@+id/endedness"
+        app:layout_constraintTop_toBottomOf="@+id/hillyness" />
+
+    <TextView
+        android:id="@+id/last_miles_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/miles_text"
+        app:layout_constraintEnd_toEndOf="@+id/evenness"
+        app:layout_constraintStart_toStartOf="@+id/evenness"
+        app:layout_constraintTop_toBottomOf="@+id/urban" />
+
+    <TextView
+        android:id="@+id/ran_on"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/date_text"
+        app:layout_constraintEnd_toEndOf="@+id/last_steps_view"
+        app:layout_constraintStart_toStartOf="@+id/last_steps_view"
+        app:layout_constraintTop_toBottomOf="@+id/last_steps_view" />
+
+    <TextView
+        android:id="@+id/run_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/time_text"
+        app:layout_constraintEnd_toEndOf="@+id/last_miles_view"
+        app:layout_constraintStart_toStartOf="@+id/last_miles_view"
+        app:layout_constraintTop_toBottomOf="@+id/last_miles_view" />
+
+    <TextView
+        android:id="@+id/date_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/scheduled_date_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/notes" />
+
+    <TextView
+        android:id="@+id/time_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:hint="@string/scheduled_time_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/date_view" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

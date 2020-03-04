@@ -80,4 +80,9 @@
         android:name="edu.ucsd.cse110.walkstatic.InviteFragment"
         android:label="Invite Teammate"
         tools:layout="@layout/fragment_invite" />
+    <fragment
+        android:id="@+id/scheduledWalkFragment"
+        android:name="edu.ucsd.cse110.walkstatic.ScheduledWalkFragment"
+        android:label="View scheduled walk"
+        tools:layout="@layout/fragment_scheduled_walk" />
 </navigation>

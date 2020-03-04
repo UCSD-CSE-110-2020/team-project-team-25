@@ -89,9 +89,9 @@ public class proposeRunFragment extends Fragment {
                             @Override
                             public void onTimeSet(TimePicker tp, int sHour, int sMinute) {
                                 if(sHour >= hour && sMinute >= minutes){
-                                    rp.setHour(sHour);
-                                    rp.setMinute(sHour);
-                                    timeEditText.setText(sHour + ":" + sMinute);
+                                    String time = sHour + ":" + sMinute;
+                                    timeEditText.setText(time);
+                                    rp.setTime(time);
                                 } else {
                                     timeEditText.setText("Invalid Time");
                                 }
@@ -114,10 +114,10 @@ public class proposeRunFragment extends Fragment {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                rp.setDay(dayOfMonth);
-                                rp.setMonth(monthOfYear);
-                                rp.setYear(year);
-                                dateEditText.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                                String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                dateEditText.setText(date);
+                                rp.setDate(date);
+
                             }
                         }, year, month, day);
                 datePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
