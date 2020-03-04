@@ -14,4 +14,7 @@
 
     <color name="invite_grey">#8A8A8A</color>
     <color name="notificationYellow">#FFCF47</color>
+
+    <color name="acceptButton">#42674D</color>
+    <color name="rejectButton">#D84958</color>
 </resources>

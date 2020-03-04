@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
-import edu.ucsd.cse110.walkstatic.mocks.FirebaseMocks;
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
 import edu.ucsd.cse110.walkstatic.time.TimeMachine;

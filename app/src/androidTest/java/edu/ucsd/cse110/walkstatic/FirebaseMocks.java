@@ -1,4 +1,4 @@
-package edu.ucsd.cse110.walkstatic.mocks;
+package edu.ucsd.cse110.walkstatic;
 
 import edu.ucsd.cse110.walkstatic.runs.RunUpdateListener;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;

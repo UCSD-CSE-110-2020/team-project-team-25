@@ -9,18 +9,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+
+import java.util.List;
+
+import edu.ucsd.cse110.walkstatic.teammate.Team;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateArrayAdapter;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
+import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestArrayAdapter;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestsListener;
 
 public class TeamFragment extends Fragment implements TeammateRequestsListener {
 
+    private TeammateRequestArrayAdapter teammateRequestListAdapter;
     private TeammateArrayAdapter teammateListAdapter;
     private List<TeammateRequest> requestsList;
     private Walkstatic app;
@@ -45,11 +49,21 @@ public class TeamFragment extends Fragment implements TeammateRequestsListener {
     }
 
     private void populateTeammates() {
-        ListView listView = this.getActivity().findViewById(R.id.my_teammates_list);
-        this.requestsList = this.app.getTeammateRequests().getRequests();
-        teammateListAdapter = new TeammateArrayAdapter(this.getActivity(), R.layout.teammate_request_textview, requestsList);
-        listView.setAdapter(teammateListAdapter);
+        ListView teammatesListView = this.getActivity().findViewById(R.id.my_teammates_list);
+        ListView requestsListView = this.getActivity().findViewById(R.id.teammate_requests_list);
+
+        Team team = this.app.getTeam();
+        teammateListAdapter = new TeammateArrayAdapter(this.getActivity(),
+                R.layout.teammate_textview, team.getTeammates());
+        teammatesListView.setAdapter(teammateListAdapter);
         teammateListAdapter.notifyDataSetChanged();
+
+        this.requestsList = this.app.getTeammateRequests().getRequests();
+        teammateRequestListAdapter = new TeammateRequestArrayAdapter(this.getActivity(),
+                R.layout.teammate_request_textview, this.requestsList);
+        requestsListView.setAdapter(teammateRequestListAdapter);
+        teammateRequestListAdapter.notifyDataSetChanged();
+
         this.app.getTeammateRequests().addRequestsListener(this);
     }
 
@@ -77,7 +91,7 @@ public class TeamFragment extends Fragment implements TeammateRequestsListener {
     public void teammateRequestsUpdated(List<TeammateRequest> requests) {
         this.requestsList.clear();
         this.requestsList.addAll(requests);
-        this.teammateListAdapter.notifyDataSetChanged();
+        this.teammateRequestListAdapter.notifyDataSetChanged();
     }
 }
 

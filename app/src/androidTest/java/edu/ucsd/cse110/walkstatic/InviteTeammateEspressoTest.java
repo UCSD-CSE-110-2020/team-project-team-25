@@ -23,7 +23,6 @@ import java.util.ArrayList;
 
 import edu.ucsd.cse110.walkstatic.fitness.DefaultBlueprints;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
-import edu.ucsd.cse110.walkstatic.mocks.FirebaseMocks;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;

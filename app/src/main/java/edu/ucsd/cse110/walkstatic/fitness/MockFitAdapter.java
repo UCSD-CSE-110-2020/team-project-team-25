@@ -1,7 +1,4 @@
-package edu.ucsd.cse110.walkstatic.mocks;
-
-import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
-import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
+package edu.ucsd.cse110.walkstatic.fitness;
 
 public class MockFitAdapter implements FitnessService {
 

@@ -25,7 +25,7 @@ import edu.ucsd.cse110.walkstatic.fitness.DefaultBlueprints;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
-import edu.ucsd.cse110.walkstatic.mocks.MockFitAdapter;
+import edu.ucsd.cse110.walkstatic.fitness.MockFitAdapter;
 import edu.ucsd.cse110.walkstatic.time.TimeMachine;
 
 public class DebugFragment extends Fragment implements FitnessListener {

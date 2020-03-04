@@ -6,12 +6,13 @@ import android.content.SharedPreferences;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
 import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
+import edu.ucsd.cse110.walkstatic.teammate.Team;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
-import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequests;
 
 public class Walkstatic {
     private Teammate user;
+    private Team team;
     private TeammateRequests teammateRequests;
 
     public Walkstatic(Context context, TeammateRequestStore store, StorageWatcher storageWatcher){
@@ -43,4 +44,6 @@ public class Walkstatic {
     public Teammate getUser(){
         return this.user;
     }
+
+    public Team getTeam() { return this.team; }
 }
