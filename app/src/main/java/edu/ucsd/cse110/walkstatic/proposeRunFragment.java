@@ -9,6 +9,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -24,17 +27,32 @@ import java.util.Calendar;
 import java.util.Objects;
 
 import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.runs.RunProposal;
 
 public class proposeRunFragment extends Fragment {
-    private Run run;
+    private RunProposal rp;
     private DatePickerDialog datePicker;
     private TimePickerDialog timePicker;
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_propose_run, container, false);
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        inflater.inflate(R.menu.propose_run_menu, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -43,7 +61,7 @@ public class proposeRunFragment extends Fragment {
             Activity activity = Objects.requireNonNull(this.getActivity());
             SharedPreferences sharedPreferences = activity.getSharedPreferences(
                     preferencesName, Context.MODE_PRIVATE);
-            sharedPreferences.edit().putString(preferencesName, this.run.toJSON()).apply();
+            sharedPreferences.edit().putString(preferencesName, this.rp.toJSON()).apply();
             Navigation.findNavController(Objects.requireNonNull(this.getView())).navigate(R.id.runActivity);
         }
         return super.onOptionsItemSelected(item);
@@ -53,7 +71,7 @@ public class proposeRunFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         if (this.getArguments() != null && this.getArguments().getSerializable("Run") != null) {
             Run run = (Run) this.getArguments().getSerializable("Run");
-            this.run = run;
+            this.rp = new RunProposal(run);
         }
         EditText dateEditText = getActivity().findViewById(R.id.editDateText);
         EditText timeEditText = getActivity().findViewById(R.id.editTimeText);
@@ -70,7 +88,9 @@ public class proposeRunFragment extends Fragment {
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker tp, int sHour, int sMinute) {
-                                if(sHour > cldr.HOUR_OF_DAY && sMinute > cldr.MINUTE){
+                                if(sHour >= hour && sMinute >= minutes){
+                                    rp.setHour(sHour);
+                                    rp.setMinute(sHour);
                                     timeEditText.setText(sHour + ":" + sMinute);
                                 } else {
                                     timeEditText.setText("Invalid Time");
@@ -94,6 +114,9 @@ public class proposeRunFragment extends Fragment {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                rp.setDay(dayOfMonth);
+                                rp.setMonth(monthOfYear);
+                                rp.setYear(year);
                                 dateEditText.setText(dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
                             }
                         }, year, month, day);
