@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -21,6 +22,9 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.time.Duration;
@@ -51,6 +55,7 @@ public class RunFragment extends Fragment {
     private Chronometer chronometer;
     private MileCalculator mileCalculator;
     private StorageWatcher storageWatcher;
+    private TeammateRequest lastRequest;
 
     private Walkstatic app;
 
@@ -133,19 +138,26 @@ public class RunFragment extends Fragment {
         this.storageWatcher.addTeammateRequestUpdateListener(new TeammateRequestListener() {
             @Override
             public void onNewTeammateRequest(TeammateRequest request) {
-                if (request.getTarget().equals(app.getUser())) setNotification(true);
+                if (request.getTarget().equals(app.getUser())){
+                    setNotification(true);
+                    lastRequest = request;
+                }
             }
 
             @Override
             public void onTeammateRequestDeleted(TeammateRequest request) {
-                if(request.getTarget().equals(app.getUser())) setNotification(false);
+                if(request.getTarget().equals(app.getUser())){
+                    setNotification(false);
+                    lastRequest = null;
+                }
         }
         });
+
         loadCurrentRun();
         loadLastRun();
     }
 
-    public void setNotification(boolean visible) {
+    private void setNotification(boolean visible) {
         menu.getItem(0).setVisible(visible);
     }
 
@@ -164,17 +176,28 @@ public class RunFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater)
+    public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater menuInflater)
     {
         this.menu = menu;
 
         menuInflater.inflate(R.menu.notifications_menu, menu);
         super.onCreateOptionsMenu(menu, menuInflater);
 
-        menu.getItem(0).setVisible(false);
+        MenuItem mi = menu.getItem(0);
+
+        mi.setVisible(false);
         ColorStateList csl = getContext().getResources().
                 getColorStateList(R.color.notificationYellow, null);
-        menu.getItem(0).setIconTintList(csl);
+        mi.setIconTintList(csl);
+
+        mi.setOnMenuItemClickListener(item -> {
+            Bundle bundle = new Bundle();
+            if (lastRequest != null)
+                bundle.putSerializable("request", lastRequest.getRequester());
+            NavHostFragment.findNavController(this).navigate(
+                    R.id.action_runFragment_to_inviteAcceptedFragment, bundle);
+            return true;
+        });
 
         this.setNotification(false);
     }

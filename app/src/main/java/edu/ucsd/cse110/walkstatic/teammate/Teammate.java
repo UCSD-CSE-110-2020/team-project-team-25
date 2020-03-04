@@ -2,9 +2,9 @@ package edu.ucsd.cse110.walkstatic.teammate;
 
 import com.google.gson.Gson;
 
-import java.util.UUID;
+import java.io.Serializable;
 
-public class Teammate {
+public class Teammate implements Serializable {
     private String name;
     private final String email;
 

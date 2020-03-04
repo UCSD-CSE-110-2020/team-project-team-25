@@ -16,6 +16,11 @@
             android:id="@+id/action_action_global_runActivity_to_debugFragment"
             app:destination="@id/debugFragment" />
     </action>
+
+    <action
+        android:id="@+id/action_runFragment_to_inviteAcceptedFragment"
+        app:destination="@id/inviteAcceptedFragment" />
+
     <action
         android:id="@+id/action_runActivityFragment_to_editRunFragment"
         app:destination="@id/editRunFragment"
@@ -71,4 +76,8 @@
         android:name="edu.ucsd.cse110.walkstatic.InviteFragment"
         android:label="Invite Teammate"
         tools:layout="@layout/fragment_invite" />
+    <fragment
+        android:id="@+id/inviteAcceptedFragment"
+        android:name="edu.ucsd.cse110.walkstatic.InviteAcceptedFragment"
+        android:label="InviteAcceptedFragment" />
 </navigation>
