@@ -47,7 +47,7 @@ import edu.ucsd.cse110.walkstatic.time.TimeMachine;
 import static android.content.Context.MODE_PRIVATE;
 
 
-public class RunFragment extends Fragment {
+public class RunFragment extends Fragment implements TeammateRequestListener {
 
     private DistanceTracker stepTracker;
     private FitnessService fitnessService;
@@ -135,23 +135,7 @@ public class RunFragment extends Fragment {
             }
         });
 
-        this.storageWatcher.addTeammateRequestUpdateListener(new TeammateRequestListener() {
-            @Override
-            public void onNewTeammateRequest(TeammateRequest request) {
-                if (request.getTarget().equals(app.getUser())){
-                    setNotification(true);
-                    lastRequest = request;
-                }
-            }
-
-            @Override
-            public void onTeammateRequestDeleted(TeammateRequest request) {
-                if(request.getTarget().equals(app.getUser())){
-                    setNotification(false);
-                    lastRequest = null;
-                }
-        }
-        });
+        this.storageWatcher.addTeammateRequestUpdateListener(this);
 
         loadCurrentRun();
         loadLastRun();
@@ -185,7 +169,6 @@ public class RunFragment extends Fragment {
 
         MenuItem mi = menu.getItem(0);
 
-        mi.setVisible(false);
         ColorStateList csl = getContext().getResources().
                 getColorStateList(R.color.notificationYellow, null);
         mi.setIconTintList(csl);
@@ -236,9 +219,6 @@ public class RunFragment extends Fragment {
         Log.d("Run Fragment", "Resuming");
         if(this.timer != null)this.timer.resume();
     }
-
-//    @Override
-//    public void onDestroyView() { super.onDestroyView(); }
 
     private void updateStepCount(){
         //for day
@@ -343,6 +323,22 @@ public class RunFragment extends Fragment {
             lastRunName.setText("Last Run: " + this.lastRun.getName());
             stepCount.setText(Long.toString(this.lastRun.getSteps()));
             mileCount.setText(new DecimalFormat("#.00").format(lastRun.getMiles()));
+        }
+    }
+
+    @Override
+    public void onNewTeammateRequest(TeammateRequest request) {
+        if (request.getTarget().equals(app.getUser())){
+            setNotification(true);
+            lastRequest = request;
+        }
+    }
+
+    @Override
+    public void onTeammateRequestDeleted(TeammateRequest request) {
+        if(request.getTarget().equals(app.getUser())){
+            setNotification(false);
+            lastRequest = null;
         }
     }
 

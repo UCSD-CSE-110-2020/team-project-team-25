@@ -73,7 +73,7 @@ public class InviteTeammateEspressoTest {
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
                         childAtPosition(
-                                allOf(withId(R.id.action_bar),
+                            allOf(withId(R.id.action_bar),
                                         childAtPosition(
                                                 withId(R.id.action_bar_container),
                                                 0)),

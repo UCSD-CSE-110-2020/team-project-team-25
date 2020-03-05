@@ -9,17 +9,17 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
+import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 
 public class InviteAcceptedFragment extends Fragment {
 
-    private TeammateRequest teammateRequest;
+    private Teammate teammate;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.teammateRequest = (TeammateRequest) savedInstanceState.get("request");
+        this.teammate = (Teammate) getArguments().get("request");
     }
 
     @Override
@@ -35,7 +35,7 @@ public class InviteAcceptedFragment extends Fragment {
         TextView requesterName = getActivity().findViewById(R.id.requester_name);
         TextView requesterEmail = getActivity().findViewById(R.id.requester_email);
 
-        requesterName.setText(teammateRequest.getRequester().getName());
-        requesterEmail.setText(teammateRequest.getRequester().getEmail());
+        requesterName.setText(teammate.getName());
+        requesterEmail.setText(teammate.getEmail());
     }
 }
