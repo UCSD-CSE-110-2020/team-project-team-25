@@ -1,6 +1,8 @@
 package edu.ucsd.cse110.walkstatic;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -18,6 +20,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.runs.RunList;
+
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -29,20 +34,31 @@ import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class GoogleEspressoTest {
+public class GoogleMapEspressoTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
 
     @Test
     public void googleEspressoTest() {
-       
+        RunList runs = new RunList();
+
+        Context targetContext = getInstrumentation().getTargetContext();
+        String preferencesName = targetContext.getResources().getString(R.string.run_save_name);
+        SharedPreferences.Editor preferencesEditor = targetContext.getSharedPreferences(preferencesName, Context.MODE_PRIVATE).edit();
+
+        preferencesEditor.putString("runs", runs.toJSON()).commit();
+
+        EspressoHelpers.setStartupParams(mActivityTestRule, "65");
+
+
         // Added a sleep statement to match the app's execution delay.
         // The recommended way to handle such scenarios is to use Espresso idling resources:
         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
