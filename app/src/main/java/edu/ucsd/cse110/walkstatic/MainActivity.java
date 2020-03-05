@@ -35,6 +35,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
 
+import edu.ucsd.cse110.walkstatic.maps.Map;
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunList;
 
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         setupNavBar();
 
 //        createFakeRuns();
+
 
         SharedPreferences sharedPreferences = getSharedPreferences("userHeight", MODE_PRIVATE);
         if (sharedPreferences.getString("height","-1").equals("-1")) {

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +26,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+
+import edu.ucsd.cse110.walkstatic.maps.Map;
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.time.TimeHelp;
 
@@ -75,7 +79,17 @@ public class ViewRunFragment extends Fragment {
         runName.setText(run.getName());
 
         TextView startingPoint = this.getActivity().findViewById(R.id.starting_point);
-        startingPoint.setText(run.getStartingPoint());
+        SpannableString start = new SpannableString(run.getStartingPoint());
+        start.setSpan(new UnderlineSpan(),0,start.length(),0);
+        startingPoint.setText(start);
+        startingPoint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map map = new Map(run.getStartingPoint());
+                map.openMaps();
+                startActivity(map.intent);
+            }
+        });
 
         ImageView favoriteIndicator = this.getActivity().findViewById(R.id.favorite_run);
         int starIcon = run.isFavorited() ? R.drawable.ic_star_white_24dp : R.drawable.ic_star_border_white_24dp;
