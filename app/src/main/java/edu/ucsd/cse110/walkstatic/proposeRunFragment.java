@@ -30,10 +30,11 @@ import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunProposal;
 
 public class proposeRunFragment extends Fragment {
-    private RunProposal rp;
+    private RunProposal runproposal;
     private DatePickerDialog datePicker;
     private TimePickerDialog timePicker;
-
+    boolean validTime = false;
+    boolean validDate = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,12 +57,13 @@ public class proposeRunFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.proposeCheckButton) {
+
+        if (id == R.id.proposeCheckButton && (validTime && validDate)) {
             String preferencesName = this.getResources().getString(R.string.proposed_time_run);
             Activity activity = Objects.requireNonNull(this.getActivity());
             SharedPreferences sharedPreferences = activity.getSharedPreferences(
                     preferencesName, Context.MODE_PRIVATE);
-            sharedPreferences.edit().putString(preferencesName, this.rp.toJSON()).apply();
+            sharedPreferences.edit().putString(preferencesName, this.runproposal.toJSON()).apply();
             Navigation.findNavController(Objects.requireNonNull(this.getView())).navigate(R.id.runActivity);
         }
         return super.onOptionsItemSelected(item);
@@ -71,7 +73,7 @@ public class proposeRunFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         if (this.getArguments() != null && this.getArguments().getSerializable("Run") != null) {
             Run run = (Run) this.getArguments().getSerializable("Run");
-            this.rp = new RunProposal(run);
+            this.runproposal = new RunProposal(run);
         }
         EditText dateEditText = getActivity().findViewById(R.id.editDateText);
         EditText timeEditText = getActivity().findViewById(R.id.editTimeText);
@@ -91,7 +93,8 @@ public class proposeRunFragment extends Fragment {
                                 if(sHour >= hour && sMinute >= minutes){
                                     String time = sHour + ":" + sMinute;
                                     timeEditText.setText(time);
-                                    rp.setTime(time);
+                                    runproposal.setTime(time);
+                                    validTime = true;
                                 } else {
                                     timeEditText.setText("Invalid Time");
                                 }
@@ -116,7 +119,8 @@ public class proposeRunFragment extends Fragment {
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                                 String date = (monthOfYear + 1) + "/" + dayOfMonth + "/" + year;
                                 dateEditText.setText(date);
-                                rp.setDate(date);
+                                runproposal.setDate(date);
+                                validDate = true;
 
                             }
                         }, year, month, day);
