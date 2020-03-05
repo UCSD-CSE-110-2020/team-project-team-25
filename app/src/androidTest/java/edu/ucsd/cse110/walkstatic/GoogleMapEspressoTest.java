@@ -12,6 +12,7 @@ import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
+import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -20,8 +21,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import edu.ucsd.cse110.walkstatic.runs.Run;
-import edu.ucsd.cse110.walkstatic.runs.RunList;
 
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
@@ -48,13 +47,9 @@ public class GoogleMapEspressoTest {
 
     @Test
     public void googleEspressoTest() {
-        RunList runs = new RunList();
-
-        Context targetContext = getInstrumentation().getTargetContext();
-        String preferencesName = targetContext.getResources().getString(R.string.run_save_name);
-        SharedPreferences.Editor preferencesEditor = targetContext.getSharedPreferences(preferencesName, Context.MODE_PRIVATE).edit();
-
-        preferencesEditor.putString("runs", runs.toJSON()).commit();
+        Teammate user = new Teammate("test@gmail.com");
+        EspressoHelpers.setUser(user);
+        EspressoHelpers.mockStorage();
 
         EspressoHelpers.setStartupParams(mActivityTestRule, "65");
 

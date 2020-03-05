@@ -3,7 +3,9 @@ package edu.ucsd.cse110.walkstatic;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import edu.ucsd.cse110.walkstatic.runs.Runs;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
+import edu.ucsd.cse110.walkstatic.store.RunStore;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
 import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
@@ -13,17 +15,26 @@ import edu.ucsd.cse110.walkstatic.teammate.TeammateRequests;
 public class Walkstatic {
     private Teammate user;
     private TeammateRequests teammateRequests;
+    private Runs runs;
 
-    public Walkstatic(Context context, TeammateRequestStore store, StorageWatcher storageWatcher){
+    public Walkstatic(Context context, RunStore runStore, TeammateRequestStore store, StorageWatcher storageWatcher){
         this.readUser(context);
         this.teammateRequests = new TeammateRequests(store, storageWatcher);
+        this.initRuns(runStore, storageWatcher);
     }
 
     public Walkstatic(Context context){
         this.readUser(context);
         TeammateRequestStore defaultStore = DefaultStorage.getDefaultTeammateRequestStore();
         StorageWatcher defaultStorageWatcher = DefaultStorage.getDefaultStorageWatcher(this.user);
+        RunStore defaultRunStore = DefaultStorage.getDefaultRunStore();
         this.teammateRequests = new TeammateRequests(defaultStore, defaultStorageWatcher);
+        this.initRuns(defaultRunStore, defaultStorageWatcher);
+    }
+
+    private void initRuns(RunStore store, StorageWatcher storageWatcher){
+        this.runs = new Runs(store, this.user);
+        storageWatcher.addRunUpdateListener(this.runs);
     }
 
     private void readUser(Context context){
@@ -42,5 +53,9 @@ public class Walkstatic {
 
     public Teammate getUser(){
         return this.user;
+    }
+
+    public Runs getRuns(){
+        return this.runs;
     }
 }

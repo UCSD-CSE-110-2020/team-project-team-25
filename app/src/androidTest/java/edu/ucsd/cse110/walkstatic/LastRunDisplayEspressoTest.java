@@ -21,14 +21,13 @@ import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 import edu.ucsd.cse110.walkstatic.runs.Run;
-import edu.ucsd.cse110.walkstatic.runs.RunList;
+import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
@@ -53,16 +52,18 @@ public class LastRunDisplayEspressoTest {
         String preferencesName = targetContext.getResources().getString(R.string.current_run);
         SharedPreferences.Editor preferencesEditor = targetContext.getSharedPreferences(
                 preferencesName, Context.MODE_PRIVATE).edit();
+
+        Teammate user = new Teammate("test@gmail.com");
+        EspressoHelpers.setUser(user);
+
+        Run run1 = new Run().setName("Mission Trails");
+        Run run2 = new Run().setName("Run 2");
+        run1.setAuthor(user);
+        run2.setAuthor(user);
+        EspressoHelpers.mockStorage(run1, run2);
+
         EspressoHelpers.setStartupParams(mActivityTestRule, "65", preferencesEditor);
 
-        RunList runs = new RunList();
-        runs.add(new Run().setName("Mission Trails"));
-        runs.add(new Run().setName("Run 2"));
-
-        preferencesName = targetContext.getResources().getString(R.string.run_save_name);
-        preferencesEditor = targetContext.getSharedPreferences(preferencesName, Context.MODE_PRIVATE).edit();
-
-        preferencesEditor.putString("runs", runs.toJSON()).commit();
 
         ViewInteraction appCompatButton2 = onView(
                 allOf(withId(R.id.startButton), withText("Start"),

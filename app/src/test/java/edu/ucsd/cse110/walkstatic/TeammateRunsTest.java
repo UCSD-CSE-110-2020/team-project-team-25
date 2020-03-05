@@ -6,36 +6,21 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
-import androidx.test.core.app.ApplicationProvider;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Shadows;
 import org.robolectric.shadows.ShadowListView;
 
-import java.util.ArrayList;
-
 import androidx.fragment.app.testing.FragmentScenario;
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import edu.ucsd.cse110.walkstatic.runs.Run;
-import edu.ucsd.cse110.walkstatic.runs.RunUpdateListener;
-import edu.ucsd.cse110.walkstatic.runs.RunsListener;
-import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
-import edu.ucsd.cse110.walkstatic.store.RunStore;
-import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
-import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
 
 @RunWith(AndroidJUnit4.class)
-public class MyRunsTest {
-
+public class TeammateRunsTest {
     @Test
     public void ListPopulatedWithRuns() {
         Teammate user = new Teammate("tester@gmail.com");
@@ -43,28 +28,38 @@ public class MyRunsTest {
         SharedPreferences sharedPreferences = ApplicationProvider.getApplicationContext().getSharedPreferences(
                 preferencesName, Context.MODE_PRIVATE);
         sharedPreferences.edit().putString(preferencesName, user.toString()).commit();
-
+        Teammate waluigi = new Teammate("waluigi");
+        waluigi.setName("Waluigi W");
+        Teammate luigi = new Teammate("Luigi");
+        luigi.setName("Luigi L");
         Run run2 = new Run().setName("Run 2");
         Run run1 = new Run().setName("Run 1");
-        run2.setAuthor(user);
-        run1.setAuthor(user);
+        run2.setAuthor(waluigi);
+        run1.setAuthor(luigi);
 
-        MockFirebaseHelpers.mockStorage(run2, run1);
+        Run myRun = new Run().setName("My Run");
+        myRun.setAuthor(user);
 
-        FragmentScenario<MyRunsFragment> scenario = FragmentScenario.launchInContainer(MyRunsFragment.class);
+        MockFirebaseHelpers.mockStorage(myRun, run2, run1);
+
+        FragmentScenario<TeammateRunsFragment> scenario = FragmentScenario.launchInContainer(TeammateRunsFragment.class);
         scenario.onFragment(activity -> {
             ListView listView = activity.getActivity().findViewById(R.id.my_runs_list);
             ShadowListView shadowListView = Shadows.shadowOf(listView);
 
             ViewGroup run1View = (ViewGroup) shadowListView.findItemContainingText("Run 1");
             TextView tv1 = (TextView) run1View.getChildAt(0);
+            TextView initials1 = (TextView) run1View.getChildAt(2);
             assertThat(tv1).isNotNull();
             assertThat(tv1.getText().toString()).isEqualTo("Run 1");
+            assertThat(initials1.getText().toString()).isEqualTo("LL");
 
             ViewGroup run2View = (ViewGroup)shadowListView.findItemContainingText("Run 2");
             TextView tv2 = (TextView) run2View.getChildAt(0);
+            TextView initials2 = (TextView) run2View.getChildAt(2);
             assertThat(tv2).isNotNull();
             assertThat(tv2.getText().toString()).isEqualTo("Run 2");
+            assertThat(initials2.getText().toString()).isEqualTo("WW");
 
             int idxRun1 = shadowListView.findIndexOfItemContainingText("Run 1");
             int idxRun2 = shadowListView.findIndexOfItemContainingText("Run 2");
@@ -75,7 +70,7 @@ public class MyRunsTest {
     @Test
     public void NoListSetGivesNoRuns() {
         MockFirebaseHelpers.mockStorage();
-        FragmentScenario<MyRunsFragment> scenario = FragmentScenario.launchInContainer(MyRunsFragment.class);
+        FragmentScenario<TeammateRunsFragment> scenario = FragmentScenario.launchInContainer(TeammateRunsFragment.class);
         scenario.onFragment(activity -> {
             ListView listView = activity.getActivity().findViewById(R.id.my_runs_list);
             ShadowListView shadowListView = Shadows.shadowOf(listView);

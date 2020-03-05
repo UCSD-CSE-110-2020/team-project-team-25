@@ -44,6 +44,7 @@ public class DebugEspressoTest {
 
     @Test
     public void debugEspressoTest() {
+        EspressoHelpers.mockStorage();
         FitnessServiceFactory.put(TEST_SERVICE, new FitnessServiceFactory.BluePrint() {
             @Override
             public FitnessService create(Activity activity) {
@@ -71,7 +72,7 @@ public class DebugEspressoTest {
                                 childAtPosition(
                                         withId(R.id.nav_view),
                                         0)),
-                        5),
+                        6),
                         isDisplayed()));
         navigationMenuItemView.perform(click());
 
