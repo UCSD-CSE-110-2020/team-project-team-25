@@ -2,7 +2,10 @@ package edu.ucsd.cse110.walkstatic.teammate;
 
 import com.google.gson.Gson;
 
+import java.util.Random;
 import java.util.UUID;
+
+import androidx.core.graphics.ColorUtils;
 
 public class Teammate {
     private String name;
@@ -58,5 +61,27 @@ public class Teammate {
     @Override
     public int hashCode(){
         return this.toString().hashCode();
+    }
+
+    public String getInitials(){
+        if(this.name.length() == 0){
+            return "";
+        }
+        String nameTrim = this.name.trim();
+        String initials = nameTrim.substring(0, 1);
+        if(nameTrim.lastIndexOf(' ') != -1){
+            String lastName = nameTrim.substring(nameTrim.lastIndexOf(' ') + 1);
+            initials += lastName.substring(0, 1);
+        }
+        return initials;
+    }
+
+    public float[] getColor(){
+        int seed = this.getName().hashCode();
+        Random random = new Random(seed);
+        float hue = random.nextFloat()*360F;
+        float saturation = random.nextFloat() * 0.5F + 0.5F;
+        float lightness = random.nextFloat() * 0.5F + 0.25F;
+        return new float[]{hue, saturation, lightness};
     }
 }

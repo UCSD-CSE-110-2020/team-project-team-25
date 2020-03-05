@@ -18,10 +18,11 @@ import androidx.navigation.Navigation;
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunArrayAdapter;
 import edu.ucsd.cse110.walkstatic.runs.RunsListener;
+import edu.ucsd.cse110.walkstatic.runs.TeammateRunArrayAdapter;
 
 public class TeammateRunsFragment extends Fragment implements RunsListener {
 
-    private RunArrayAdapter teammateRunAdapter;
+    private TeammateRunArrayAdapter teammateRunAdapter;
     private List<Run> runList;
     private Walkstatic app;
 
@@ -45,12 +46,12 @@ public class TeammateRunsFragment extends Fragment implements RunsListener {
     }
 
     private void populateTeammates() {
-        ListView listView = this.getActivity().findViewById(R.id.my_teammates_list);
+        ListView listView = this.getActivity().findViewById(R.id.my_runs_list);
         this.runList = this.app.getRuns().getTeammateRuns();
-//        teammateListAdapter = new TeammateArrayAdapter(this.getActivity(), R.layout.teammate_request_textview, requestsList);
-//        listView.setAdapter(teammateListAdapter);
-//        teammateListAdapter.notifyDataSetChanged();
-//        this.app.getTeammateRequests().addRequestsListener(this);
+        teammateRunAdapter = new TeammateRunArrayAdapter(this.getActivity(), R.layout.teammate_request_textview, this.runList);
+        listView.setAdapter(teammateRunAdapter);
+        teammateRunAdapter.notifyDataSetChanged();
+        this.app.getRuns().addRunsListener(this);
     }
 
     @Override
@@ -60,6 +61,8 @@ public class TeammateRunsFragment extends Fragment implements RunsListener {
 
     @Override
     public void teammateRunsChanged(List<Run> teammateRuns) {
-
+        this.runList.clear();
+        this.runList.addAll(teammateRuns);
+        this.teammateRunAdapter.notifyDataSetChanged();
     }
 }
