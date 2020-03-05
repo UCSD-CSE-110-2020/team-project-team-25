@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -44,16 +45,16 @@ public class AddRunEspressoTest {
 
     @Test
     public void addRunEspressoTest() {
+        Teammate user = new Teammate("test@gmail.com");
+        EspressoHelpers.setUser(user);
+
+        Run run1 = new Run().setName("Run 1");
+        Run run2 = new Run().setName("Run 2");
+        run1.setAuthor(user);
+        run2.setAuthor(user);
+        EspressoHelpers.mockStorage(run1, run2);
+
         EspressoHelpers.setStartupParams(mActivityTestRule, "65");
-        RunList runs = new RunList();
-        runs.add(new Run().setName("Run 1"));
-        runs.add(new Run().setName("Run 2"));
-
-        Context targetContext = getInstrumentation().getTargetContext();
-        String preferencesName = targetContext.getResources().getString(R.string.run_save_name);
-        SharedPreferences.Editor preferencesEditor = targetContext.getSharedPreferences(preferencesName, Context.MODE_PRIVATE).edit();
-
-        preferencesEditor.putString("runs", runs.toJSON()).commit();
 
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),

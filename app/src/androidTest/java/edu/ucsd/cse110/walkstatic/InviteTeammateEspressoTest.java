@@ -88,6 +88,7 @@ public class InviteTeammateEspressoTest {
 
     @Test
     public void inviteTeammateEspressoTest() {
+        EspressoHelpers.mockStorage();
         final MockStorageWatcher mockStorageWatcher = new MockStorageWatcher();
         final MockTeammateRequestStore mockTeammateRequestStore = new MockTeammateRequestStore();
         DefaultStorage.setDefaultStorageWatcher(user -> mockStorageWatcher);

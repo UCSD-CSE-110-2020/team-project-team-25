@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import java.io.Serializable;
 import java.util.UUID;
 
+import androidx.annotation.Nullable;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 
 public class Run implements Serializable, Comparable<Run>{
@@ -48,7 +49,6 @@ public class Run implements Serializable, Comparable<Run>{
         this.flatVsHilly = "";
         this.evenVsUneven = "";
         this.streetVsTrail = "";
-        this.author = new Teammate();
         this.documentID = "";
     }
 
@@ -95,6 +95,8 @@ public class Run implements Serializable, Comparable<Run>{
     public long getInitialSteps () { return this.initialSteps;}
     public long getStartTime() { return this.startTime; }
     public long getDuration() { return this.duration; }
+
+    @Nullable
     public Teammate getAuthor() { return this.author; }
     public String getDocumentID() { return this.documentID; }
 

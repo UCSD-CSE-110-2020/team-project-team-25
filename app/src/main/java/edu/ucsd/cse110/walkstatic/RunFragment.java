@@ -272,8 +272,9 @@ public class RunFragment extends Fragment {
         int chronometerVisible = this.run != null ? View.VISIBLE : View.GONE;
         if (this.lastRun != null)
         {
-            for (int id : currentRunComponents)
+            for (int id : currentRunComponents){
                 getActivity().findViewById(id).setVisibility(View.VISIBLE);
+            }
             getActivity().findViewById(R.id.lastRunName).setVisibility(lastRunNameVisible);
             chronometer.setVisibility(chronometerVisible);
 

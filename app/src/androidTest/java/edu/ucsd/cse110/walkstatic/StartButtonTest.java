@@ -41,6 +41,7 @@ public class StartButtonTest {
 
     @Test
     public void startButtonTest() {
+        EspressoHelpers.mockStorage();
         EspressoHelpers.setStartupParams(mActivityTestRule, "65");
         FitnessServiceFactory.put(TEST_SERVICE, new FitnessServiceFactory.BluePrint() {
             @Override

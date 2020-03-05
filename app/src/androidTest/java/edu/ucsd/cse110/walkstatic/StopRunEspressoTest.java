@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -49,16 +50,17 @@ public class StopRunEspressoTest {
         String preferencesName = targetContext.getResources().getString(R.string.current_run);
         SharedPreferences.Editor preferencesEditor = targetContext.getSharedPreferences(
                 preferencesName, Context.MODE_PRIVATE).edit();
+
+        Teammate user = new Teammate("test@gmail.com");
+        EspressoHelpers.setUser(user);
+
+        Run run1 = new Run().setName("Run 1");
+        Run run2 = new Run().setName("Run 2");
+        run1.setAuthor(user);
+        run2.setAuthor(user);
+        EspressoHelpers.mockStorage(run1, run2);
+
         EspressoHelpers.setStartupParams(mActivityTestRule, "65", preferencesEditor);
-
-        RunList runs = new RunList();
-        runs.add(new Run().setName("Run 1"));
-        runs.add(new Run().setName("Run 2"));
-
-        preferencesName = targetContext.getResources().getString(R.string.run_save_name);
-        preferencesEditor = targetContext.getSharedPreferences(preferencesName, Context.MODE_PRIVATE).edit();
-
-        preferencesEditor.putString("runs", runs.toJSON()).commit();
 
 
         ViewInteraction appCompatButton2 = onView(
