@@ -17,4 +17,6 @@
 
     <color name="acceptButton">#42674D</color>
     <color name="rejectButton">#D84958</color>
+
+    <color name="black">#000000</color>
 </resources>

@@ -78,6 +78,6 @@
         tools:layout="@layout/fragment_invite" />
     <fragment
         android:id="@+id/inviteAcceptedFragment"
-        android:name="edu.ucsd.cse110.walkstatic.InviteAcceptedFragment"
+        android:name="edu.ucsd.cse110.walkstatic.InviteReceivedFragment"
         android:label="InviteAcceptedFragment" />
 </navigation>

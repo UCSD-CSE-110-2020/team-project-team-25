@@ -25,7 +25,7 @@ public class TeammateArrayAdapter extends ArrayAdapter<Teammate> {
         Teammate teammate = getItem(position);
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.teammate_request_textview, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.teammate_textview, parent, false);
         }
 
         TextView nameView = convertView.findViewById(R.id.teammate_name);

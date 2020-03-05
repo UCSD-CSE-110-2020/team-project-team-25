@@ -19,7 +19,7 @@
             android:paddingBottom="6dp"
             android:text="A Name"
             android:textSize="24sp"
-            android:textStyle="italic"
+            android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/teammate_initials"
@@ -32,6 +32,7 @@
             android:layout_marginStart="8dp"
             android:text="MA"
             android:textSize="24sp"
+            android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

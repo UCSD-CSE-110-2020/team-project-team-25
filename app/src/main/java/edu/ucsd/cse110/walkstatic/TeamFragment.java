@@ -86,7 +86,6 @@ public class TeamFragment extends Fragment implements TeammateRequestsListener {
         Navigation.findNavController(this.getActivity(), this.getId()).navigate(R.id.action_teamFragment_to_inviteFragment);
     }
 
-
     @Override
     public void teammateRequestsUpdated(List<TeammateRequest> requests) {
         this.requestsList.clear();
