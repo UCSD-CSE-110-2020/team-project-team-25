@@ -75,5 +75,10 @@
         android:id="@+id/teammateRunsFragment"
         android:name="edu.ucsd.cse110.walkstatic.TeammateRunsFragment"
         android:label="Teammate Runs"
-        tools:layout="@layout/fragment_my_runs" /><action android:id="@+id/action_global_teammateRunsFragment" app:destination="@id/teammateRunsFragment"/>
+        tools:layout="@layout/fragment_my_runs" >
+        <action
+            android:id="@+id/action_teammateRunsFragment_to_viewRunFragment"
+            app:destination="@id/viewRunFragment" />
+    </fragment>
+    <action android:id="@+id/action_global_teammateRunsFragment" app:destination="@id/teammateRunsFragment" />
 </navigation>

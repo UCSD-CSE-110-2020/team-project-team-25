@@ -1,6 +1,8 @@
 package edu.ucsd.cse110.walkstatic.runs;
 
 import com.google.firebase.firestore.DocumentId;
+import com.google.firebase.firestore.Exclude;
+import com.google.firebase.firestore.PropertyName;
 import com.google.gson.Gson;
 
 import java.io.Serializable;
@@ -14,7 +16,9 @@ public class Run implements Serializable, Comparable<Run>{
     public static final long INVALID_TIME = -1;
 
     private String name;
-    private UUID uuID;
+
+    @PropertyName("UUID")
+    private String uuid;
     private long steps;
     private double miles;
     private long initialSteps;
@@ -35,7 +39,7 @@ public class Run implements Serializable, Comparable<Run>{
 
     public Run(){
         this.name = "";
-        this.uuID = UUID.randomUUID();
+        this.uuid = UUID.randomUUID().toString();
         this.steps = INVALID_STEPS;
         this.miles = 0;
         this.initialSteps = INVALID_STEPS;
@@ -53,7 +57,6 @@ public class Run implements Serializable, Comparable<Run>{
     }
 
     public Run setName(String name) { this.name=name; return this; }
-    public Run setUUID(UUID uuID) { this.uuID=uuID; return this; }
     public Run setStartingPoint(String startingPoint) { this.startingPoint=startingPoint; return this; }
     public Run setSteps(int steps) { this.steps=steps; return this; }
     public Run setMiles(double miles) { this.miles=miles; return this; }
@@ -109,9 +112,20 @@ public class Run implements Serializable, Comparable<Run>{
         return this.toJSON();
     }
 
+    @Exclude
     public UUID getUUID(){
-        return this.uuID;
+        return UUID.fromString(this.uuid);
     }
+    public void setUUID(UUID uuID) { this.uuid =uuID.toString(); }
+
+    public String getUUIDString(){
+        return this.uuid;
+    }
+
+    public void setUUIDString(String uuid){
+        this.uuid = uuid;
+    }
+
 
     @Override
     public boolean equals(Object other){

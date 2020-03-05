@@ -20,6 +20,7 @@ public class RunsTest {
         ArgumentCaptor<Run> newRunCaptor = ArgumentCaptor.forClass(Run.class);
         Runs runs = new Runs(mockRunStore, new Teammate());
         Run newRun = new Run();
+        newRun.setAuthor(new Teammate());
         runs.addRun(newRun);
         verify(mockRunStore).storeRun(newRunCaptor.capture());
         assertThat(newRunCaptor.getValue()).isEqualTo(newRun);
@@ -54,6 +55,7 @@ public class RunsTest {
         ArgumentCaptor<Run> newRunCaptor = ArgumentCaptor.forClass(Run.class);
         Runs runs = new Runs(mockRunStore, new Teammate());
         Run newRun = new Run();
+        newRun.setAuthor(new Teammate());
         runs.addRun(newRun);
         List<Run> runList = runs.getRuns();
         assertThat(runList.size()).isEqualTo(1);
@@ -230,5 +232,43 @@ public class RunsTest {
         runs.onNewRun(runTest);
         runs.onNewRun(runFoo);
         assertThat(runs.getLastRun()).isEqualTo(runTest);
+    }
+
+    @Test
+    public void nonUserRunAddedIsCloned(){
+        RunStore mockRunStore = mock(RunStore.class);
+        RunsListener runsListener = mock(RunsListener.class);
+        ArgumentCaptor<Run> runListCaptor = ArgumentCaptor.forClass(Run.class);
+        Teammate user = new Teammate("email");
+        Runs runs = new Runs(mockRunStore, user);
+        runs.addRunsListener(runsListener);
+        Teammate author = new Teammate("waluigi");
+        Run newRun = new Run().setName("1");
+        newRun.setAuthor(author);
+        runs.addRun(newRun);
+        verify(mockRunStore).storeRun(runListCaptor.capture());
+        Run storedRun = runListCaptor.getValue();
+        assertThat(newRun.getAuthor()).isEqualTo(author);
+        assertThat(storedRun.getAuthor()).isEqualTo(user);
+        assertThat(runs.getRuns().size()).isEqualTo(1);
+        assertThat(runs.getRuns().get(0)).isNotEqualTo(newRun);
+    }
+
+    @Test
+    public void documentIDClearedWithNonUserRun(){
+        RunStore mockRunStore = mock(RunStore.class);
+        RunsListener runsListener = mock(RunsListener.class);
+        ArgumentCaptor<Run> runListCaptor = ArgumentCaptor.forClass(Run.class);
+        Teammate user = new Teammate("email");
+        Runs runs = new Runs(mockRunStore, user);
+        runs.addRunsListener(runsListener);
+        Teammate author = new Teammate("waluigi");
+        Run newRun = new Run().setName("1");
+        newRun.setAuthor(author);
+        newRun.setDocumentID("123");
+        runs.addRun(newRun);
+        verify(mockRunStore).storeRun(runListCaptor.capture());
+        Run storedRun = runListCaptor.getValue();
+        assertThat(storedRun.getDocumentID()).isEqualTo("");
     }
 }

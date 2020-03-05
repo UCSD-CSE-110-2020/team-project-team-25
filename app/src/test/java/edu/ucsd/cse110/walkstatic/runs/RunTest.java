@@ -13,16 +13,20 @@ public class RunTest {
     public void runWithSameNameEqual(){
         UUID uuid = UUID.randomUUID();
         UUID cloneUUID = UUID.fromString(uuid.toString());
-        Run run1 = new Run().setUUID(uuid).setName("Test");
-        Run run2 = new Run().setUUID(cloneUUID).setName("Test");
+        Run run1 = new Run().setName("Test");
+        run1.setUUID(uuid);
+        Run run2 = new Run().setName("Test");
+        run2.setUUID(cloneUUID);
         assertEquals(run1, run2);
     }
 
     @Test
     public void runWithDifferentNamesNotEqual(){
         UUID uuid = UUID.randomUUID();
-        Run run1 = new Run().setUUID(uuid).setName("Test");
-        Run run2 = new Run().setUUID(uuid).setName("Not same");
+        Run run1 = new Run().setName("Test");
+        run1.setUUID(uuid);
+        Run run2 = new Run().setName("Not same");
+        run2.setUUID(uuid);
         assertNotEquals(run1, run2);
     }
 
@@ -69,21 +73,24 @@ public class RunTest {
     @Test
     public void equalsReturnsFalseIfStartingPointsDiffer(){
         Run run1 = new Run().setName("B").setStartingPoint("P1").setFavorited(false);
-        Run run2 = new Run().setUUID(run1.getUUID()).setName("B").setStartingPoint("P2").setFavorited(false);
+        Run run2 = new Run().setName("B").setStartingPoint("P2").setFavorited(false);
+        run2.setUUID(run1.getUUID());
         assertNotEquals(run1, run2);
     }
 
     @Test
     public void equalsReturnsTrueIfStartingPointsSame(){
         Run run1 = new Run().setName("B").setStartingPoint("P1").setFavorited(false);
-        Run run2 = new Run().setUUID(run1.getUUID()).setName("B").setStartingPoint("P1").setFavorited(false);
+        Run run2 = new Run().setName("B").setStartingPoint("P1").setFavorited(false);
+        run2.setUUID(run1.getUUID());
         assertEquals(run1, run2);
     }
 
     @Test
     public void equalsReturnsFalseIfFavoriteStatusDiffers(){
         Run run1 = new Run().setName("B").setStartingPoint("P1").setFavorited(false);
-        Run run2 = new Run().setUUID(run1.getUUID()).setName("B").setStartingPoint("P1").setFavorited(true);
+        Run run2 = new Run().setName("B").setStartingPoint("P1").setFavorited(true);
+        run2.setUUID(run1.getUUID());
         assertNotEquals(run1, run2);
     }
 

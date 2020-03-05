@@ -26,11 +26,15 @@ public class Runs implements  RunUpdateListener{
     }
 
     public void addRun(Run run){
-        if(run.getAuthor() == null){
-            run.setAuthor(this.user);
+        Run userRun = run;
+        if(!this.user.equals(run.getAuthor())){
+            userRun = Run.fromJSON(run.toJSON());
+            userRun.setUUID(UUID.randomUUID());
+            userRun.setAuthor(this.user);
+            userRun.setDocumentID("");
         }
-        this.store.storeRun(run);
-        this.userRuns.put(run.getUUID(), run);
+        this.store.storeRun(userRun);
+        this.userRuns.put(userRun.getUUID(), userRun);
     }
 
     public List<Run> getRuns(){

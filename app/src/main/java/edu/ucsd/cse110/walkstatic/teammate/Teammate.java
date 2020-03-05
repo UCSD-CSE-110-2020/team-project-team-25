@@ -1,5 +1,6 @@
 package edu.ucsd.cse110.walkstatic.teammate;
 
+import com.google.firebase.firestore.Exclude;
 import com.google.gson.Gson;
 
 import java.util.Random;
@@ -63,6 +64,7 @@ public class Teammate {
         return this.toString().hashCode();
     }
 
+    @Exclude
     public String getInitials(){
         if(this.name.length() == 0){
             return "";
@@ -76,6 +78,7 @@ public class Teammate {
         return initials;
     }
 
+    @Exclude
     public float[] getColor(){
         int seed = this.getName().hashCode();
         Random random = new Random(seed);

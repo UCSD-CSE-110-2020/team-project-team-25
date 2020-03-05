@@ -1,7 +1,6 @@
 package edu.ucsd.cse110.walkstatic;
 
 
-import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -13,18 +12,20 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
-import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
-import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
-import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
+import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
@@ -32,27 +33,30 @@ import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class DebugEspressoTest {
-    private static final String TEST_SERVICE = "TEST_SERVICE";
+public class TeammatesRunEspressoTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
 
     @Test
-    public void debugEspressoTest() {
-        EspressoHelpers.mockStorage();
-        FitnessServiceFactory.put(TEST_SERVICE, new FitnessServiceFactory.BluePrint() {
-            @Override
-            public FitnessService create(Activity activity) {
-                return new TestFitnessService(activity);
-            }
-        });
+    public void teammatesRunEspressoTest() {
+        Teammate user = new Teammate("test@gmail.com");
+        EspressoHelpers.setUser(user);
 
-        FitnessServiceFactory.setDefaultFitnessServiceKey(TEST_SERVICE);
+        Teammate waluigi = new Teammate("waluigi");
+        waluigi.setName("Waluigi Waa");
+
+        Run waluigisCanyon = new Run().setName("Waluigi's Canyon");
+        Run WaluigisCastle = new Run().setName("Waluigi's Castle");
+        waluigisCanyon.setAuthor(waluigi);
+        WaluigisCastle.setAuthor(waluigi);
+        EspressoHelpers.mockStorage(waluigisCanyon, WaluigisCastle);
+
         EspressoHelpers.setStartupParams(mActivityTestRule, "65");
 
         ViewInteraction appCompatImageButton = onView(
@@ -72,53 +76,60 @@ public class DebugEspressoTest {
                                 childAtPosition(
                                         withId(R.id.nav_view),
                                         0)),
-                        6),
+                        4),
                         isDisplayed()));
         navigationMenuItemView.perform(click());
 
-        ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.add_steps), withText("Add 500 Steps"),
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.listed_run_name), withText("Waluigi's Canyon"),
+                        isDisplayed()));
+        textView.check(matches(withText("Waluigi's Canyon")));
+
+        ViewInteraction textView2 = onView(
+                allOf(withId(R.id.listed_run_name), withText("Waluigi's Castle"),
+                        isDisplayed()));
+        textView2.check(matches(withText("Waluigi's Castle")));
+
+        DataInteraction constraintLayout = onData(anything())
+                .inAdapterView(allOf(withId(R.id.my_runs_list),
                         childAtPosition(
-                                allOf(withId(R.id.upper_constraint),
-                                        childAtPosition(
-                                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                                0)),
+                                withClassName(is("android.widget.FrameLayout")),
+                                0)))
+                .atPosition(0);
+        constraintLayout.perform(click());
+
+        ViewInteraction textView5 = onView(
+                allOf(withId(R.id.run_name), withText("Waluigi's Canyon"),
+                        isDisplayed()));
+        textView5.check(matches(withText("Waluigi's Canyon")));
+
+        ViewInteraction actionMenuItemView = onView(
+                allOf(withId(R.id.action_start_run), withContentDescription("Start Run"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.action_bar),
+                                        2),
                                 0),
+                        isDisplayed()));
+        actionMenuItemView.perform(click());
+
+        ViewInteraction textView6 = onView(
+                allOf(withId(R.id.run_name_display), withText("Waluigi's Canyon"),
+                        isDisplayed()));
+        textView6.check(matches(withText("Waluigi's Canyon")));
+
+        ViewInteraction appCompatButton2 = onView(
+                allOf(withId(R.id.stopButton), withText("Stop"),
                         isDisplayed()));
         appCompatButton2.perform(click());
 
-        ViewInteraction appCompatEditText = onView(
-                allOf(withId(R.id.time_text),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                        1),
-                                1),
+        ViewInteraction textView7 = onView(
+                allOf(withId(R.id.lastRunName), withText("Last Run: Waluigi's Canyon"),
                         isDisplayed()));
-        appCompatEditText.perform(replaceText("23:17:10.177"));
-
-        ViewInteraction appCompatEditText2 = onView(
-                allOf(withId(R.id.time_text),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                        1),
-                                1),
-                        isDisplayed()));
-        appCompatEditText2.perform(closeSoftKeyboard());
-
-        ViewInteraction appCompatButton3 = onView(
-                allOf(withId(R.id.save_time), withText("Update Time"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                        1),
-                                0),
-                        isDisplayed()));
-        appCompatButton3.perform(click());
+        textView7.check(matches(withText("Last Run: Waluigi's Canyon")));
 
         ViewInteraction appCompatImageButton2 = onView(
-                allOf(withContentDescription("Navigate up"),
+                allOf(withContentDescription("Open navigation drawer"),
                         childAtPosition(
                                 allOf(withId(R.id.action_bar),
                                         childAtPosition(
@@ -128,10 +139,20 @@ public class DebugEspressoTest {
                         isDisplayed()));
         appCompatImageButton2.perform(click());
 
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.steps_today), withText("659"),
+        ViewInteraction navigationMenuItemView2 = onView(
+                allOf(childAtPosition(
+                        allOf(withId(R.id.design_navigation_view),
+                                childAtPosition(
+                                        withId(R.id.nav_view),
+                                        0)),
+                        2),
                         isDisplayed()));
-        textView.check(matches(withText("659")));
+        navigationMenuItemView2.perform(click());
+
+        ViewInteraction textView8 = onView(
+                allOf(withId(R.id.listed_run_name), withText("Waluigi's Canyon"),
+                        isDisplayed()));
+        textView8.check(matches(withText("Waluigi's Canyon")));
     }
 
     private static Matcher<View> childAtPosition(
@@ -151,36 +172,5 @@ public class DebugEspressoTest {
                         && view.equals(((ViewGroup) parent).getChildAt(position));
             }
         };
-    }
-
-    private class TestFitnessService implements FitnessService {
-        private static final String TAG = "[TestFitnessService]: ";
-        private FitnessListener listener;
-
-        public TestFitnessService(Activity activity) {
-        }
-
-        @Override
-        public int getRequestCode() {
-            return 0;
-        }
-
-        @Override
-        public void setup() {
-            System.out.println(TAG + "setup");
-        }
-
-        @Override
-        public void updateStepCount() {
-            System.out.println(TAG + "updateStepCount");
-            if(this.listener != null){
-                listener.onNewSteps(159);
-            }
-        }
-
-        @Override
-        public void setListener(FitnessListener listener) {
-            this.listener = listener;
-        }
     }
 }
