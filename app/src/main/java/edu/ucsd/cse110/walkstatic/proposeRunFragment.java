@@ -114,7 +114,7 @@ public class proposeRunFragment extends Fragment {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                String date = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                                String date = (monthOfYear + 1) + "/" + dayOfMonth + "/" + year;
                                 dateEditText.setText(date);
                                 rp.setDate(date);
 

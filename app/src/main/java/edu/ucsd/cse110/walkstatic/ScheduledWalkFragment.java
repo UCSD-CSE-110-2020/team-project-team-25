@@ -93,10 +93,6 @@ public class ScheduledWalkFragment extends Fragment {
             flatVsHilly.setVisibility(View.VISIBLE);
             evenVsUneven.setVisibility(View.VISIBLE);
             streetVsTrail.setVisibility(View.VISIBLE);
-            getActivity().findViewById(R.id.last_miles_view).setVisibility(View.VISIBLE);
-            getActivity().findViewById(R.id.last_steps_view).setVisibility(View.VISIBLE);
-            getActivity().findViewById(R.id.ran_on).setVisibility(View.VISIBLE);
-            getActivity().findViewById(R.id.run_time).setVisibility(View.VISIBLE);
             getActivity().findViewById(R.id.time_view).setVisibility(View.VISIBLE);
             getActivity().findViewById(R.id.date_view).setVisibility(View.VISIBLE);
 
@@ -112,52 +108,22 @@ public class ScheduledWalkFragment extends Fragment {
         evenVsUneven.setText(run.getevenVsUneven());
         streetVsTrail.setText(run.getstreetVsTrail());
 
-        this.setStepsAndMilesAndTime(run);
+        setDateAndTime();
+
     }
 
-    private void setStepsAndMilesAndTime(Run run){
-        TextView milesView = this.getActivity().findViewById(R.id.last_miles_view);
-        TextView stepsView = this.getActivity().findViewById(R.id.last_steps_view);
-        TextView dateView = this.getActivity().findViewById(R.id.ran_on);
-        TextView timeView = this.getActivity().findViewById(R.id.run_time);
+    private void setDateAndTime(){
         TextView scheduledTimeView = this.getActivity().findViewById(R.id.time_view);
         TextView scheduledDateView = this.getActivity().findViewById(R.id.date_view);
-
-        DecimalFormat decimalFormat = new DecimalFormat("#.00");
-        String milesString = decimalFormat.format(run.getMiles());
-        String stepsString = Long.toString(run.getSteps());
-
-        Instant startInstant = Instant.ofEpochMilli(run.getStartTime());
-        LocalDateTime startTime = LocalDateTime.ofInstant(startInstant, ZoneId.systemDefault());
-        String dateString = startTime.toLocalDate().toString();
-        String timeString = TimeHelp.timeToString(run.getDuration());
 
         String scheduledTimeString = rp.getTime();
         String scheduledDateString = rp.getDate();
 
-        if(run.getSteps() == Run.INVALID_STEPS){
-            String noValue = getContext().getString(R.string.no_value);
-            milesString = noValue;
-            stepsString = noValue;
-            dateString = noValue;
-            timeString = noValue;
-            scheduledDateString = noValue;
-            scheduledTimeString = noValue;
-        }
-
-        String milesText = getContext().getString(R.string.miles_text, milesString);
-        String stepsText = getContext().getString(R.string.steps_text, stepsString);
-        String dateText = getContext().getString(R.string.date_text, dateString);
-        String timeText = getContext().getString(R.string.time_text, timeString);
         String scheduledTimeText = getContext().getString(R.string.scheduled_time_text, scheduledTimeString);
-        String scheduleDateText = getContext().getString(R.string.scheduled_date_text, scheduledDateString);
+        String scheduledDateText = getContext().getString(R.string.scheduled_date_text, scheduledDateString);
 
-        milesView.setText(milesText);
-        stepsView.setText(stepsText);
-        dateView.setText(dateText);
-        timeView.setText(timeText);
-        scheduledTimeView.setText(timeText);
-        timeView.setText(timeText);
+        scheduledTimeView.setText(scheduledTimeString);
+        scheduledDateView.setText(scheduledDateString);
     }
 
 }
