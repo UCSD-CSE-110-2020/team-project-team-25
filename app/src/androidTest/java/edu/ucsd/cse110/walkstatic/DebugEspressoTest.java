@@ -72,7 +72,7 @@ public class DebugEspressoTest {
                                 childAtPosition(
                                         withId(R.id.nav_view),
                                         0)),
-                        6),
+                        7),
                         isDisplayed()));
         navigationMenuItemView.perform(click());
 
