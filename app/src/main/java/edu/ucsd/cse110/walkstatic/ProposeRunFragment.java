@@ -29,12 +29,13 @@ import java.util.Objects;
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunProposal;
 
-public class proposeRunFragment extends Fragment {
+public class ProposeRunFragment extends Fragment {
     private RunProposal runproposal;
     private DatePickerDialog datePicker;
     private TimePickerDialog timePicker;
     boolean validTime = false;
     boolean validDate = false;
+    boolean isToday = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,6 +69,17 @@ public class proposeRunFragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
+/*
+    @Override
+    public void onPrepareOptionsMenu(Menu menu){
+        super.onPrepareOptionsMenu(menu);
+        MenuItem save = menu.findItem(R.id.proposeCheckButton);
+        save.setEnabled(validTime && validDate);
+        int tint = (validTime && validDate) ? R.color.tintActive : R.color.tintDisabled;
+        save.setIconTintList(getContext().getResources().getColorStateList(tint, null));
+    }
+*/
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -85,18 +97,29 @@ public class proposeRunFragment extends Fragment {
                 final Calendar cldr = Calendar.getInstance();
                 int hour = cldr.get(Calendar.HOUR_OF_DAY);
                 int minutes = cldr.get(Calendar.MINUTE);
+
+                int day = cldr.get(Calendar.DAY_OF_MONTH);
+                int month = cldr.get(Calendar.MONTH);
+                int year = cldr.get(Calendar.YEAR);
+                //sHour >= hour && sMinute >= minutes
+                //&& (sHour < hour && sMinute < minutes)
                 // time picker dialog
                 timePicker = new TimePickerDialog(getActivity(),android.R.style.Theme_Holo_Light_Dialog,
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker tp, int sHour, int sMinute) {
-                                if(sHour >= hour && sMinute >= minutes){
-                                    String time = sHour + ":" + sMinute;
-                                    timeEditText.setText(time);
-                                    runproposal.setTime(time);
-                                    validTime = true;
-                                } else {
-                                    timeEditText.setText("Invalid Time");
+                            if(isToday == true && ((sHour == hour && sMinute < minutes) || sHour < hour)  ){
+                                    timeEditText.setText("Please select a valid time");
+                                    validTime = false;
+                                }
+                            else {
+                                String time = sHour + ":" + sMinute;
+                                if(sMinute < 10){
+                                    time = sHour + ":0" + sMinute;
+                                }
+                                timeEditText.setText(time);
+                                runproposal.setTime(time);
+                                validTime = true;
                                 }
                             }
                         }, hour, minutes, true);
@@ -116,11 +139,18 @@ public class proposeRunFragment extends Fragment {
                 datePicker = new DatePickerDialog(getActivity(),
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
-                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                String date = (monthOfYear + 1) + "/" + dayOfMonth + "/" + year;
+                            public void onDateSet(DatePicker view, int years, int monthOfYear, int dayOfMonth) {
+                                String date = (monthOfYear + 1) + "/" + dayOfMonth + "/" + years;
                                 dateEditText.setText(date);
+
                                 runproposal.setDate(date);
                                 validDate = true;
+                                if(years == year && monthOfYear == month && dayOfMonth == day){
+                                    isToday = true;
+                                }
+                                else{
+                                    isToday = false;
+                                }
 
                             }
                         }, year, month, day);

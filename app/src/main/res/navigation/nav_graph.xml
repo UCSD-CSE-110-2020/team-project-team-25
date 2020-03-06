@@ -49,7 +49,7 @@
         app:popUpToInclusive="true" />
     <fragment
         android:id="@+id/proposeRunFragment"
-        android:name="edu.ucsd.cse110.walkstatic.proposeRunFragment"
+        android:name="edu.ucsd.cse110.walkstatic.ProposeRunFragment"
         android:label="Propose Run"
         tools:layout="@layout/fragment_propose_run" />
     <fragment

@@ -8,17 +8,21 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.time.LocalDateTime;
+
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunProposal;
+import edu.ucsd.cse110.walkstatic.time.TimeMachine;
 
 import static com.google.common.truth.Truth.assertThat;
+import static junit.framework.TestCase.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
 
 public class ProposeRunTest {
     @Test
     public void testTimeDate() {
-        FragmentScenario<proposeRunFragment> scenario = FragmentScenario.launchInContainer(proposeRunFragment.class);
+        FragmentScenario<ProposeRunFragment> scenario = FragmentScenario.launchInContainer(ProposeRunFragment.class);
         scenario.onFragment(activity -> {
             Run run = new Run().setName("This is a run").setStartingPoint("This is a starting point").setFavorited(true);
 
