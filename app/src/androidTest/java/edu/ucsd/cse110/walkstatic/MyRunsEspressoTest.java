@@ -19,7 +19,7 @@ import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 import edu.ucsd.cse110.walkstatic.runs.Run;
-import edu.ucsd.cse110.walkstatic.runs.RunList;
+import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -43,21 +43,16 @@ public class MyRunsEspressoTest {
 
     @Test
     public void myRunsTest() {
+        Teammate user = new Teammate("test@gmail.com");
+        EspressoHelpers.setUser(user);
+
+        Run run1 = new Run().setName("Run 1");
+        Run run2 = new Run().setName("Run 2");
+        run1.setAuthor(user);
+        run2.setAuthor(user);
+        EspressoHelpers.mockStorage(run1, run2);
+
         EspressoHelpers.setStartupParams(mActivityTestRule, "65");
-        //Gson gson = new Gson();
-        //ArrayList<Run> runs = new ArrayList<Run>();
-        //runs.add(new Run("Run 1"));
-        //runs.add(new Run("Run 2"));
-        RunList runs = new RunList();
-        runs.add(new Run().setName("Run 1"));
-        runs.add(new Run().setName("Run 2"));
-
-
-        Context targetContext = getInstrumentation().getTargetContext();
-        String preferencesName = targetContext.getResources().getString(R.string.run_save_name);
-        SharedPreferences.Editor preferencesEditor = targetContext.getSharedPreferences(preferencesName, Context.MODE_PRIVATE).edit();
-
-        preferencesEditor.putString("runs", runs.toJSON()).commit();
 
 
         ViewInteraction appCompatImageButton = onView(

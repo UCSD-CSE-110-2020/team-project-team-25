@@ -31,4 +31,55 @@ public class TeammateTest {
         Teammate teammate = new Teammate();
         assertThat(teammate).isNotEqualTo("");
     }
+
+    @Test
+    public void hashCodeRepresentsObject(){
+        Teammate teammate = new Teammate();
+        Teammate teammateClone = new Teammate();
+        assertThat(teammate.hashCode()).isEqualTo(teammateClone.hashCode());
+    }
+
+    @Test
+    public void noInitialsOnNoName(){
+        Teammate teammate = new Teammate();
+        assertThat(teammate.getInitials()).isEqualTo("");
+    }
+
+    @Test
+    public void initialIsOneNameFirstChar(){
+        Teammate teammate = new Teammate();
+        teammate.setName("Name");
+        assertThat(teammate.getInitials()).isEqualTo("N");
+    }
+
+    @Test
+    public void firstLastNameGiveInitials(){
+        Teammate teammate = new Teammate();
+        teammate.setName("First Last");
+        assertThat(teammate.getInitials()).isEqualTo("FL");
+    }
+
+    @Test
+    public void firstLastNameWithTwoSpacesGivesInitials(){
+        Teammate teammate = new Teammate();
+        teammate.setName("First  Last");
+        assertThat(teammate.getInitials()).isEqualTo("FL");
+    }
+
+    @Test
+    public void threeNamesOnlyGivesFirstAndLastInitial(){
+        Teammate teammate = new Teammate();
+        teammate.setName("First Middle Last");
+        assertThat(teammate.getInitials()).isEqualTo("FL");
+    }
+
+    @Test
+    public void getColorDiffersForDifferentNames(){
+        Teammate teammate = new Teammate();
+        teammate.setName("Waluigi W");
+        Teammate teammate2 = new Teammate();
+        teammate2.setName("Waluigi Wa");
+        assertThat(teammate.getColor()).isNotEqualTo(teammate2.getColor());
+    }
+
 }

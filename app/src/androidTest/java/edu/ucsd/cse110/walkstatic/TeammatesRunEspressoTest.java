@@ -1,8 +1,6 @@
 package edu.ucsd.cse110.walkstatic;
 
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -10,7 +8,6 @@ import android.view.ViewParent;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,35 +23,41 @@ import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
+import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class ViewRunEspressoTest {
+public class TeammatesRunEspressoTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
 
     @Test
-    public void viewRunEspressoTest() {
+    public void teammatesRunEspressoTest() {
         Teammate user = new Teammate("test@gmail.com");
         EspressoHelpers.setUser(user);
 
-        Run run1 = new Run().setName("Run 1");
-        Run run2 = new Run().setName("Run 2");
-        run1.setAuthor(user);
-        run2.setAuthor(user);
-        EspressoHelpers.mockStorage(run1, run2);
+        Teammate waluigi = new Teammate("waluigi");
+        waluigi.setName("Waluigi Waa");
+
+        Run waluigisCanyon = new Run().setName("Waluigi's Canyon");
+        Run WaluigisCastle = new Run().setName("Waluigi's Castle");
+        waluigisCanyon.setAuthor(waluigi);
+        WaluigisCastle.setAuthor(waluigi);
+        EspressoHelpers.mockStorage(waluigisCanyon, WaluigisCastle);
 
         EspressoHelpers.setStartupParams(mActivityTestRule, "65");
-
 
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
@@ -73,23 +76,60 @@ public class ViewRunEspressoTest {
                                 childAtPosition(
                                         withId(R.id.nav_view),
                                         0)),
-                        2),
+                        4),
                         isDisplayed()));
         navigationMenuItemView.perform(click());
 
-        DataInteraction appCompatTextView = onData(anything())
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.listed_run_name), withText("Waluigi's Canyon"),
+                        isDisplayed()));
+        textView.check(matches(withText("Waluigi's Canyon")));
+
+        ViewInteraction textView2 = onView(
+                allOf(withId(R.id.listed_run_name), withText("Waluigi's Castle"),
+                        isDisplayed()));
+        textView2.check(matches(withText("Waluigi's Castle")));
+
+        DataInteraction constraintLayout = onData(anything())
                 .inAdapterView(allOf(withId(R.id.my_runs_list),
                         childAtPosition(
-                                IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class),
+                                withClassName(is("android.widget.FrameLayout")),
                                 0)))
-                .atPosition(1);
-        appCompatTextView.perform(click());
+                .atPosition(0);
+        constraintLayout.perform(click());
 
-        ViewInteraction textView = onView(allOf(withId(R.id.run_name), isDisplayed()));
-        textView.check(matches(withText("Run 2")));
+        ViewInteraction textView5 = onView(
+                allOf(withId(R.id.run_name), withText("Waluigi's Canyon"),
+                        isDisplayed()));
+        textView5.check(matches(withText("Waluigi's Canyon")));
+
+        ViewInteraction actionMenuItemView = onView(
+                allOf(withId(R.id.action_start_run), withContentDescription("Start Run"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.action_bar),
+                                        2),
+                                0),
+                        isDisplayed()));
+        actionMenuItemView.perform(click());
+
+        ViewInteraction textView6 = onView(
+                allOf(withId(R.id.run_name_display), withText("Waluigi's Canyon"),
+                        isDisplayed()));
+        textView6.check(matches(withText("Waluigi's Canyon")));
+
+        ViewInteraction appCompatButton2 = onView(
+                allOf(withId(R.id.stopButton), withText("Stop"),
+                        isDisplayed()));
+        appCompatButton2.perform(click());
+
+        ViewInteraction textView7 = onView(
+                allOf(withId(R.id.lastRunName), withText("Last Run: Waluigi's Canyon"),
+                        isDisplayed()));
+        textView7.check(matches(withText("Last Run: Waluigi's Canyon")));
 
         ViewInteraction appCompatImageButton2 = onView(
-                allOf(withContentDescription("Navigate up"),
+                allOf(withContentDescription("Open navigation drawer"),
                         childAtPosition(
                                 allOf(withId(R.id.action_bar),
                                         childAtPosition(
@@ -99,18 +139,20 @@ public class ViewRunEspressoTest {
                         isDisplayed()));
         appCompatImageButton2.perform(click());
 
-        DataInteraction appCompatTextView2 = onData(anything())
-                .inAdapterView(allOf(withId(R.id.my_runs_list),
-                        childAtPosition(
-                                IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class),
-                                0)))
-                .atPosition(0);
-        appCompatTextView2.perform(click());
-
-        ViewInteraction textView2 = onView(
-                allOf(withId(R.id.run_name), withText("Run 1"),
+        ViewInteraction navigationMenuItemView2 = onView(
+                allOf(childAtPosition(
+                        allOf(withId(R.id.design_navigation_view),
+                                childAtPosition(
+                                        withId(R.id.nav_view),
+                                        0)),
+                        2),
                         isDisplayed()));
-        textView2.check(matches(withText("Run 1")));
+        navigationMenuItemView2.perform(click());
+
+        ViewInteraction textView8 = onView(
+                allOf(withId(R.id.listed_run_name), withText("Waluigi's Canyon"),
+                        isDisplayed()));
+        textView8.check(matches(withText("Waluigi's Canyon")));
     }
 
     private static Matcher<View> childAtPosition(

@@ -44,6 +44,7 @@ public class TimeEspressoTest {
 
     @Test
     public void TimeEspressoTest() {
+        EspressoHelpers.mockStorage();
         EspressoHelpers.setStartupParams(mActivityTestRule, "65");
         FitnessServiceFactory.put(TEST_SERVICE, new FitnessServiceFactory.BluePrint() {
             @Override

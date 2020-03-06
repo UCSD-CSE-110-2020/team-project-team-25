@@ -49,7 +49,9 @@ public class EditRunTest {
 
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             Run run = runViewModel.sharedRun.getValue();
-            assertThat(run).isEqualTo(new Run().setUUID(run.getUUID()).setName("Run 1"));
+            Run expected = new Run().setName("Run 1");
+            expected.setUUID(run.getUUID());
+            assertThat(run).isEqualTo(expected);
         });
     }
 
@@ -71,7 +73,9 @@ public class EditRunTest {
             fragment.onOptionsItemSelected(save);
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             Run run = runViewModel.sharedRun.getValue();
-            assertThat(run).isEqualTo(new Run().setUUID(run.getUUID()).setName("Run 1").setDifficulty(difficulty));
+            Run expected = new Run();
+            expected.setUUID(run.getUUID());
+            assertThat(run).isEqualTo(expected.setName("Run 1").setDifficulty(difficulty));
             assertThat(run.getDifficulty()).isEqualTo("Moderate");
         });
     }
@@ -114,7 +118,9 @@ public class EditRunTest {
             fragment.onOptionsItemSelected(save);
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             Run run = runViewModel.sharedRun.getValue();
-            assertThat(run).isEqualTo(new Run().setUUID(run.getUUID()).setName("Run 1").setDifficulty(difficulty).setflatVsHilly(flatVHilly)
+            Run expected = new Run();
+            expected.setUUID(run.getUUID());
+            assertThat(run).isEqualTo(expected.setName("Run 1").setDifficulty(difficulty).setflatVsHilly(flatVHilly)
                     .setevenVsUneven(evenVUneven).setloopVsOut(loopVout).setstreetVsTrail(streetVTrail));
             assertThat(run.getDifficulty()).isEqualTo("Moderate");
             assertThat(run.getevenVsUneven()).isEqualTo("Even Surface");
@@ -144,7 +150,9 @@ public class EditRunTest {
             fragment.onOptionsItemSelected(save);
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             Run newRun = runViewModel.sharedRun.getValue();
-            assertThat(newRun).isEqualTo(new Run().setUUID(uuid).setName("Run 1"));
+            Run expected = new Run();
+            expected.setUUID(uuid);
+            assertThat(newRun).isEqualTo(expected.setName("Run 1"));
         });
     }
 
@@ -170,7 +178,9 @@ public class EditRunTest {
             fragment.onOptionsItemSelected(save);
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             Run run = runViewModel.sharedRun.getValue();
-            assertThat(run).isEqualTo(new Run().setUUID(uuid).setName("Run 1"));
+            Run expected = new Run();
+            expected.setUUID(uuid);
+            assertThat(run).isEqualTo(expected.setName("Run 1"));
             assertThat(run.getDifficulty()).isEqualTo("");
         });
     }
@@ -209,7 +219,9 @@ public class EditRunTest {
             fragment.onOptionsItemSelected(save);
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             Run run = runViewModel.sharedRun.getValue();
-            assertThat(run).isEqualTo(new Run().setUUID(uuid).setName("Run 1"));
+            Run expected = new Run();
+            expected.setUUID(uuid);
+            assertThat(run).isEqualTo(expected.setName("Run 1"));
             assertThat(run.getDifficulty()).isEqualTo("");
             assertThat(run.getevenVsUneven()).isEqualTo("");
             assertThat(run.getflatVsHilly()).isEqualTo("");
@@ -435,7 +447,9 @@ public class EditRunTest {
 
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             Run run = runViewModel.sharedRun.getValue();
-            assertThat(run).isEqualTo(new Run().setUUID(run.getUUID()).setName("Run 1").setStartingPoint("Point 1").setFavorited(false));
+            Run expected = new Run();
+            expected.setUUID(run.getUUID());
+            assertThat(run).isEqualTo(expected.setName("Run 1").setStartingPoint("Point 1").setFavorited(false));
         });
     }
 
@@ -457,7 +471,9 @@ public class EditRunTest {
 
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             Run run = runViewModel.sharedRun.getValue();
-            assertThat(run).isEqualTo(new Run().setUUID(run.getUUID()).setName("Run 1").setStartingPoint("").setFavorited(true));
+            Run expected = new Run();
+            expected.setUUID(run.getUUID());
+            assertThat(run).isEqualTo(expected.setName("Run 1").setStartingPoint("").setFavorited(true));
         });
     }
 
