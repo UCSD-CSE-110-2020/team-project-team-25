@@ -1,7 +1,8 @@
 package edu.ucsd.cse110.walkstatic.runs;
 
-import edu.ucsd.cse110.walkstatic.runs.RunList;
+import java.util.List;
 
 public interface RunsListener {
-    public void teammateRunsChanged(RunList teammateRuns);
+    public void myRunsChanged(List<Run> myRuns);
+    public void teammateRunsChanged(List<Run> teammateRuns);
 }

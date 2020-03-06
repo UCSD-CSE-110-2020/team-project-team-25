@@ -7,10 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
+import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -19,14 +21,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import edu.ucsd.cse110.walkstatic.runs.Run;
-import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
@@ -34,27 +35,33 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class AddRunEspressoTest {
+public class GoogleMapEspressoTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class,true, false);
+    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
 
     @Test
-    public void addRunEspressoTest() {
+    public void googleEspressoTest() {
         Teammate user = new Teammate("test@gmail.com");
         EspressoHelpers.setUser(user);
-
-        Run run1 = new Run().setName("Run 1");
-        Run run2 = new Run().setName("Run 2");
-        run1.setAuthor(user);
-        run2.setAuthor(user);
-        EspressoHelpers.mockStorage(run1, run2);
+        EspressoHelpers.mockStorage();
 
         EspressoHelpers.setStartupParams(mActivityTestRule, "65");
+
+
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
@@ -67,6 +74,15 @@ public class AddRunEspressoTest {
                         isDisplayed()));
         appCompatImageButton.perform(click());
 
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         ViewInteraction navigationMenuItemView = onView(
                 allOf(childAtPosition(
                         allOf(withId(R.id.design_navigation_view),
@@ -77,7 +93,16 @@ public class AddRunEspressoTest {
                         isDisplayed()));
         navigationMenuItemView.perform(click());
 
-        ViewInteraction actionMenuItemView1 = onView(
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        ViewInteraction actionMenuItemView = onView(
                 allOf(withId(R.id.action_add), withContentDescription("Add"),
                         childAtPosition(
                                 childAtPosition(
@@ -85,7 +110,7 @@ public class AddRunEspressoTest {
                                         2),
                                 0),
                         isDisplayed()));
-        actionMenuItemView1.perform(click());
+        actionMenuItemView.perform(click());
 
         ViewInteraction appCompatEditText = onView(
                 allOf(withId(R.id.run_name_text),
@@ -95,53 +120,19 @@ public class AddRunEspressoTest {
                                         0),
                                 1),
                         isDisplayed()));
-        appCompatEditText.perform(replaceText("Apple Park"), closeSoftKeyboard());
-
-        ViewInteraction favorite = onView(
-                allOf(withId(R.id.action_favorite), withContentDescription("Favorite"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.action_bar),
-                                        2),
-                                0),
-                        isDisplayed()));
-        favorite.perform(click());
-
-        ViewInteraction actionMenuItemView = onView(
-                allOf(withId(R.id.action_save), withContentDescription("Save"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.action_bar),
-                                        2),
-                                1),
-                        isDisplayed()));
-        actionMenuItemView.perform(click());
-
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.listed_run_name), withText("Apple Park"), isDisplayed()));
-        textView.check(matches(withText("Apple Park")));
-
-        ViewInteraction actionMenuItemView2 = onView(
-                allOf(withId(R.id.action_add), withContentDescription("Add"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.action_bar),
-                                        2),
-                                0),
-                        isDisplayed()));
-        actionMenuItemView2.perform(click());
+        appCompatEditText.perform(replaceText("blah"), closeSoftKeyboard());
 
         ViewInteraction appCompatEditText2 = onView(
-                allOf(withId(R.id.run_name_text),
+                allOf(withId(R.id.starting_point_text),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.LinearLayout")),
-                                        0),
+                                        1),
                                 1),
                         isDisplayed()));
-        appCompatEditText2.perform(replaceText("Z Park"), closeSoftKeyboard());
+        appCompatEditText2.perform(replaceText("Wuhan"), closeSoftKeyboard());
 
-        ViewInteraction actionMenuItemView3 = onView(
+        ViewInteraction actionMenuItemView2 = onView(
                 allOf(withId(R.id.action_save), withContentDescription("Save"),
                         childAtPosition(
                                 childAtPosition(
@@ -149,53 +140,25 @@ public class AddRunEspressoTest {
                                         2),
                                 1),
                         isDisplayed()));
-        actionMenuItemView3.perform(click());
+        actionMenuItemView2.perform(click());
 
-        ViewInteraction textView3 = onView(
-                allOf(withId(R.id.listed_run_name), withText("Z Park"), isDisplayed()));
-        textView3.check(matches(withText("Z Park")));
-
-        ViewInteraction appCompatImageButton2 = onView(
-                allOf(withContentDescription("Navigate up"),
+        DataInteraction constraintLayout = onData(anything())
+                .inAdapterView(allOf(withId(R.id.my_runs_list),
                         childAtPosition(
-                                allOf(withId(R.id.action_bar),
-                                        childAtPosition(
-                                                withId(R.id.action_bar_container),
-                                                0)),
-                                1),
-                        isDisplayed()));
-        appCompatImageButton2.perform(click());
+                                withClassName(is("android.widget.FrameLayout")),
+                                0)))
+                .atPosition(0);
+        constraintLayout.perform(click());
 
-        ViewInteraction appCompatImageButton3 = onView(
-                allOf(withContentDescription("Open navigation drawer"),
+        ViewInteraction appCompatTextView = onView(
+                allOf(withId(R.id.starting_point), withText("Wuhan"),
                         childAtPosition(
-                                allOf(withId(R.id.action_bar),
-                                        childAtPosition(
-                                                withId(R.id.action_bar_container),
-                                                0)),
-                                1),
-                        isDisplayed()));
-        appCompatImageButton3.perform(click());
-
-        ViewInteraction navigationMenuItemView2 = onView(
-                allOf(childAtPosition(
-                        allOf(withId(R.id.design_navigation_view),
                                 childAtPosition(
-                                        withId(R.id.nav_view),
-                                        0)),
-                        2),
+                                        withId(R.id.nav_host_fragment),
+                                        0),
+                                1),
                         isDisplayed()));
-        navigationMenuItemView2.perform(click());
-
-        ViewInteraction textView4 = onView(
-                allOf(withId(R.id.listed_run_name), withText("Apple Park"),
-                        isDisplayed()));
-        textView4.check(matches(withText("Apple Park")));
-
-        ViewInteraction textView5 = onView(
-                allOf(withId(R.id.listed_run_name), withText("Z Park"),
-                        isDisplayed()));
-        textView5.check(matches(withText("Z Park")));
+        appCompatTextView.perform(click());
     }
 
     private static Matcher<View> childAtPosition(

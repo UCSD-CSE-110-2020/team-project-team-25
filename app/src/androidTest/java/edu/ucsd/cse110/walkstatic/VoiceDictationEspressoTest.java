@@ -23,10 +23,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import edu.ucsd.cse110.walkstatic.runs.Run;
-import edu.ucsd.cse110.walkstatic.runs.RunList;
 import edu.ucsd.cse110.walkstatic.speech.SpeechListener;
 import edu.ucsd.cse110.walkstatic.speech.VoiceDictation;
 import edu.ucsd.cse110.walkstatic.speech.VoiceDictationFactory;
+import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -47,19 +47,21 @@ public class VoiceDictationEspressoTest {
     private String voiceReturnString;
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
 
     @Test
     public void voiceDictationEspressoTest() {
-        RunList runs = new RunList();
-        runs.add(new Run().setName("Run 1"));
-        runs.add(new Run().setName("Run 2"));;
+        Teammate user = new Teammate("test@gmail.com");
+        EspressoHelpers.setUser(user);
 
-        Context targetContext = getInstrumentation().getTargetContext();
-        String preferencesName = targetContext.getResources().getString(R.string.run_save_name);
-        SharedPreferences.Editor preferencesEditor = targetContext.getSharedPreferences(preferencesName, Context.MODE_PRIVATE).edit();
+        Run run1 = new Run().setName("Run 1");
+        Run run2 = new Run().setName("Run 2");
+        run1.setAuthor(user);
+        run2.setAuthor(user);
+        EspressoHelpers.mockStorage(run1, run2);
 
-        preferencesEditor.putString("runs", runs.toJSON()).commit();
+        EspressoHelpers.setStartupParams(mActivityTestRule, "65");
+
         VoiceDictationFactory.setCurrentBlueprint(context -> {
             return new VoiceDictationMock();
         });
