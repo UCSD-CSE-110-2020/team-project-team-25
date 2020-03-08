@@ -24,5 +24,6 @@ public class MockFirebaseHelpers {
             }
             return null;
         }).when(storageWatcher).addRunUpdateListener(any());
+        DefaultStorage.setDefaultResponseWatcher(() -> ((dontCare) -> {}));
     }
 }
