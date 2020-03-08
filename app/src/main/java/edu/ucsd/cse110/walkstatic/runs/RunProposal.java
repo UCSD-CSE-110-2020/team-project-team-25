@@ -2,15 +2,25 @@ package edu.ucsd.cse110.walkstatic.runs;
 
 import com.google.gson.Gson;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 
-public class RunProposal {
+import edu.ucsd.cse110.walkstatic.teammate.Teammate;
+import edu.ucsd.cse110.walkstatic.teammate.TeammateResponse;
+import edu.ucsd.cse110.walkstatic.teammate.TeammateResponseChangeListener;
+
+public class RunProposal implements TeammateResponseChangeListener {
     Run run;
     String date;
     String time;
 
+    private HashMap<Teammate, TeammateResponse> attendees;
+
     public RunProposal(Run run){
         this.run = run;
+        this.attendees = new HashMap<>();
     }
 
     public void setDate(String date) {
@@ -41,5 +51,15 @@ public class RunProposal {
         return rp;
     }
 
+    public List<TeammateResponse> getAttendees(){
+        ArrayList<TeammateResponse> attendeesList = new ArrayList<>(this.attendees.values());
+        return attendeesList;
+    }
 
+    @Override
+    public void onChangedResponses(Collection<TeammateResponse> changedResponses) {
+        for(TeammateResponse response : changedResponses){
+            this.attendees.put(response.getUser(), response);
+        }
+    }
 }
