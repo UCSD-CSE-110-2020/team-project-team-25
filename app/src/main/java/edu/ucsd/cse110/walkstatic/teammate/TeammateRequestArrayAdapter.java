@@ -14,24 +14,24 @@ import java.util.List;
 
 import edu.ucsd.cse110.walkstatic.R;
 
-public class TeammateArrayAdapter extends ArrayAdapter<Teammate> {
-    public TeammateArrayAdapter(Context context, int resource, List<Teammate> objects) {
+public class TeammateRequestArrayAdapter extends ArrayAdapter<TeammateRequest> {
+    public TeammateRequestArrayAdapter(Context context, int resource, List<TeammateRequest> objects) {
         super(context, resource, objects);
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        Teammate teammate = getItem(position);
+        TeammateRequest teammateRequest = getItem(position);
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.teammate_textview, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.teammate_request_textview, parent, false);
         }
 
         TextView nameView = convertView.findViewById(R.id.teammate_name);
         TextView initialView = convertView.findViewById(R.id.teammate_initials);
 
-        nameView.setText(teammate.getName());
+        nameView.setText(teammateRequest.getTarget().getName());
         initialView.setText("!!");
 
         return convertView;

@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
-
 import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -19,42 +22,49 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
-import org.w3c.dom.Text;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
-import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
-
-import static android.content.Context.MODE_PRIVATE;
 
 import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 import edu.ucsd.cse110.walkstatic.runs.MileCalculator;
 import edu.ucsd.cse110.walkstatic.runs.Run;
+
 import edu.ucsd.cse110.walkstatic.runs.RunsListener;
+import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
+import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
+import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
+import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestListener;
 import edu.ucsd.cse110.walkstatic.time.TimeHelp;
 import edu.ucsd.cse110.walkstatic.time.TimeMachine;
 
+import static android.content.Context.MODE_PRIVATE;
 
-public class RunFragment extends Fragment {
+
+public class RunFragment extends Fragment implements TeammateRequestListener {
 
     private DistanceTracker stepTracker;
     private FitnessService fitnessService;
     private SecondTimer timer;
     private Chronometer chronometer;
     private MileCalculator mileCalculator;
+    private StorageWatcher storageWatcher;
+    private TeammateRequest lastRequest;
+
+    private Walkstatic app;
+
+    private Menu menu;
 
     private Run run;
     private Run lastRun;
-
-    private Walkstatic app;
 
     private static final int[] currentRunComponents = {R.id.mileRunCount, R.id.mileRunText,
             R.id.stepRunCount, R.id.stepRunText};
@@ -67,10 +77,14 @@ public class RunFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState){
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         this.app = new Walkstatic(this.getContext());
+        this.setHasOptionsMenu(true);
         this.buildMileCalculator();
+        this.buildStorageWatcher();
+
         initStepCount();
         Button startButton = getActivity().findViewById(R.id.startButton);
 
@@ -80,7 +94,7 @@ public class RunFragment extends Fragment {
             @Override
             public void onChronometerTick(Chronometer chronometer) {
                 Instant startInstant = Instant.ofEpochMilli(run.getStartTime());
-                LocalDateTime startTime = LocalDateTime.ofInstant(startInstant,ZoneId.systemDefault());
+                LocalDateTime startTime = LocalDateTime.ofInstant(startInstant, ZoneId.systemDefault());
                 LocalDateTime currentTime = TimeMachine.now();
                 Duration runTime = Duration.between(startTime, currentTime);
                 long time = runTime.toMillis();
@@ -121,8 +135,15 @@ public class RunFragment extends Fragment {
                 updateLastRunUI();
             }
         });
+
+        this.storageWatcher.addTeammateRequestUpdateListener(this);
+
         loadCurrentRun();
         loadLastRun();
+    }
+
+    private void setNotification(boolean visible) {
+        menu.getItem(0).setVisible(visible);
     }
 
     @Override
@@ -137,6 +158,32 @@ public class RunFragment extends Fragment {
         } else {
             Log.e(TAG, "ERROR, google fit result code: " + resultCode);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater menuInflater)
+    {
+        this.menu = menu;
+
+        menuInflater.inflate(R.menu.notifications_menu, menu);
+        super.onCreateOptionsMenu(menu, menuInflater);
+
+        MenuItem mi = menu.getItem(0);
+
+        ColorStateList csl = getContext().getResources().
+                getColorStateList(R.color.notificationYellow, null);
+        mi.setIconTintList(csl);
+
+        mi.setOnMenuItemClickListener(item -> {
+            Bundle bundle = new Bundle();
+            if (lastRequest != null)
+                bundle.putSerializable("request", lastRequest.getRequester());
+            NavHostFragment.findNavController(this).navigate(
+                    R.id.action_runFragment_to_inviteAcceptedFragment, bundle);
+            return true;
+        });
+
+        this.setNotification(false);
     }
 
     private void initStepCount(){
@@ -173,9 +220,6 @@ public class RunFragment extends Fragment {
         Log.d("Run Fragment", "Resuming");
         if(this.timer != null)this.timer.resume();
     }
-
-//    @Override
-//    public void onDestroyView() { super.onDestroyView(); }
 
     private void updateStepCount(){
         //for day
@@ -288,6 +332,22 @@ public class RunFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onNewTeammateRequest(TeammateRequest request) {
+        if (request.getTarget().equals(app.getUser())){
+            setNotification(true);
+            lastRequest = request;
+        }
+    }
+
+    @Override
+    public void onTeammateRequestDeleted(TeammateRequest request) {
+        if(request.getTarget().equals(app.getUser())){
+            setNotification(false);
+            lastRequest = null;
+        }
+    }
+
     private class SecondTimer implements Runnable{
         int delay;
         Handler timer;
@@ -364,5 +424,9 @@ public class RunFragment extends Fragment {
         SharedPreferences sharedPreferences = (SharedPreferences) getActivity().getSharedPreferences(preferenceName, MODE_PRIVATE);
         String height = sharedPreferences.getString(preferenceName,"-1");
         this.mileCalculator = new MileCalculator(height);
+    }
+
+    private void buildStorageWatcher(){
+        this.storageWatcher = DefaultStorage.getDefaultStorageWatcher(app.getUser());
     }
 }

@@ -4,35 +4,27 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.opengl.Visibility;
-import android.os.Handler;
-import android.os.SystemClock;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Chronometer;
-import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.fragment.app.testing.FragmentScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import org.apache.tools.ant.taskdefs.Local;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.shadows.ShadowLooper;
 
-import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
-import edu.ucsd.cse110.walkstatic.runs.Run;
-
-import androidx.fragment.app.testing.FragmentScenario;
-import edu.ucsd.cse110.walkstatic.time.TimeMachine;
-
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
+
+import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
+import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
+import edu.ucsd.cse110.walkstatic.time.TimeMachine;
 
 import static com.google.common.truth.Truth.assertThat;
 import static junit.framework.TestCase.assertEquals;
@@ -56,6 +48,7 @@ public class MainActivityTest {
 
         intent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
         intent.putExtra(StepCountActivity.FITNESS_SERVICE_KEY, TEST_SERVICE);
+
         MockFirebaseHelpers.mockStorage();
     }
 

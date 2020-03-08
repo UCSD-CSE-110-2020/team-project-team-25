@@ -3,12 +3,13 @@ package edu.ucsd.cse110.walkstatic.teammate;
 import com.google.firebase.firestore.Exclude;
 import com.google.gson.Gson;
 
+import java.io.Serializable;
 import java.util.Random;
 import java.util.UUID;
 
 import androidx.core.graphics.ColorUtils;
 
-public class Teammate {
+public class Teammate implements Serializable {
     private String name;
     private final String email;
 

@@ -1,16 +1,21 @@
 <resources>
     <string name="app_name">Walkstatic!</string>
-    <string name="open_drawer">Open</string>
-    <string name="close_drawer">Close</string>
+
     <string name="run_save_name">runs</string>
     <string name="current_run">currentRun</string>
     <string name="last_run">lastRun</string>
     <string name="proposed_time_run">lastRun</string>
+
     <string name="run_name_label">Name:</string>
     <string name="run_starting_point_label">Starting Point:</string>
     <string name="run_difficulty_label">Difficulty:</string>
+
+    <string name="open_drawer">Open</string>
+    <string name="close_drawer">Close</string>
     <string name="save">Save</string>
     <string name="add">Add</string>
+    <string name="notification">Notifications</string>
+
     <string name="miles_text">%1$s Miles</string>
     <string name="steps_text">%1$s Steps</string>
     <string name="date_text">On: %1$s</string>
@@ -68,4 +73,10 @@
     <string name="teammate_email_hint">name@gmail.com</string>
     <string name="invite_done_text">Invite</string>
     <string name="invite_pending">Pending</string>
+
+    <string name="invitation_requested_text">Team Request From:</string>
+    <string name="requester_name">Requester Name</string>
+    <string name="requester_email">Requester Email</string>
+    <string name="acceptButtonText">Accept</string>
+    <string name="rejectButtonText">Reject</string>
 </resources>

@@ -8,12 +8,13 @@ import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
 import edu.ucsd.cse110.walkstatic.store.RunStore;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
 import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
+import edu.ucsd.cse110.walkstatic.teammate.Team;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
-import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequests;
 
 public class Walkstatic {
     private Teammate user;
+    private Team team;
     private TeammateRequests teammateRequests;
     private Runs runs;
 
@@ -21,11 +22,12 @@ public class Walkstatic {
         this.readUser(context);
         this.teammateRequests = new TeammateRequests(store, storageWatcher);
         this.initRuns(runStore, storageWatcher);
+        this.team = new Team(this.user);
     }
 
     public Walkstatic(Context context){
         this.readUser(context);
-        TeammateRequestStore defaultStore = DefaultStorage.getDefaultTeammateRequestStore();
+        TeammateRequestStore defaultStore = DefaultStorage.getDefaultTeammateRequestStore(context);
         StorageWatcher defaultStorageWatcher = DefaultStorage.getDefaultStorageWatcher(this.user);
         RunStore defaultRunStore = DefaultStorage.getDefaultRunStore();
         this.teammateRequests = new TeammateRequests(defaultStore, defaultStorageWatcher);
@@ -35,6 +37,7 @@ public class Walkstatic {
     private void initRuns(RunStore store, StorageWatcher storageWatcher){
         this.runs = new Runs(store, this.user);
         storageWatcher.addRunUpdateListener(this.runs);
+        this.team = new Team(this.user);
     }
 
     private void readUser(Context context){
@@ -58,4 +61,5 @@ public class Walkstatic {
     public Runs getRuns(){
         return this.runs;
     }
+    public Team getTeam() { return this.team; }
 }

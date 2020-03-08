@@ -1,5 +1,7 @@
 package edu.ucsd.cse110.walkstatic.store;
 
+import android.content.Context;
+
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 
 public class DefaultStorage {
@@ -26,9 +28,9 @@ public class DefaultStorage {
         return defaultStorageWatcher.getStorageWatcher(user);
     }
 
-    public static TeammateRequestStore getDefaultTeammateRequestStore(){
+    public static TeammateRequestStore getDefaultTeammateRequestStore(Context context){
         if(defaultTeammateRequestStore == null){
-            return new FirebaseStore();
+            return new FirebaseStore(context);
         }
         return defaultTeammateRequestStore.getTeammateRequestStore();
     }
