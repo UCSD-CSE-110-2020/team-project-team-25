@@ -40,6 +40,7 @@ public class NotificationEspressoTest {
 
     @Test
     public void testNotificationVisible() {
+        EspressoHelpers.mockStorage();
         final FirebaseMocks.MockStorageWatcher mockStorageWatcher = new FirebaseMocks.MockStorageWatcher();
         final FirebaseMocks.MockTeammateRequestStore mockTeammateRequestStore = new FirebaseMocks.MockTeammateRequestStore();
 
@@ -54,6 +55,8 @@ public class NotificationEspressoTest {
 
         Teammate target = new Teammate("test@gmail.com");
         target.setName("Temp Templeton");
+
+        EspressoHelpers.setUser(target);
 
         TeammateRequest request = new TeammateRequest(requester, target);
 

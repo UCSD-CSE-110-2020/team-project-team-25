@@ -32,6 +32,7 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -170,9 +171,9 @@ public class InviteTeammateEspressoTest {
         }
 
         ViewInteraction textView2 = onView(
-                allOf(withId(R.id.teammate_name),
+                allOf(withId(R.id.teammate_requests_list),
                         isDisplayed()));
-        textView2.check(matches(not(withText("Linda"))));
+        textView2.check(matches(not(hasDescendant(withText("Linda")))));
 
         ViewInteraction textView4  = onView(
                 allOf(withId(R.id.teammate_name), withText("Jupiter"),
