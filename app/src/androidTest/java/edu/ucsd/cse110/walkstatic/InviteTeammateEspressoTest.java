@@ -35,6 +35,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.hamcrest.Matchers.allOf;
@@ -164,6 +165,7 @@ public class InviteTeammateEspressoTest {
 
         ViewInteraction textView2 = onView(
                 allOf(withId(R.id.teammate_name),
+                        withParent(withParent(withId(R.id.teammate_requests_list))),
                         isDisplayed()));
         textView2.check(matches(not(withText("Linda"))));
 

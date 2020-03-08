@@ -15,6 +15,7 @@ public class TeammateRequests implements TeammateRequestListener {
     private TeammateRequestStore store;
     private Set<TeammateRequest> requestHashSet;
     private List<TeammateRequestsListener> teammateRequestsListenerList;
+    private TeammateRequest lastRequest;
 
     public TeammateRequests(@NotNull TeammateRequestStore store, @NotNull StorageWatcher storageWatcher){
         this.store = store;
@@ -28,6 +29,7 @@ public class TeammateRequests implements TeammateRequestListener {
             this.store.addRequest(request);
             this.requestHashSet.add(request);
         }
+        this.lastRequest = request;
     }
 
     public List<TeammateRequest> getRequests(){
@@ -55,5 +57,9 @@ public class TeammateRequests implements TeammateRequestListener {
         this.teammateRequestsListenerList.forEach(teammateRequestsListener -> {
             teammateRequestsListener.teammateRequestsUpdated(this.getRequests());
         });
+    }
+
+    public TeammateRequest getLastRequest() {
+        return lastRequest;
     }
 }

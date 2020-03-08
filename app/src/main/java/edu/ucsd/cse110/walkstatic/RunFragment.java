@@ -31,6 +31,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 
 import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
@@ -40,14 +41,13 @@ import edu.ucsd.cse110.walkstatic.runs.RunList;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
-import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestListener;
+import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestsListener;
 import edu.ucsd.cse110.walkstatic.time.TimeHelp;
 import edu.ucsd.cse110.walkstatic.time.TimeMachine;
 
 import static android.content.Context.MODE_PRIVATE;
 
-
-public class RunFragment extends Fragment implements TeammateRequestListener {
+public class RunFragment extends Fragment implements TeammateRequestsListener {
 
     private DistanceTracker stepTracker;
     private FitnessService fitnessService;
@@ -55,7 +55,6 @@ public class RunFragment extends Fragment implements TeammateRequestListener {
     private Chronometer chronometer;
     private MileCalculator mileCalculator;
     private StorageWatcher storageWatcher;
-    private TeammateRequest lastRequest;
 
     private Walkstatic app;
 
@@ -135,14 +134,11 @@ public class RunFragment extends Fragment implements TeammateRequestListener {
             }
         });
 
-        this.storageWatcher.addTeammateRequestUpdateListener(this);
+        app.getTeammateRequests().addRequestsListener(this);
+        // this.storageWatcher.addTeammateRequestUpdateListener(this);
 
         loadCurrentRun();
         loadLastRun();
-    }
-
-    private void setNotification(boolean visible) {
-        menu.getItem(0).setVisible(visible);
     }
 
     @Override
@@ -175,14 +171,30 @@ public class RunFragment extends Fragment implements TeammateRequestListener {
 
         mi.setOnMenuItemClickListener(item -> {
             Bundle bundle = new Bundle();
-            if (lastRequest != null)
-                bundle.putSerializable("request", lastRequest.getRequester());
+
+            TeammateRequest r = app.getTeammateRequests().getLastRequest();
+            if (r != null) bundle.putSerializable("request", r.getRequester());
+
             NavHostFragment.findNavController(this).navigate(
                     R.id.action_runFragment_to_inviteAcceptedFragment, bundle);
             return true;
         });
 
-        this.setNotification(false);
+        getActivity().invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        boolean hasNotifs = false;
+        for (TeammateRequest tr : app.getTeammateRequests().getRequests())
+            if (tr.getTarget().equals(app.getUser())) {
+                hasNotifs = true;
+                break;
+            }
+
+        menu.getItem(0).setVisible(hasNotifs);
     }
 
     private void initStepCount(){
@@ -327,19 +339,8 @@ public class RunFragment extends Fragment implements TeammateRequestListener {
     }
 
     @Override
-    public void onNewTeammateRequest(TeammateRequest request) {
-        if (request.getTarget().equals(app.getUser())){
-            setNotification(true);
-            lastRequest = request;
-        }
-    }
-
-    @Override
-    public void onTeammateRequestDeleted(TeammateRequest request) {
-        if(request.getTarget().equals(app.getUser())){
-            setNotification(false);
-            lastRequest = null;
-        }
+    public void teammateRequestsUpdated(List<TeammateRequest> requests) {
+        getActivity().invalidateOptionsMenu();
     }
 
     private class SecondTimer implements Runnable{
