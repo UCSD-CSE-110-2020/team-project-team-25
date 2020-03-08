@@ -48,4 +48,49 @@ public class RunProposalTest {
         assertThat(attendees.size()).isEqualTo(1);
         assertThat(attendees.get(0)).isEqualTo(templetonsNewResponse);
     }
+
+    @Test
+    public void notEqualToNull(){
+        Run run = new Run();
+        RunProposal runProposal = new RunProposal(run);
+        assertThat(runProposal.equals(null)).isFalse();
+    }
+
+    @Test
+    public void notEqualToString(){
+        Run run = new Run();
+        RunProposal runProposal = new RunProposal(run);
+        assertThat(runProposal.equals("")).isFalse();
+    }
+
+    @Test
+    public void equalsSameRunProposal(){
+        Run run = new Run();
+        RunProposal runProposal = new RunProposal(run);
+        RunProposal runProposal2 = new RunProposal(run);
+        assertThat(runProposal).isEqualTo(runProposal2);
+    }
+
+    @Test
+    public void doesNotEqualRunProposalWithDifferentTime(){
+        Run run = new Run();
+        RunProposal runProposal = new RunProposal(run);
+        runProposal.setTime("10AM");
+        RunProposal runProposal2 = new RunProposal(run);
+        runProposal2.setTime("10PM");
+        assertThat(runProposal).isNotEqualTo(runProposal2);
+    }
+
+    @Test
+    public void sameProposalWithDifferingAttendiesStillEqual(){
+        Teammate user = new Teammate("Tempolton@temp.com");
+        TeammateResponse templetonsResponse = new TeammateResponse(user);
+        templetonsResponse.setResponse(TeammateResponse.Response.BAD_TIME);
+        Run run = new Run();
+        RunProposal runProposal = new RunProposal(run);
+        runProposal.onChangedResponse(templetonsResponse);
+
+        RunProposal runProposal2 = new RunProposal(run);
+        assertThat(runProposal).isEqualTo(runProposal2);
+    }
 }

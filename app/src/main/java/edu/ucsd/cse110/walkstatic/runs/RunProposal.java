@@ -1,6 +1,10 @@
 package edu.ucsd.cse110.walkstatic.runs;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,10 +16,16 @@ import edu.ucsd.cse110.walkstatic.teammate.TeammateResponse;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponseChangeListener;
 
 public class RunProposal implements TeammateResponseChangeListener {
+    @Expose
     Run run;
+
+    @Expose
     String date;
+
+    @Expose
     String time;
 
+    @Expose(serialize = false)
     private HashMap<Teammate, TeammateResponse> attendees;
 
     public RunProposal(Run run){
@@ -41,7 +51,9 @@ public class RunProposal implements TeammateResponseChangeListener {
     }
 
     public String toJSON(){
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .create();
         return gson.toJson(this);
     }
 
@@ -59,5 +71,19 @@ public class RunProposal implements TeammateResponseChangeListener {
     @Override
     public void onChangedResponse(TeammateResponse changedResponse) {
         this.attendees.put(changedResponse.getUser(), changedResponse);
+    }
+
+    @Override
+    public boolean equals(Object other){
+        if(!(other instanceof RunProposal)){
+            return false;
+        }
+        return this.toString().equals(other.toString());
+    }
+
+    @Override
+    @NotNull
+    public String toString(){
+        return this.toJSON();
     }
 }
