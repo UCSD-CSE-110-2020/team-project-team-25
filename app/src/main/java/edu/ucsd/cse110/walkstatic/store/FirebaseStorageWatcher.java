@@ -8,6 +8,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -31,6 +32,9 @@ public class FirebaseStorageWatcher implements StorageWatcher {
     private List<TeammateRequestListener> teammateRequestListenerList;
     private List<RunUpdateListener> runUpdateListeners;
 
+    private ListenerRegistration requestListenerRegistration;
+    private ListenerRegistration runListenerRegistration;
+
     public FirebaseStorageWatcher(Teammate user){
         this.user = user;
         this.teammateRequestListenerList = new ArrayList<>();
@@ -49,11 +53,11 @@ public class FirebaseStorageWatcher implements StorageWatcher {
     }
 
     private void registerTeammateRequestListener(){
-        this.requestCollection.addSnapshotListener(this::onTeammate);
+        this.requestListenerRegistration = this.requestCollection.addSnapshotListener(this::onTeammate);
     }
 
     private void registerRunsListener(){
-        this.runsCollection.addSnapshotListener(this::onRun);
+        this.runListenerRegistration = this.runsCollection.addSnapshotListener(this::onRun);
     }
 
 
@@ -65,6 +69,14 @@ public class FirebaseStorageWatcher implements StorageWatcher {
     @Override
     public void addTeammateRequestUpdateListener(TeammateRequestListener teammateRequestListener) {
         this.teammateRequestListenerList.add(teammateRequestListener);
+    }
+
+    @Override
+    public void deleteAllListeners() {
+        this.runUpdateListeners.clear();
+        this.teammateRequestListenerList.clear();
+        this.requestListenerRegistration.remove();
+        this.runListenerRegistration.remove();
     }
 
     private void onTeammate(QuerySnapshot snapshot, FirebaseFirestoreException exception){

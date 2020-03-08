@@ -17,8 +17,11 @@ public class Walkstatic {
     private TeammateRequests teammateRequests;
     private Runs runs;
 
+    private StorageWatcher storageWatcher;
+
     public Walkstatic(Context context, RunStore runStore, TeammateRequestStore store, StorageWatcher storageWatcher){
         this.readUser(context);
+        this.storageWatcher = storageWatcher;
         this.teammateRequests = new TeammateRequests(store, storageWatcher);
         this.initRuns(runStore, storageWatcher);
     }
@@ -26,10 +29,10 @@ public class Walkstatic {
     public Walkstatic(Context context){
         this.readUser(context);
         TeammateRequestStore defaultStore = DefaultStorage.getDefaultTeammateRequestStore();
-        StorageWatcher defaultStorageWatcher = DefaultStorage.getDefaultStorageWatcher(this.user);
+        this.storageWatcher = DefaultStorage.getDefaultStorageWatcher(this.user);
         RunStore defaultRunStore = DefaultStorage.getDefaultRunStore();
-        this.teammateRequests = new TeammateRequests(defaultStore, defaultStorageWatcher);
-        this.initRuns(defaultRunStore, defaultStorageWatcher);
+        this.teammateRequests = new TeammateRequests(defaultStore, this.storageWatcher);
+        this.initRuns(defaultRunStore, this.storageWatcher);
     }
 
     private void initRuns(RunStore store, StorageWatcher storageWatcher){
@@ -57,5 +60,9 @@ public class Walkstatic {
 
     public Runs getRuns(){
         return this.runs;
+    }
+
+    public void destroy(){
+        this.storageWatcher.deleteAllListeners();
     }
 }

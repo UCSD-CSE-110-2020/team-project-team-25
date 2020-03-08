@@ -121,8 +121,24 @@ public class RunFragment extends Fragment {
                 updateLastRunUI();
             }
         });
+        this.initializeStorage();
+    }
+
+    private void initializeStorage(){
         loadCurrentRun();
         loadLastRun();
+        this.app.getRuns().addRunsListener(new RunsListener() {
+            @Override
+            public void myRunsChanged(List<Run> myRuns) {
+                lastRun = app.getRuns().getLastRun();
+                updateLastRunUI();
+            }
+
+            @Override
+            public void teammateRunsChanged(List<Run> teammateRuns) {
+
+            }
+        });
     }
 
     @Override
@@ -156,7 +172,12 @@ public class RunFragment extends Fragment {
     @Override
     public void onStop(){
         super.onStop();
+        Log.d("Run Fragment", "Stopping");
         if(this.timer != null) this.timer.stop();
+        if(this.app != null){
+            this.app.destroy();
+            this.app = null;
+        }
     }
 
     @Override
@@ -164,6 +185,10 @@ public class RunFragment extends Fragment {
         super.onPause();
         Log.d("Run Fragment", "Pausing");
         if(this.timer != null) this.timer.stop();
+        if(this.app != null){
+            this.app.destroy();
+            this.app = null;
+        }
 
     }
 
@@ -172,10 +197,17 @@ public class RunFragment extends Fragment {
         super.onResume();
         Log.d("Run Fragment", "Resuming");
         if(this.timer != null)this.timer.resume();
+        if(this.app == null){
+            this.app = new Walkstatic(this.getContext());
+            this.initializeStorage();
+        }
     }
 
-//    @Override
-//    public void onDestroyView() { super.onDestroyView(); }
+    @Override
+    public void onDestroyView() {
+        Log.d("Run Fragment", "Destroyed");
+        super.onDestroyView();
+    }
 
     private void updateStepCount(){
         //for day
@@ -252,18 +284,6 @@ public class RunFragment extends Fragment {
 
     private void loadLastRun() {
         this.lastRun = this.app.getRuns().getLastRun();
-        this.app.getRuns().addRunsListener(new RunsListener() {
-            @Override
-            public void myRunsChanged(List<Run> myRuns) {
-                lastRun = app.getRuns().getLastRun();
-                updateLastRunUI();
-            }
-
-            @Override
-            public void teammateRunsChanged(List<Run> teammateRuns) {
-
-            }
-        });
         updateLastRunUI();
     }
 
