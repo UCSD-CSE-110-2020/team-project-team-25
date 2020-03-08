@@ -93,4 +93,18 @@ public class RunProposalTest {
         RunProposal runProposal2 = new RunProposal(run);
         assertThat(runProposal).isEqualTo(runProposal2);
     }
+
+    @Test
+    public void runSavedInJSONification(){
+        Run run = new Run();
+        run.setName("A Run").setInitialSteps(10);
+        Teammate user = new Teammate("Tempolton@temp.com");
+        TeammateResponse templetonsResponse = new TeammateResponse(user);
+        templetonsResponse.setResponse(TeammateResponse.Response.BAD_TIME);
+        RunProposal runProposal = new RunProposal(run);
+        runProposal.onChangedResponse(templetonsResponse);
+
+        RunProposal runProposalClone = RunProposal.fromJson(runProposal.toJSON());
+        assertThat(runProposal.getRun()).isEqualTo(runProposalClone.getRun());
+    }
 }

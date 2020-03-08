@@ -6,6 +6,7 @@ import com.google.gson.annotations.Expose;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -15,7 +16,7 @@ import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponse;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponseChangeListener;
 
-public class RunProposal implements TeammateResponseChangeListener {
+public class RunProposal implements TeammateResponseChangeListener, Serializable {
     @Expose
     Run run;
 
@@ -27,6 +28,11 @@ public class RunProposal implements TeammateResponseChangeListener {
 
     @Expose(serialize = false)
     private HashMap<Teammate, TeammateResponse> attendees;
+
+    public RunProposal(){
+        this.run = new Run();
+        this.attendees = new HashMap<>();
+    }
 
     public RunProposal(Run run){
         this.run = run;

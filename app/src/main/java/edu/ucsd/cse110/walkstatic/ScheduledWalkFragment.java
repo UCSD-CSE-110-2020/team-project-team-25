@@ -30,8 +30,6 @@ import edu.ucsd.cse110.walkstatic.runs.RunProposal;
 import edu.ucsd.cse110.walkstatic.time.TimeHelp;
 
 public class ScheduledWalkFragment extends Fragment {
-    private Run run;
-    private RunProposal rp;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,14 +46,11 @@ public class ScheduledWalkFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
-            String preferencesName = this.getResources().getString(R.string.proposed_time_run);
-            Activity activity = Objects.requireNonNull(this.getActivity());
-            SharedPreferences sharedPreferences = activity.getSharedPreferences(
-                    preferencesName, Context.MODE_PRIVATE);
-            String json = sharedPreferences.getString(preferencesName, null);
-            this.rp = RunProposal.fromJson(json);
-            this.run = rp.getRun();
-            this.populateWithRun(run);
+        Walkstatic app = new Walkstatic(this.getContext());
+        if(app.isWalkScheduled()){
+            this.populateWithRun(app.getScheduledRun().getRun());
+            this.setDateAndTime(app.getScheduledRun());
+        }
     }
 
     private void populateWithRun(Run run){
@@ -77,17 +72,14 @@ public class ScheduledWalkFragment extends Fragment {
 
         runName.setText(run.getName());
         startingPoint.setText(run.getStartingPoint());
-
-        setDateAndTime();
-
     }
 
-    private void setDateAndTime(){
+    private void setDateAndTime(RunProposal runProposal){
         TextView scheduledTimeView = this.getActivity().findViewById(R.id.time_view);
         TextView scheduledDateView = this.getActivity().findViewById(R.id.date_view);
 
-        String scheduledTimeString = rp.getTime();
-        String scheduledDateString = rp.getDate();
+        String scheduledTimeString = runProposal.getTime();
+        String scheduledDateString = runProposal.getDate();
 
         String scheduledTimeText = getContext().getString(R.string.scheduled_time_text, scheduledTimeString);
         String scheduledDateText = getContext().getString(R.string.scheduled_date_text, scheduledDateString);
