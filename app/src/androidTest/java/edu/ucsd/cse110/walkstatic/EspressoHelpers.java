@@ -47,7 +47,6 @@ public class EspressoHelpers{
     }
 
     public static <T extends Activity> void setStartupParams(ActivityTestRule<T> activityTestRule, String userHeight, SharedPreferences.Editor editor){
-        DefaultStorage.setTestMode();
         SharedPreferences preferences = ApplicationProvider.getApplicationContext().getSharedPreferences("userHeight", Context.MODE_PRIVATE);
         preferences.edit().putString("height", userHeight).commit();
 
@@ -66,7 +65,7 @@ public class EspressoHelpers{
     }
 
     public static void mockStorage(Run... runs){
-        DefaultStorage.setTestMode();
+        DefaultStorage.setDefaultFirebaseInitialization((context) -> {});
         ArrayList<Run> actualRuns = new ArrayList<>(Arrays.asList(runs));
         DefaultStorage.setDefaultRunStore(() -> actualRuns::add);
         DefaultStorage.setDefaultTeammateRequestStore(() -> new TeammateRequestStore() {
@@ -81,6 +80,7 @@ public class EspressoHelpers{
             }
         });
         DefaultStorage.setDefaultStorageWatcher((ignoredUser) -> new FakeStorageWatcher(actualRuns));
+        DefaultStorage.setDefaultResponseWatcher(() -> ((responseChangeListener) -> {}));
     }
 
     public static void setUser(Teammate user){

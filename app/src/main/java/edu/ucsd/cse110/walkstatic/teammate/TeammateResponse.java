@@ -2,18 +2,35 @@ package edu.ucsd.cse110.walkstatic.teammate;
 
 import com.google.gson.Gson;
 
+import edu.ucsd.cse110.walkstatic.R;
+
 public class TeammateResponse {
     public enum Response {
-        GOING,
-        BAD_TIME,
-        NOT_GOOD;
+        GOING(R.string.going),
+        BAD_TIME(R.string.bad_time),
+        NOT_GOOD(R.string.not_good);
+
+        private int stringResource;
+
+        Response(int stringResource){
+            this.stringResource = stringResource;
+        }
+
+        public int getStringResource(){
+            return this.stringResource;
+        }
     }
 
     private Response response;
     private Teammate user;
 
-    public TeammateResponse(Teammate user){
+    public TeammateResponse(){
+        this.user = null;
         this.response = Response.GOING;
+    }
+
+    public TeammateResponse(Teammate user){
+        this();
         this.user = user;
     }
 

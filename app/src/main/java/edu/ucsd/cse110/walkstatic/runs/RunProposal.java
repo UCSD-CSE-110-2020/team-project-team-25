@@ -29,14 +29,18 @@ public class RunProposal implements TeammateResponseChangeListener, Serializable
     @Expose(serialize = false)
     private HashMap<Teammate, TeammateResponse> attendees;
 
+    @Expose(serialize = false)
+    private ArrayList<RunProposalListener> runProposalListeners;
+
     public RunProposal(){
         this.run = new Run();
         this.attendees = new HashMap<>();
+        this.runProposalListeners = new ArrayList<>();
     }
 
     public RunProposal(Run run){
+        this();
         this.run = run;
-        this.attendees = new HashMap<>();
     }
 
     public void setDate(String date) {
@@ -74,9 +78,17 @@ public class RunProposal implements TeammateResponseChangeListener, Serializable
         return attendeesList;
     }
 
+    public void addListener(RunProposalListener listener){
+        this.runProposalListeners.add(listener);
+    }
+
     @Override
     public void onChangedResponse(TeammateResponse changedResponse) {
         this.attendees.put(changedResponse.getUser(), changedResponse);
+        List<TeammateResponse> responseList = this.getAttendees();
+        for(RunProposalListener listener : this.runProposalListeners){
+            listener.onResponsesChanged(responseList);
+        }
     }
 
     @Override

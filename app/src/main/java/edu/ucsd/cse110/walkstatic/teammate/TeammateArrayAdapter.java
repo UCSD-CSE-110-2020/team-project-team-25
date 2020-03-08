@@ -32,7 +32,7 @@ public class TeammateArrayAdapter extends ArrayAdapter<Teammate> {
         TextView initialView = convertView.findViewById(R.id.teammate_initials);
 
         nameView.setText(teammate.getName());
-        initialView.setText("!!");
+        initialView.setText(teammate.getInitials());
 
         return convertView;
     }

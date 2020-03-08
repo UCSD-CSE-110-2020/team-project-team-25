@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,13 +24,20 @@ import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Objects;
 
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunProposal;
+import edu.ucsd.cse110.walkstatic.runs.RunProposalListener;
+import edu.ucsd.cse110.walkstatic.teammate.TeammateResponse;
+import edu.ucsd.cse110.walkstatic.teammate.TeammateResponseArrayAdapter;
 import edu.ucsd.cse110.walkstatic.time.TimeHelp;
 
-public class ScheduledWalkFragment extends Fragment {
+public class ScheduledWalkFragment extends Fragment implements RunProposalListener {
+
+    private TeammateResponseArrayAdapter teammateResponseArrayAdapter;
+    private List<TeammateResponse> responses;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,6 +58,7 @@ public class ScheduledWalkFragment extends Fragment {
         if(app.isWalkScheduled()){
             this.populateWithRun(app.getScheduledRun().getRun());
             this.setDateAndTime(app.getScheduledRun());
+            this.populateResponseList(app.getScheduledRun());
         }
     }
 
@@ -88,4 +97,20 @@ public class ScheduledWalkFragment extends Fragment {
         scheduledDateView.setText(scheduledDateString);
     }
 
+    private void populateResponseList(RunProposal runProposal){
+        this.responses = runProposal.getAttendees();
+        runProposal.addListener(this);
+        this.teammateResponseArrayAdapter = new TeammateResponseArrayAdapter(this.getActivity(),
+                R.layout.teammate_response_textview, this.responses);
+        ListView responseList = this.getActivity().findViewById(R.id.responseList);
+        responseList.setAdapter(this.teammateResponseArrayAdapter);
+        this.teammateResponseArrayAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onResponsesChanged(List<TeammateResponse> responseList) {
+        this.responses.clear();
+        this.responses.addAll(responseList);
+        this.teammateResponseArrayAdapter.notifyDataSetChanged();
+    }
 }

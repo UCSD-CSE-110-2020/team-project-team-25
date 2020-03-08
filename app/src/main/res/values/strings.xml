@@ -79,4 +79,8 @@
     <string name="requester_email">Requester Email</string>
     <string name="acceptButtonText">Accept</string>
     <string name="rejectButtonText">Reject</string>
+
+    <string name="going">Going</string>
+    <string name="bad_time">Not Going, Reason: Bad time.</string>
+    <string name="not_good">Not Going, Reason: Not a good route for me.</string>
 </resources>
