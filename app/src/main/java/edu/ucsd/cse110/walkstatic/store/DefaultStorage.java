@@ -2,9 +2,13 @@ package edu.ucsd.cse110.walkstatic.store;
 
 import android.content.Context;
 
+import com.google.firebase.FirebaseApp;
+
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 
 public class DefaultStorage {
+    private static boolean testMode = false;
+
     public interface StorageWatcherBlueprint {
         public StorageWatcher getStorageWatcher(Teammate user);
     }
@@ -17,40 +21,63 @@ public class DefaultStorage {
         public RunStore getRunStore();
     }
 
+    public interface GenericBlueprint<E> {
+        public E get();
+    }
+
     private static StorageWatcherBlueprint defaultStorageWatcher;
-    private static TeammateRequestStoreBlueprint defaultTeammateRequestStore;
-    private static RunStoreBlueprint defaultRunStore;
+    private static GenericBlueprint<TeammateRequestStore> defaultTeammateRequestStore;
+    private static GenericBlueprint<RunStore> defaultRunStore;
 
     public static StorageWatcher getDefaultStorageWatcher(Teammate user){
         if(defaultStorageWatcher == null){
+            assertNotTestMode();
             return new FirebaseStorageWatcher(user);
         }
         return defaultStorageWatcher.getStorageWatcher(user);
     }
 
-    public static TeammateRequestStore getDefaultTeammateRequestStore(Context context){
+    public static TeammateRequestStore getDefaultTeammateRequestStore(){
         if(defaultTeammateRequestStore == null){
-            return new FirebaseStore(context);
+            assertNotTestMode();
+            return new FirebaseStore();
         }
-        return defaultTeammateRequestStore.getTeammateRequestStore();
+        return defaultTeammateRequestStore.get();
     }
 
     public static RunStore getDefaultRunStore(){
         if(defaultRunStore == null){
+            assertNotTestMode();
             return new FirebaseRunStore();
         }
-        return defaultRunStore.getRunStore();
+        return defaultRunStore.get();
     }
 
     public static void setDefaultStorageWatcher(StorageWatcherBlueprint defaultStorageWatcher){
         DefaultStorage.defaultStorageWatcher = defaultStorageWatcher;
     }
 
-    public static void setDefaultTeammateRequestStore(TeammateRequestStoreBlueprint defaultTeammateRequestStore){
+    public static void setDefaultTeammateRequestStore(GenericBlueprint<TeammateRequestStore> defaultTeammateRequestStore){
         DefaultStorage.defaultTeammateRequestStore = defaultTeammateRequestStore;
     }
 
-    public static void setDefaultRunStore(RunStoreBlueprint runStore){
+    public static void setDefaultRunStore(GenericBlueprint<RunStore> runStore){
         DefaultStorage.defaultRunStore = runStore;
+    }
+
+    public static void initialize(Context context){
+        if(!DefaultStorage.testMode){
+            FirebaseApp.initializeApp(context);
+        }
+    }
+
+    public static void setTestMode(){
+        DefaultStorage.testMode = true;
+    }
+
+    private static void assertNotTestMode(){
+        if(DefaultStorage.testMode){
+            throw new RuntimeException("You need to specify mock storage when running tests!");
+        }
     }
 }

@@ -57,9 +57,7 @@ public class RunProposal implements TeammateResponseChangeListener {
     }
 
     @Override
-    public void onChangedResponses(Collection<TeammateResponse> changedResponses) {
-        for(TeammateResponse response : changedResponses){
-            this.attendees.put(response.getUser(), response);
-        }
+    public void onChangedResponse(TeammateResponse changedResponse) {
+        this.attendees.put(changedResponse.getUser(), changedResponse);
     }
 }

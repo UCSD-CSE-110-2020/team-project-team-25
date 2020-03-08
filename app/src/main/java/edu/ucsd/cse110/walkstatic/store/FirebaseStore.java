@@ -17,8 +17,7 @@ public class FirebaseStore implements TeammateRequestStore {
 
     private DocumentReference teammateRequests;
 
-    public FirebaseStore(Context context){
-        FirebaseApp.initializeApp(context);
+    public FirebaseStore(){
         this.teammateRequests = FirebaseFirestore.getInstance()
                 .collection(FirebaseConstants.TEAM_COLLECTION)
                 .document(FirebaseConstants.REQUEST_DOCUMENT);
