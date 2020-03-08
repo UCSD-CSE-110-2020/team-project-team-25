@@ -13,10 +13,12 @@ import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.apache.tools.ant.taskdefs.Local;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,7 +72,7 @@ public class MainActivityTest {
             fakeFitnessService.nextStepCount = 10;
             ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
             assertThat(textSteps.getText().toString()).isEqualTo("10");
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -89,7 +91,7 @@ public class MainActivityTest {
             ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
             assertThat(textSteps.getText().toString()).isEqualTo("10");
             assertThat(textRunSteps.getText().toString()).isEqualTo("10");
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -110,7 +112,7 @@ public class MainActivityTest {
             ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
             assertThat(textSteps.getText().toString()).isEqualTo("20");
             assertThat(textRunSteps.getText().toString()).isEqualTo("10");
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     public void StartButtonHandler() {
@@ -121,7 +123,7 @@ public class MainActivityTest {
             Button btnStart = activity.getActivity().findViewById(R.id.startButton);
             btnStart.performClick();
             assertThat(textRunSteps.getText().toString()).isEqualTo("0");
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -138,7 +140,7 @@ public class MainActivityTest {
             ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
             assertThat(textSteps.getText().toString()).isEqualTo("1000");
             assertThat(textMiles.getText().toString()).isEqualTo(".44");
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -175,7 +177,7 @@ public class MainActivityTest {
             assertThat(runStepView.getText().toString()).isEqualTo("20");
             Button stopButton = activity.getActivity().findViewById(R.id.stopButton);
             stopButton.callOnClick();
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
         assertThat(sharedPreferences.getString(preferencesName, "")).isEqualTo("");
     }
 
@@ -199,6 +201,11 @@ public class MainActivityTest {
             TimeMachine.setNow(fake);
             assertEquals(fake, TimeMachine.now());
             assertEquals(fake.getMinute(),TimeMachine.now().getMinute());
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
+    }
+
+    @After
+    public void noListenerLeak(){
+        MockFirebaseHelpers.assertNoListenerLeak();
     }
 }

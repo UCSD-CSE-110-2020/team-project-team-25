@@ -9,12 +9,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.navigation.testing.TestNavHostController;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.fakes.RoboMenuItem;
@@ -52,7 +54,7 @@ public class EditRunTest {
             Run expected = new Run().setName("Run 1");
             expected.setUUID(run.getUUID());
             assertThat(run).isEqualTo(expected);
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -77,7 +79,7 @@ public class EditRunTest {
             expected.setUUID(run.getUUID());
             assertThat(run).isEqualTo(expected.setName("Run 1").setDifficulty(difficulty));
             assertThat(run.getDifficulty()).isEqualTo("Moderate");
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -127,7 +129,7 @@ public class EditRunTest {
             assertThat(run.getflatVsHilly()).isEqualTo("Flat");
             assertThat(run.getloopVsOut()).isEqualTo("Loop");
             assertThat(run.getstreetVsTrail()).isEqualTo("Street");
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -153,7 +155,7 @@ public class EditRunTest {
             Run expected = new Run();
             expected.setUUID(uuid);
             assertThat(newRun).isEqualTo(expected.setName("Run 1"));
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -182,7 +184,7 @@ public class EditRunTest {
             expected.setUUID(uuid);
             assertThat(run).isEqualTo(expected.setName("Run 1"));
             assertThat(run.getDifficulty()).isEqualTo("");
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -227,7 +229,7 @@ public class EditRunTest {
             assertThat(run.getflatVsHilly()).isEqualTo("");
             assertThat(run.getloopVsOut()).isEqualTo("");
             assertThat(run.getstreetVsTrail()).isEqualTo("");
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -254,7 +256,7 @@ public class EditRunTest {
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             Run run = runViewModel.sharedRun.getValue();
             assertThat(run.getName()).isEqualTo( "Run 1");
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -286,7 +288,7 @@ public class EditRunTest {
             voiceDictationMock.callOnFinish(false);
             assertThat(runNameButton.isEnabled()).isTrue();
             assertThat(startingPointButton.isEnabled()).isTrue();
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -315,7 +317,7 @@ public class EditRunTest {
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             Run run = runViewModel.sharedRun.getValue();
             assertThat(run.getName()).isEqualTo( "Run 1");
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -341,7 +343,7 @@ public class EditRunTest {
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             fragment.onDestroyView();
             assertThat(voiceDictationMock.canceled).isTrue();
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -363,7 +365,7 @@ public class EditRunTest {
             //Workaround for bug in robolectric https://github.com/robolectric/robolectric/issues/3585
             fragment.onPrepareOptionsMenu(shadowOf(fragment.getActivity()).getOptionsMenu());
             assertThat(save.isEnabled()).isFalse();
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -381,7 +383,7 @@ public class EditRunTest {
             //Workaround for bug in robolectric https://github.com/robolectric/robolectric/issues/3585
             fragment.onPrepareOptionsMenu(shadowOf(fragment.getActivity()).getOptionsMenu());
             assertThat(save.isEnabled()).isTrue();
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -395,7 +397,7 @@ public class EditRunTest {
             Navigation.setViewNavController(fragment.requireView(), navController);
             EditText runName = fragment.getActivity().findViewById(R.id.run_name_text);
             assertThat(runName.getError()).isNull();
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -411,7 +413,7 @@ public class EditRunTest {
             runName.setText("Run 1");
             runName.setText("");
             assertThat(runName.getError()).isNotNull();
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -426,7 +428,7 @@ public class EditRunTest {
             EditText runName = fragment.getActivity().findViewById(R.id.run_name_text);
             runName.setText("Run 1");
             assertThat(runName.getError()).isNull();
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -450,7 +452,7 @@ public class EditRunTest {
             Run expected = new Run();
             expected.setUUID(run.getUUID());
             assertThat(run).isEqualTo(expected.setName("Run 1").setStartingPoint("Point 1").setFavorited(false));
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -474,7 +476,7 @@ public class EditRunTest {
             Run expected = new Run();
             expected.setUUID(run.getUUID());
             assertThat(run).isEqualTo(expected.setName("Run 1").setStartingPoint("").setFavorited(true));
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -502,7 +504,7 @@ public class EditRunTest {
             RunViewModel runViewModel = new ViewModelProvider(fragment.getActivity()).get(RunViewModel.class);
             Run run = runViewModel.sharedRun.getValue();
             assertThat(run).isEqualTo(cloneRun);
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
 
@@ -531,6 +533,11 @@ public class EditRunTest {
         public void cancel(){
             this.canceled = true;
         }
+    }
+
+    @After
+    public void noListenerLeak(){
+        MockFirebaseHelpers.assertNoListenerLeak();
     }
 
 }

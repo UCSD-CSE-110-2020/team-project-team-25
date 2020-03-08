@@ -69,6 +69,7 @@ public class RunFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
+        Log.d("Run Fragment", "View Created");
         this.app = new Walkstatic(this.getContext());
         this.buildMileCalculator();
         initStepCount();
@@ -173,11 +174,6 @@ public class RunFragment extends Fragment {
     public void onStop(){
         super.onStop();
         Log.d("Run Fragment", "Stopping");
-        if(this.timer != null) this.timer.stop();
-        if(this.app != null){
-            this.app.destroy();
-            this.app = null;
-        }
     }
 
     @Override
@@ -185,28 +181,27 @@ public class RunFragment extends Fragment {
         super.onPause();
         Log.d("Run Fragment", "Pausing");
         if(this.timer != null) this.timer.stop();
-        if(this.app != null){
-            this.app.destroy();
-            this.app = null;
-        }
-
     }
 
     @Override
     public void onResume() {
         super.onResume();
         Log.d("Run Fragment", "Resuming");
-        if(this.timer != null)this.timer.resume();
-        if(this.app == null){
-            this.app = new Walkstatic(this.getContext());
-            this.initializeStorage();
-        }
+        if(this.timer != null) this.timer.resume();
     }
 
     @Override
     public void onDestroyView() {
         Log.d("Run Fragment", "Destroyed");
         super.onDestroyView();
+        this.cleanup();
+    }
+
+    private void cleanup(){
+        if(this.app != null){
+            this.app.destroy();
+            this.app = null;
+        }
     }
 
     private void updateStepCount(){
@@ -329,6 +324,9 @@ public class RunFragment extends Fragment {
         }
 
         void resume(){
+            if(this.stop == false){
+                return;
+            }
             this.stop = false;
             this.run();
         }
