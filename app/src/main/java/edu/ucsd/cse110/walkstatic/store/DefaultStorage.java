@@ -7,27 +7,24 @@ import com.google.firebase.FirebaseApp;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 
 public class DefaultStorage {
-    private static boolean testMode = false;
 
     public interface StorageWatcherBlueprint {
         public StorageWatcher getStorageWatcher(Teammate user);
     }
 
-    public interface TeammateRequestStoreBlueprint {
-        public TeammateRequestStore getTeammateRequestStore();
+    public interface FirebaseInitialization {
+        public void init(Context context);
     }
 
-    public interface RunStoreBlueprint {
-        public RunStore getRunStore();
-    }
-
-    public interface GenericBlueprint<E> {
-        public E get();
+    public interface GenericBlueprint<BlueprintTarget> {
+        public BlueprintTarget get();
     }
 
     private static StorageWatcherBlueprint defaultStorageWatcher;
     private static GenericBlueprint<TeammateRequestStore> defaultTeammateRequestStore;
     private static GenericBlueprint<RunStore> defaultRunStore;
+    private static GenericBlueprint<ResponseWatcher> defaultResponseWatcher;
+    private static FirebaseInitialization defaultFirebaseInitialization;
 
     public static StorageWatcher getDefaultStorageWatcher(Teammate user){
         if(defaultStorageWatcher == null){
@@ -53,6 +50,14 @@ public class DefaultStorage {
         return defaultRunStore.get();
     }
 
+    public static ResponseWatcher getDefaultResponseWatcher(){
+        if(defaultResponseWatcher == null){
+            assertNotTestMode();
+            return new FirebaseResponseWatcher();
+        }
+        return defaultResponseWatcher.get();
+    }
+
     public static void setDefaultStorageWatcher(StorageWatcherBlueprint defaultStorageWatcher){
         DefaultStorage.defaultStorageWatcher = defaultStorageWatcher;
     }
@@ -65,19 +70,25 @@ public class DefaultStorage {
         DefaultStorage.defaultRunStore = runStore;
     }
 
+    public static void setDefaultResponseWatcher(GenericBlueprint<ResponseWatcher> responseWatcher){
+        DefaultStorage.defaultResponseWatcher = responseWatcher;
+    }
+
+    public static void setDefaultFirebaseInitialization(FirebaseInitialization firebaseInitialization){
+        DefaultStorage.defaultFirebaseInitialization = firebaseInitialization;
+    }
+
     public static void initialize(Context context){
-        if(!DefaultStorage.testMode){
+        if(defaultFirebaseInitialization == null){
             FirebaseApp.initializeApp(context);
+        } else {
+            defaultFirebaseInitialization.init(context);
         }
     }
 
-    public static void setTestMode(){
-        DefaultStorage.testMode = true;
-    }
-
     private static void assertNotTestMode(){
-        if(DefaultStorage.testMode){
-            throw new RuntimeException("You need to specify mock storage when running tests!");
+        if(defaultFirebaseInitialization != null){
+            throw new RuntimeException("You need to specify mock Firebase when running tests!");
         }
     }
 }

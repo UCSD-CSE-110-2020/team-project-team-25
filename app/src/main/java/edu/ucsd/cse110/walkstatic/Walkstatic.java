@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import edu.ucsd.cse110.walkstatic.runs.RunProposal;
 import edu.ucsd.cse110.walkstatic.runs.Runs;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
+import edu.ucsd.cse110.walkstatic.store.ResponseWatcher;
 import edu.ucsd.cse110.walkstatic.store.RunStore;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
 import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
@@ -20,21 +21,16 @@ public class Walkstatic {
     private Runs runs;
     private RunProposal runProposal;
 
-    public Walkstatic(Context context, RunStore runStore, TeammateRequestStore store, StorageWatcher storageWatcher){
-        this.readFromContext(context);
-        this.teammateRequests = new TeammateRequests(store, storageWatcher);
-        this.initRuns(runStore, storageWatcher);
-        this.team = new Team(this.user);
-    }
-
     public Walkstatic(Context context){
         DefaultStorage.initialize(context);
         this.readFromContext(context);
         TeammateRequestStore defaultStore = DefaultStorage.getDefaultTeammateRequestStore();
         StorageWatcher defaultStorageWatcher = DefaultStorage.getDefaultStorageWatcher(this.user);
         RunStore defaultRunStore = DefaultStorage.getDefaultRunStore();
+        ResponseWatcher defaultResponseWatcher = DefaultStorage.getDefaultResponseWatcher();
         this.teammateRequests = new TeammateRequests(defaultStore, defaultStorageWatcher);
         this.initRuns(defaultRunStore, defaultStorageWatcher);
+        this.registerProposedWalk(defaultResponseWatcher);
     }
 
     private void initRuns(RunStore store, StorageWatcher storageWatcher){
@@ -65,6 +61,12 @@ public class Walkstatic {
         String json = sharedPreferences.getString(preferencesName, null);
         if(json != null){
             this.runProposal = RunProposal.fromJson(json);
+        }
+    }
+
+    private void registerProposedWalk(ResponseWatcher responseWatcher){
+        if(this.isWalkScheduled()){
+            responseWatcher.addResponseListener(this.getScheduledRun());
         }
     }
 
