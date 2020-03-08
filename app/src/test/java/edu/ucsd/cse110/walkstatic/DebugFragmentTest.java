@@ -34,7 +34,7 @@ public class DebugFragmentTest {
     private long stepCount;
 
     @Before
-    public void mockStroage(){
+    public void mockStorage(){
         MockFirebaseHelpers.mockStorage();
     }
 

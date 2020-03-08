@@ -209,16 +209,16 @@ public class EditRunFragment extends Fragment implements SpeechListener {
                     isValid = true;
                     runName.setError(null);
                 }
-                Objects.requireNonNull(getActivity()).invalidateOptionsMenu();
+                requireActivity().invalidateOptionsMenu();
             }
         });
     }
 
     private void populateWithRun(Run run){
-        EditText runNameElement = Objects.requireNonNull(this.getActivity()).findViewById(R.id.run_name_text);
-        EditText startingPoint = this.getActivity().findViewById(R.id.starting_point_text);
-        EditText notes = this.getActivity().findViewById(R.id.notes);
-        Spinner difficultySpinner = this.getActivity().findViewById(R.id.difficulty_spinner);
+        EditText runNameElement = this.requireActivity().findViewById(R.id.run_name_text);
+        EditText startingPoint = this.requireActivity().findViewById(R.id.starting_point_text);
+        EditText notes = this.requireActivity().findViewById(R.id.notes);
+        Spinner difficultySpinner = this.requireActivity().findViewById(R.id.difficulty_spinner);
 
         runNameElement.setText(run.getName());
         startingPoint.setText(run.getStartingPoint());
@@ -231,7 +231,7 @@ public class EditRunFragment extends Fragment implements SpeechListener {
         if(difficultIndex != -1){
             difficultySpinner.setSelection(difficultIndex);
         }
-        this.getActivity().invalidateOptionsMenu();
+        this.requireActivity().invalidateOptionsMenu();
     }
 
     private void saveRun(){
