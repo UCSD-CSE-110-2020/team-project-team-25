@@ -61,38 +61,15 @@ public class ScheduledWalkFragment extends Fragment {
     private void populateWithRun(Run run){
         TextView runName = this.getActivity().findViewById(R.id.run_name);
         TextView startingPoint = this.getActivity().findViewById(R.id.starting_point);
-        TextView notes = this.getActivity().findViewById(R.id.notes);
-        TextView loopVsOut = this.getActivity().findViewById(R.id.endedness);
-        TextView difficulty = this.getActivity().findViewById(R.id.difficulty);
-        TextView flatVsHilly = this.getActivity().findViewById(R.id.hillyness);
-        TextView evenVsUneven = this.getActivity().findViewById(R.id.evenness);
-        TextView streetVsTrail = this.getActivity().findViewById(R.id.urban);
-
         if (run == null){
             runName.setVisibility(View.INVISIBLE);
             startingPoint.setVisibility(View.INVISIBLE);
-            notes.setVisibility(View.INVISIBLE);
-            loopVsOut.setVisibility(View.INVISIBLE);
-            difficulty.setVisibility(View.INVISIBLE);
-            flatVsHilly.setVisibility(View.INVISIBLE);
-            evenVsUneven.setVisibility(View.INVISIBLE);
-            streetVsTrail.setVisibility(View.INVISIBLE);
-            getActivity().findViewById(R.id.last_miles_view).setVisibility(View.INVISIBLE);
-            getActivity().findViewById(R.id.last_steps_view).setVisibility(View.INVISIBLE);
-            getActivity().findViewById(R.id.ran_on).setVisibility(View.INVISIBLE);
-            getActivity().findViewById(R.id.run_time).setVisibility(View.INVISIBLE);
             getActivity().findViewById(R.id.time_view).setVisibility(View.INVISIBLE);
             getActivity().findViewById(R.id.date_view).setVisibility(View.INVISIBLE);
             return;
         } else {
             runName.setVisibility(View.VISIBLE);
             startingPoint.setVisibility(View.VISIBLE);
-            notes.setVisibility(View.VISIBLE);
-            loopVsOut.setVisibility(View.VISIBLE);
-            difficulty.setVisibility(View.VISIBLE);
-            flatVsHilly.setVisibility(View.VISIBLE);
-            evenVsUneven.setVisibility(View.VISIBLE);
-            streetVsTrail.setVisibility(View.VISIBLE);
             getActivity().findViewById(R.id.time_view).setVisibility(View.VISIBLE);
             getActivity().findViewById(R.id.date_view).setVisibility(View.VISIBLE);
 
@@ -100,13 +77,6 @@ public class ScheduledWalkFragment extends Fragment {
 
         runName.setText(run.getName());
         startingPoint.setText(run.getStartingPoint());
-        String note = run.getNotes().equals("") ? "" : "Notes:\n" + run.getNotes();
-        notes.setText(note);
-        difficulty.setText(run.getDifficulty());
-        loopVsOut.setText(run.getloopVsOut());
-        flatVsHilly.setText(run.getflatVsHilly());
-        evenVsUneven.setText(run.getevenVsUneven());
-        streetVsTrail.setText(run.getstreetVsTrail());
 
         setDateAndTime();
 
