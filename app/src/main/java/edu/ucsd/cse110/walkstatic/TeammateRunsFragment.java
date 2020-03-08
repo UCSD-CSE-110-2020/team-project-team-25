@@ -70,4 +70,11 @@ public class TeammateRunsFragment extends Fragment implements RunsListener, Adap
         this.runList.addAll(teammateRuns);
         this.teammateRunAdapter.notifyDataSetChanged();
     }
+
+    @Override
+    public void onDestroy(){
+        this.app.destroy();
+        this.app = null;
+        super.onDestroy();
+    }
 }

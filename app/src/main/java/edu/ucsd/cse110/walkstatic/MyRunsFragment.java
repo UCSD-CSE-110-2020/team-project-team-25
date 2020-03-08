@@ -63,7 +63,12 @@ public class MyRunsFragment extends Fragment implements AdapterView.OnItemClickL
         runListAdapter.notifyDataSetChanged();
     }
 
-
+    @Override
+    public void onDestroy(){
+        this.app.destroy();
+        this.app = null;
+        super.onDestroy();
+    }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {

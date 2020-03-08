@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -31,6 +32,11 @@ public class DebugFragmentTest {
 
     private FakeFitnessService fakeFitnessService;
     private long stepCount;
+
+    @Before
+    public void mockStroage(){
+        MockFirebaseHelpers.mockStorage();
+    }
 
     @Test
     public void add500Adds500StepsRepeatedly() {

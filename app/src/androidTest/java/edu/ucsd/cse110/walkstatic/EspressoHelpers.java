@@ -44,6 +44,11 @@ public class EspressoHelpers{
         public void addTeammateRequestUpdateListener(TeammateRequestListener teammateRequestsListener) {
 
         }
+
+        @Override
+        public void deleteAllListeners() {
+            this.listeners.clear();
+        }
     }
 
     public static <T extends Activity> void setStartupParams(ActivityTestRule<T> activityTestRule, String userHeight, SharedPreferences.Editor editor){

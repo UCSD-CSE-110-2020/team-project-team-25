@@ -17,6 +17,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.fakes.RoboMenuItem;
@@ -34,6 +35,11 @@ import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(AndroidJUnit4.class)
 public class EditRunTest {
+
+    @Before
+    public void mockStorage(){
+        MockFirebaseHelpers.mockStorage();
+    }
 
     @Test
     public void runCreatedWithRandomUUIDAndFilledName() {
