@@ -159,6 +159,7 @@ public class MainActivityTest {
         existing.setInitialSteps(0);
         existing.setStartTime(0);
         assertThat(sharedPreferences.getString(preferencesName, "")).isEqualTo(existing.toJSON());
+        scenario = FragmentScenario.launchInContainer(RunFragment.class);
         scenario.onFragment(activity -> {
             fakeFitnessService.nextStepCount = 10;
             Button buttonStart = activity.getActivity().findViewById(R.id.startButton);
