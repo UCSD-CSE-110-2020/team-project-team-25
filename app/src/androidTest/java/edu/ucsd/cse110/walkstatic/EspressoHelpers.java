@@ -13,12 +13,14 @@ import androidx.test.rule.ActivityTestRule;
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunUpdateListener;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
+import edu.ucsd.cse110.walkstatic.store.ResponseWatcher;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
 import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestListener;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponse;
+import edu.ucsd.cse110.walkstatic.teammate.TeammateResponseChangeListener;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
@@ -98,11 +100,19 @@ public class EspressoHelpers{
             }
         });
         DefaultStorage.setDefaultStorageWatcher((ignoredUser) -> new FakeStorageWatcher(actualRuns));
-        DefaultStorage.setDefaultResponseWatcher(() -> ((responseChangeListener) -> {
-            for(TeammateResponse response : responses){
-                responseChangeListener.onChangedResponse(response);
+        DefaultStorage.setDefaultResponseWatcher(() -> new ResponseWatcher(){
+            @Override
+            public void addResponseListener(TeammateResponseChangeListener listener) {
+                for (TeammateResponse response : responses) {
+                    listener.onChangedResponse(response);
+                }
             }
-        }));
+
+            @Override
+            public void deleteAllListeners() {
+
+            }
+        });
     }
 
     public static void setUser(Teammate user){
