@@ -1,11 +1,11 @@
 package edu.ucsd.cse110.walkstatic.teammate;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import androidx.annotation.NonNull;
 
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
 import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
@@ -16,7 +16,7 @@ public class TeammateRequests implements TeammateRequestListener {
     private Set<TeammateRequest> requestHashSet;
     private List<TeammateRequestsListener> teammateRequestsListenerList;
 
-    public TeammateRequests(@NotNull TeammateRequestStore store, @NotNull StorageWatcher storageWatcher){
+    public TeammateRequests(@NonNull TeammateRequestStore store, @NonNull StorageWatcher storageWatcher){
         this.store = store;
         this.requestHashSet = new HashSet<>();
         this.teammateRequestsListenerList = new ArrayList<>();

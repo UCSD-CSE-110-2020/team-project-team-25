@@ -72,7 +72,7 @@ public class DebugEspressoTest {
                                 childAtPosition(
                                         withId(R.id.nav_view),
                                         0)),
-                        6),
+                        7),
                         isDisplayed()));
         navigationMenuItemView.perform(click());
 
@@ -127,6 +127,12 @@ public class DebugEspressoTest {
                                 1),
                         isDisplayed()));
         appCompatImageButton2.perform(click());
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         ViewInteraction textView = onView(
                 allOf(withId(R.id.steps_today), withText("659"),

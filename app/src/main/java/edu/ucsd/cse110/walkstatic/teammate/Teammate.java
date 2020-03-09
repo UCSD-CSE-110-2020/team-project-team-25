@@ -43,9 +43,6 @@ public class Teammate implements Serializable {
 
     @Override
     public boolean equals(Object other){
-        if(other == null){
-            return false;
-        }
         if(!(other instanceof Teammate)){
             return false;
         }

@@ -16,6 +16,11 @@
             android:id="@+id/action_action_global_runActivity_to_debugFragment"
             app:destination="@id/debugFragment" />
     </action>
+
+    <action
+        android:id="@+id/action_runFragment_to_inviteAcceptedFragment"
+        app:destination="@id/inviteAcceptedFragment" />
+
     <action
         android:id="@+id/action_runActivityFragment_to_editRunFragment"
         app:destination="@id/editRunFragment"
@@ -40,9 +45,18 @@
         android:label="View Run"
         tools:layout="@layout/fragment_view_run" />
     <action
+        android:id="@+id/action_viewRunFragment_to_proposeRunFragment"
+        app:destination="@id/proposeRunFragment"
+        app:popUpTo="@+id/viewRunFragment" />
+    <action
         android:id="@+id/action_global_myRunsFragment"
         app:destination="@id/myRunsFragment"
         app:popUpToInclusive="true" />
+    <fragment
+        android:id="@+id/proposeRunFragment"
+        android:name="edu.ucsd.cse110.walkstatic.ProposeRunFragment"
+        android:label="Propose Run"
+        tools:layout="@layout/fragment_propose_run" />
     <fragment
         android:id="@+id/editRunFragment"
         android:name="edu.ucsd.cse110.walkstatic.EditRunFragment"
@@ -72,6 +86,11 @@
         android:label="Invite Teammate"
         tools:layout="@layout/fragment_invite" />
     <fragment
+        android:id="@+id/scheduledWalkFragment"
+        android:name="edu.ucsd.cse110.walkstatic.ScheduledWalkFragment"
+        android:label="View scheduled walk"
+        tools:layout="@layout/fragment_scheduled_walk" />
+<fragment
         android:id="@+id/teammateRunsFragment"
         android:name="edu.ucsd.cse110.walkstatic.TeammateRunsFragment"
         android:label="Teammate Runs"
@@ -81,4 +100,8 @@
             app:destination="@id/viewRunFragment" />
     </fragment>
     <action android:id="@+id/action_global_teammateRunsFragment" app:destination="@id/teammateRunsFragment" />
+    <fragment
+        android:id="@+id/inviteAcceptedFragment"
+        android:name="edu.ucsd.cse110.walkstatic.InviteReceivedFragment"
+        android:label="InviteAcceptedFragment" />
 </navigation>

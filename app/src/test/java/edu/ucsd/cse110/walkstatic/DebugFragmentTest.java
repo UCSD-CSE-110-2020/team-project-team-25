@@ -7,12 +7,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.time.LocalDateTime;
 
 import androidx.fragment.app.testing.FragmentScenario;
+import androidx.lifecycle.Lifecycle;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
@@ -29,6 +32,11 @@ public class DebugFragmentTest {
 
     private FakeFitnessService fakeFitnessService;
     private long stepCount;
+
+    @Before
+    public void mockStorage(){
+        MockFirebaseHelpers.mockStorage();
+    }
 
     @Test
     public void add500Adds500StepsRepeatedly() {
@@ -59,7 +67,7 @@ public class DebugFragmentTest {
             });
             newService.updateStepCount();
             assertThat(stepCount).isEqualTo(2000);
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -78,7 +86,7 @@ public class DebugFragmentTest {
             addSteps.callOnClick();
             TextView currentSteps = fragment.getActivity().findViewById(R.id.step_count);
             assertThat(currentSteps.getText().toString()).isEqualTo("1500");
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -95,7 +103,7 @@ public class DebugFragmentTest {
         scenario.onFragment(fragment -> {
             TextView currentSteps = fragment.getActivity().findViewById(R.id.step_count);
             assertThat(currentSteps.getText().toString()).isEqualTo("1000");
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -120,6 +128,11 @@ public class DebugFragmentTest {
             LocalDateTime now = LocalDateTime.of(2020, 1, 1, 11, 10);
             TimeMachine.useFixedClockAt(now);
             assertThat(TimeMachine.now()).isEqualTo(LocalDateTime.of(2020,1,1,12,11,11,111000000));
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
+    }
+
+    @After
+    public void noListenerLeak(){
+        MockFirebaseHelpers.assertNoListenerLeak();
     }
 }

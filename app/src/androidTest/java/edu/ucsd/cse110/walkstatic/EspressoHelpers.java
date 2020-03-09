@@ -13,11 +13,14 @@ import androidx.test.rule.ActivityTestRule;
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunUpdateListener;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
+import edu.ucsd.cse110.walkstatic.store.ResponseWatcher;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
 import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestListener;
+import edu.ucsd.cse110.walkstatic.teammate.TeammateResponse;
+import edu.ucsd.cse110.walkstatic.teammate.TeammateResponseChangeListener;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
@@ -44,6 +47,11 @@ public class EspressoHelpers{
         public void addTeammateRequestUpdateListener(TeammateRequestListener teammateRequestsListener) {
 
         }
+
+        @Override
+        public void deleteAllListeners() {
+            this.listeners.clear();
+        }
     }
 
     public static <T extends Activity> void setStartupParams(ActivityTestRule<T> activityTestRule, String userHeight, SharedPreferences.Editor editor){
@@ -64,7 +72,20 @@ public class EspressoHelpers{
         setStartupParams(activityTestRule, userHeight, preferencesEditor);
     }
 
+    public static void mockStorage(){
+        mockStorage(new Run[0], new TeammateResponse[0]);
+    }
+
     public static void mockStorage(Run... runs){
+        mockStorage(runs, new TeammateResponse[0]);
+    }
+
+    public static void mockStorage(TeammateResponse... responses){
+        mockStorage(new Run[0], responses);
+    }
+
+    public static void mockStorage(Run[] runs, TeammateResponse[] responses){
+        DefaultStorage.setDefaultFirebaseInitialization((context) -> {});
         ArrayList<Run> actualRuns = new ArrayList<>(Arrays.asList(runs));
         DefaultStorage.setDefaultRunStore(() -> actualRuns::add);
         DefaultStorage.setDefaultTeammateRequestStore(() -> new TeammateRequestStore() {
@@ -79,6 +100,19 @@ public class EspressoHelpers{
             }
         });
         DefaultStorage.setDefaultStorageWatcher((ignoredUser) -> new FakeStorageWatcher(actualRuns));
+        DefaultStorage.setDefaultResponseWatcher(() -> new ResponseWatcher(){
+            @Override
+            public void addResponseListener(TeammateResponseChangeListener listener) {
+                for (TeammateResponse response : responses) {
+                    listener.onChangedResponse(response);
+                }
+            }
+
+            @Override
+            public void deleteAllListeners() {
+
+            }
+        });
     }
 
     public static void setUser(Teammate user){

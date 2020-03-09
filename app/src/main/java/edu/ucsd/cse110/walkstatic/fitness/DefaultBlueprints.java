@@ -1,7 +1,5 @@
 package edu.ucsd.cse110.walkstatic.fitness;
 
-import android.app.Activity;
-
 public class DefaultBlueprints {
     public static final String GOOGLE_FIT = "GOOGLE_FIT";
     public static final String DEBUG = "DEBUG";

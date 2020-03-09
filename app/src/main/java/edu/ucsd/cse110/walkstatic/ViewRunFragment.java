@@ -12,6 +12,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -54,6 +56,21 @@ public class ViewRunFragment extends Fragment {
             this.run = run;
             this.populateWithRun(run);
         }
+
+        Button proposeButton = getActivity().findViewById(R.id.proposeButton);
+
+        proposeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                proposeNewRun();
+            }
+        });
+    }
+
+    private void proposeNewRun(){
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("Run", this.run);
+        Navigation.findNavController(this.getActivity(), this.getId()).navigate(R.id.action_viewRunFragment_to_proposeRunFragment, bundle);
     }
 
     @Override
@@ -67,11 +84,12 @@ public class ViewRunFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.action_start_run){
             this.startRun();
-            Navigation.findNavController(Objects.requireNonNull(this.getView())).navigate(R.id.runActivity);
+            Navigation.findNavController(this.requireView()).navigate(R.id.runActivity);
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     private void populateWithRun(Run run){
         TextView runName = this.getActivity().findViewById(R.id.run_name);
@@ -156,10 +174,11 @@ public class ViewRunFragment extends Fragment {
         if(run == null) return;
 
         String preferencesName = this.getResources().getString(R.string.current_run);
-        Activity activity = Objects.requireNonNull(this.getActivity());
+        Activity activity = this.requireActivity();
         SharedPreferences sharedPreferences = activity.getSharedPreferences(
                 preferencesName, Context.MODE_PRIVATE);
         this.run.setInitialSteps(Run.INVALID_STEPS);
         sharedPreferences.edit().putString(preferencesName, this.run.toJSON()).apply();
     }
+
 }

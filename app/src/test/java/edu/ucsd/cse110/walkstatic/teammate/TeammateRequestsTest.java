@@ -39,6 +39,11 @@ public class TeammateRequestsTest {
         public void addTeammateRequestUpdateListener(TeammateRequestListener teammateRequestListener) {
             this.lastListener = teammateRequestListener;
         }
+
+        @Override
+        public void deleteAllListeners() {
+
+        }
     }
 
     @Test

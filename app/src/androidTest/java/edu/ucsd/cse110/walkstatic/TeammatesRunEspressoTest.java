@@ -76,7 +76,7 @@ public class TeammatesRunEspressoTest {
                                 childAtPosition(
                                         withId(R.id.nav_view),
                                         0)),
-                        4),
+                        5),
                         isDisplayed()));
         navigationMenuItemView.perform(click());
 

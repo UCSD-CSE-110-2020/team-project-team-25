@@ -7,6 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import androidx.test.espresso.ViewInteraction;
+import androidx.test.filters.LargeTest;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.runner.AndroidJUnit4;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -16,37 +21,30 @@ import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 
-import androidx.test.espresso.ViewInteraction;
-import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
 import edu.ucsd.cse110.walkstatic.fitness.DefaultBlueprints;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 import edu.ucsd.cse110.walkstatic.runs.RunUpdateListener;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
-import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestListener;
-import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestsListener;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static androidx.test.internal.runner.junit4.statement.UiThreadStatement.runOnUiThread;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -56,10 +54,11 @@ public class InviteTeammateEspressoTest {
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
 
     private ArrayList<TeammateRequest> teammateRequestArrayList;
+    private TeammateRequestListener teammateRequestListener;
 
     private class MockStorageWatcher implements StorageWatcher {
         public RunUpdateListener runUpdateListener;
-        public TeammateRequestListener teammateRequestListener;
+        public TeammateRequestListener localTeammateRequestListener;
 
         @Override
         public void addRunUpdateListener(RunUpdateListener runUpdateListener) {
@@ -68,30 +67,25 @@ public class InviteTeammateEspressoTest {
 
         @Override
         public void addTeammateRequestUpdateListener(TeammateRequestListener teammateRequestsListener) {
-            this.teammateRequestListener = teammateRequestsListener;
-        }
-    }
-
-    private class MockTeammateRequestStore implements TeammateRequestStore{
-        private TeammateRequest lastAdded;
-
-        @Override
-        public void addRequest(TeammateRequest request) {
-            this.lastAdded = request;
+            teammateRequestListener = teammateRequestsListener;
+            localTeammateRequestListener = teammateRequestListener;
         }
 
         @Override
-        public void delete(TeammateRequest request) {
-
+        public void deleteAllListeners() {
+            if(teammateRequestListener == localTeammateRequestListener){
+                teammateRequestListener = null;
+            }
+            localTeammateRequestListener = null;
+            runUpdateListener = null;
         }
     }
 
     @Test
     public void inviteTeammateEspressoTest() {
         EspressoHelpers.mockStorage();
-        final MockStorageWatcher mockStorageWatcher = new MockStorageWatcher();
-        final MockTeammateRequestStore mockTeammateRequestStore = new MockTeammateRequestStore();
-        DefaultStorage.setDefaultStorageWatcher(user -> mockStorageWatcher);
+        final FirebaseMocks.MockTeammateRequestStore mockTeammateRequestStore = new FirebaseMocks.MockTeammateRequestStore();
+        DefaultStorage.setDefaultStorageWatcher(user -> new MockStorageWatcher());
         DefaultStorage.setDefaultTeammateRequestStore(() -> mockTeammateRequestStore);
 
         Context targetContext = getInstrumentation().getTargetContext();
@@ -109,7 +103,7 @@ public class InviteTeammateEspressoTest {
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
                         childAtPosition(
-                                allOf(withId(R.id.action_bar),
+                            allOf(withId(R.id.action_bar),
                                         childAtPosition(
                                                 withId(R.id.action_bar_container),
                                                 0)),
@@ -174,7 +168,7 @@ public class InviteTeammateEspressoTest {
 
         try {
             mActivityTestRule.runOnUiThread(() -> {
-                mockStorageWatcher.teammateRequestListener.onNewTeammateRequest(queryRequest);
+                teammateRequestListener.onNewTeammateRequest(queryRequest);
             });
         } catch(Throwable e){
             assert(false);
@@ -188,20 +182,26 @@ public class InviteTeammateEspressoTest {
 
         try {
             mActivityTestRule.runOnUiThread(() -> {
-                mockStorageWatcher.teammateRequestListener.onTeammateRequestDeleted(queryRequest);
+                teammateRequestListener.onTeammateRequestDeleted(queryRequest);
                 Teammate teammate = new Teammate("j@gmail.com");
                 teammate.setName("Jupiter");
                 TeammateRequest newTeammateRequest = new TeammateRequest(user, teammate);
-                mockStorageWatcher.teammateRequestListener.onNewTeammateRequest(newTeammateRequest);
+                teammateRequestListener.onNewTeammateRequest(newTeammateRequest);
             });
         } catch(Throwable e){
             assert(false);
         }
 
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         ViewInteraction textView2 = onView(
-                allOf(withId(R.id.teammate_name),
+                allOf(withId(R.id.teammate_requests_list),
                         isDisplayed()));
-        textView2.check(matches(not(withText("Linda"))));
+        textView2.check(matches(not(hasDescendant(withText("Linda")))));
 
         ViewInteraction textView4  = onView(
                 allOf(withId(R.id.teammate_name), withText("Jupiter"),
@@ -242,10 +242,10 @@ public class InviteTeammateEspressoTest {
 
         try {
             mActivityTestRule.runOnUiThread(() -> {
-                mockStorageWatcher.teammateRequestListener.onNewTeammateRequest(queryRequest);
+                teammateRequestListener.onNewTeammateRequest(queryRequest);
             });
         } catch(Throwable e){
-            assert(false);
+            assertTrue(false);
         }
 
         ViewInteraction textView3 = onView(

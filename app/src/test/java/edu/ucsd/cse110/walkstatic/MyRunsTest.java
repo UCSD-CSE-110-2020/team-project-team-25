@@ -8,9 +8,11 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Shadows;
@@ -69,7 +71,7 @@ public class MyRunsTest {
             int idxRun1 = shadowListView.findIndexOfItemContainingText("Run 1");
             int idxRun2 = shadowListView.findIndexOfItemContainingText("Run 2");
             assertThat(idxRun1).isLessThan(idxRun2);
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -80,6 +82,11 @@ public class MyRunsTest {
             ListView listView = activity.getActivity().findViewById(R.id.my_runs_list);
             ShadowListView shadowListView = Shadows.shadowOf(listView);
             assertThat(shadowListView.findItemContainingText("")).isNull();
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
+    }
+
+    @After
+    public void noListenerLeak(){
+        MockFirebaseHelpers.assertNoListenerLeak();
     }
 }

@@ -11,6 +11,10 @@
             android:id="@id/teamFragment"
             android:title="Team" />
         <item
+
+            android:id="@id/scheduledWalkFragment"
+            android:title="Scheduled Walk" />
+        <item
             android:id="@id/teammateRunsFragment"
             android:title="Teammate Runs" />
     </group>

@@ -4,6 +4,7 @@ import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.PropertyName;
 import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -15,26 +16,57 @@ public class Run implements Serializable, Comparable<Run>{
     public static final long INVALID_STEPS = -1;
     public static final long INVALID_TIME = -1;
 
+    @Expose
     private String name;
 
     @PropertyName("UUID")
+    @Expose
     private String uuid;
+
+    @Expose
     private long steps;
+
+    @Expose
     private double miles;
+
+    @Expose
     private long initialSteps;
+
+    @Expose
     private boolean favorited;
+
+    @Expose
     private String startingPoint;
+
+    @Expose
     private String notes;
+
+    @Expose
     private String difficulty;
+
+    @Expose
     private String loopVsOut;
+
+    @Expose
     private String flatVsHilly;
+
+    @Expose
     private String evenVsUneven;
+
+    @Expose
     private String streetVsTrail;
+
+    @Expose
     private long startTime;
+
+    @Expose
     private long duration;
+
+    @Expose
     private Teammate author;
 
     @DocumentId
+    @Expose
     private String documentID;
 
     public Run(){
