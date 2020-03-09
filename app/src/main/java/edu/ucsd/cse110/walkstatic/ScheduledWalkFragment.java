@@ -38,6 +38,7 @@ public class ScheduledWalkFragment extends Fragment implements RunProposalListen
 
     private TeammateResponseArrayAdapter teammateResponseArrayAdapter;
     private List<TeammateResponse> responses;
+    private Walkstatic app;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,11 +55,11 @@ public class ScheduledWalkFragment extends Fragment implements RunProposalListen
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
-        Walkstatic app = new Walkstatic(this.getContext());
-        if(app.isWalkScheduled()){
-            this.populateWithRun(app.getScheduledRun().getRun());
-            this.setDateAndTime(app.getScheduledRun());
-            this.populateResponseList(app.getScheduledRun());
+        this.app = new Walkstatic(this.getContext());
+        if(this.app.isWalkScheduled()){
+            this.populateWithRun(this.app.getScheduledRun().getRun());
+            this.setDateAndTime(this.app.getScheduledRun());
+            this.populateResponseList(this.app.getScheduledRun());
         }
     }
 
@@ -112,5 +113,12 @@ public class ScheduledWalkFragment extends Fragment implements RunProposalListen
         this.responses.clear();
         this.responses.addAll(responseList);
         this.teammateResponseArrayAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onDestroy(){
+        this.app.destroy();
+        this.app = null;
+        super.onDestroy();
     }
 }

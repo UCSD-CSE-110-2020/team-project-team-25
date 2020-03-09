@@ -155,7 +155,7 @@ public class MainActivityTest {
             ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
             fakeFitnessService.nextStepCount = 10;
             ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
         existing.setInitialSteps(0);
         existing.setStartTime(0);
         assertThat(sharedPreferences.getString(preferencesName, "")).isEqualTo(existing.toJSON());

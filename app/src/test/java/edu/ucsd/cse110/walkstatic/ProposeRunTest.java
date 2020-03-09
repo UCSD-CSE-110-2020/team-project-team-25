@@ -3,8 +3,11 @@ package edu.ucsd.cse110.walkstatic;
 import android.widget.EditText;
 
 import androidx.fragment.app.testing.FragmentScenario;
+import androidx.lifecycle.Lifecycle;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -20,6 +23,11 @@ import static junit.framework.TestCase.assertEquals;
 @RunWith(AndroidJUnit4.class)
 
 public class ProposeRunTest {
+    @Before
+    public void setBasicMocks(){
+        MockFirebaseHelpers.mockStorage();
+    }
+
     @Test
     public void testTimeDate() {
         FragmentScenario<ProposeRunFragment> scenario = FragmentScenario.launchInContainer(ProposeRunFragment.class);
@@ -42,7 +50,12 @@ public class ProposeRunTest {
             assertThat(time.getText().toString()).isEqualTo(fakeTime);
             assertThat(rp.getDate().equals(fakeDate));
             assertThat(rp.getTime().equals(fakeTime));
-        });
-
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
+
+    @After
+    public void checkForLeaks(){
+        MockFirebaseHelpers.assertNoListenerLeak();
+    }
+
 }
