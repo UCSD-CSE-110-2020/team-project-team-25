@@ -97,5 +97,6 @@ public class Walkstatic {
 
     public void destroy(){
         this.storageWatcher.deleteAllListeners();
+        this.responseWatcher.deleteAllListeners();
     }
 }

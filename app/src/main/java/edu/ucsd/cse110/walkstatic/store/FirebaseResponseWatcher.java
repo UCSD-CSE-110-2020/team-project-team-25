@@ -6,6 +6,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -19,6 +20,7 @@ public class FirebaseResponseWatcher implements  ResponseWatcher {
     private static String TAG = "FirebaseResponseWatcher";
 
     private ArrayList<TeammateResponseChangeListener> teammateResponseChangeListenerArrayList;
+    private ListenerRegistration collectionRegistration;
 
     public FirebaseResponseWatcher(){
         this.teammateResponseChangeListenerArrayList = new ArrayList<>();
@@ -26,12 +28,18 @@ public class FirebaseResponseWatcher implements  ResponseWatcher {
                 .collection(FirebaseConstants.TEAM_COLLECTION)
                 .document(FirebaseConstants.PROPOSAL_DOCUMENT)
                 .collection(FirebaseConstants.RESPONSE_COLLECTION);
-        responseCollection.addSnapshotListener(this::onResponse);
+        this.collectionRegistration = responseCollection.addSnapshotListener(this::onResponse);
     }
 
     @Override
     public void addResponseListener(TeammateResponseChangeListener listener) {
         this.teammateResponseChangeListenerArrayList.add(listener);
+    }
+
+    @Override
+    public void deleteAllListeners() {
+        this.teammateResponseChangeListenerArrayList.clear();
+        this.collectionRegistration.remove();
     }
 
     private void onResponse(QuerySnapshot snapshot, FirebaseFirestoreException exception){

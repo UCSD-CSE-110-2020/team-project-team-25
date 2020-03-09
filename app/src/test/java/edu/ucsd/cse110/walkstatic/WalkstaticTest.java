@@ -160,7 +160,7 @@ public class WalkstaticTest {
     }
 
     @Test
-    public void destoryCallsDeleteOnStorageWatcher(){
+    public void destroyCallsDeleteOnStorageWatcher(){
         Context sharedPreferencesContext = mock(Context.class);
 
         Resources mockResources = mock(Resources.class);
@@ -182,6 +182,35 @@ public class WalkstaticTest {
 
         StorageWatcher watcher = mock(StorageWatcher.class);
         DefaultStorage.setDefaultStorageWatcher((ignore) -> watcher);
+
+        Walkstatic walkstatic = new Walkstatic(sharedPreferencesContext);
+        walkstatic.destroy();
+        verify(watcher).deleteAllListeners();
+    }
+
+    @Test
+    public void destroyCallsDeleteOnResponseWatcher(){
+        Context sharedPreferencesContext = mock(Context.class);
+
+        Resources mockResources = mock(Resources.class);
+        when(mockResources.getString(R.string.proposed_time_run)).thenReturn("proposedRun");
+        when(mockResources.getString(R.string.user_string)).thenReturn("user");
+        when(sharedPreferencesContext.getResources()).thenReturn(mockResources);
+
+        SharedPreferences userSharedPreferences = mock(SharedPreferences.class);
+        when(sharedPreferencesContext.getSharedPreferences("user", Context.MODE_PRIVATE)).thenReturn(userSharedPreferences);
+
+        Teammate user = new Teammate("Jay");
+        user.setName("Name");
+        when(userSharedPreferences.getString("user", "")).thenReturn(user.toString());
+
+        SharedPreferences proposedRunPreferences = mock(SharedPreferences.class);
+        when(sharedPreferencesContext.getSharedPreferences("proposedRun", Context.MODE_PRIVATE)).thenReturn(proposedRunPreferences);
+
+        when(proposedRunPreferences.getString("proposedRun", null)).thenReturn(null);
+
+        ResponseWatcher watcher = mock(ResponseWatcher.class);
+        DefaultStorage.setDefaultResponseWatcher(() -> watcher);
 
         Walkstatic walkstatic = new Walkstatic(sharedPreferencesContext);
         walkstatic.destroy();

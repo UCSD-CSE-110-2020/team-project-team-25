@@ -3,6 +3,7 @@ package edu.ucsd.cse110.walkstatic;
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunUpdateListener;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
+import edu.ucsd.cse110.walkstatic.store.ResponseWatcher;
 import edu.ucsd.cse110.walkstatic.store.RunStore;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
 import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
@@ -29,7 +30,7 @@ public class MockFirebaseHelpers {
             }
             return null;
         }).when(storageWatcher).addRunUpdateListener(any());
-        DefaultStorage.setDefaultResponseWatcher(() -> ((dontCare) -> {}));
+        DefaultStorage.setDefaultResponseWatcher(() -> mock(ResponseWatcher.class));
         doAnswer((args) -> {
             activeCount = 0;
             return null;
