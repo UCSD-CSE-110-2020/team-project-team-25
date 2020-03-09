@@ -79,7 +79,7 @@ public class RunFragment extends Fragment implements TeammateRequestListener {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        Log.d("Run Fragment", "View Created");
         this.app = new Walkstatic(this.getContext());
         this.setHasOptionsMenu(true);
         this.buildMileCalculator();
@@ -135,11 +135,25 @@ public class RunFragment extends Fragment implements TeammateRequestListener {
                 updateLastRunUI();
             }
         });
+        this.initializeStorage();
+    }
 
-        this.storageWatcher.addTeammateRequestUpdateListener(this);
-
+    private void initializeStorage(){
         loadCurrentRun();
         loadLastRun();
+        this.app.getRuns().addRunsListener(new RunsListener() {
+            @Override
+            public void myRunsChanged(List<Run> myRuns) {
+                lastRun = app.getRuns().getLastRun();
+                updateLastRunUI();
+            }
+
+            @Override
+            public void teammateRunsChanged(List<Run> teammateRuns) {
+
+            }
+        });
+        this.storageWatcher.addTeammateRequestUpdateListener(this);
     }
 
     private void setNotification(boolean visible) {
@@ -203,7 +217,7 @@ public class RunFragment extends Fragment implements TeammateRequestListener {
     @Override
     public void onStop(){
         super.onStop();
-        if(this.timer != null) this.timer.stop();
+        Log.d("Run Fragment", "Stopping");
     }
 
     @Override
@@ -211,14 +225,26 @@ public class RunFragment extends Fragment implements TeammateRequestListener {
         super.onPause();
         Log.d("Run Fragment", "Pausing");
         if(this.timer != null) this.timer.stop();
-
     }
 
     @Override
     public void onResume() {
         super.onResume();
         Log.d("Run Fragment", "Resuming");
-        if(this.timer != null)this.timer.resume();
+        if(this.timer != null) this.timer.resume();
+    }
+    @Override
+    public void onDestroyView() {
+        Log.d("Run Fragment", "Destroyed");
+        super.onDestroyView();
+        this.cleanup();
+    }
+
+    private void cleanup(){
+        if(this.app != null){
+            this.app.destroy();
+            this.app = null;
+        }
     }
 
     private void updateStepCount(){
@@ -296,18 +322,6 @@ public class RunFragment extends Fragment implements TeammateRequestListener {
 
     private void loadLastRun() {
         this.lastRun = this.app.getRuns().getLastRun();
-        this.app.getRuns().addRunsListener(new RunsListener() {
-            @Override
-            public void myRunsChanged(List<Run> myRuns) {
-                lastRun = app.getRuns().getLastRun();
-                updateLastRunUI();
-            }
-
-            @Override
-            public void teammateRunsChanged(List<Run> teammateRuns) {
-
-            }
-        });
         updateLastRunUI();
     }
 
@@ -369,6 +383,9 @@ public class RunFragment extends Fragment implements TeammateRequestListener {
         }
 
         void resume(){
+            if(this.stop == false){
+                return;
+            }
             this.stop = false;
             this.run();
         }

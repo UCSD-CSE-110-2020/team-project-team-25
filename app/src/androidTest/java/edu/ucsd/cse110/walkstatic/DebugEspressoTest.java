@@ -128,6 +128,12 @@ public class DebugEspressoTest {
                         isDisplayed()));
         appCompatImageButton2.perform(click());
 
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         ViewInteraction textView = onView(
                 allOf(withId(R.id.steps_today), withText("659"),
                         isDisplayed()));

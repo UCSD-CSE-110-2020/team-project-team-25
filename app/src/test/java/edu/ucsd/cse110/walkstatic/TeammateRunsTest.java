@@ -6,12 +6,14 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Shadows;
 import org.robolectric.shadows.ShadowListView;
 
 import androidx.fragment.app.testing.FragmentScenario;
+import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import edu.ucsd.cse110.walkstatic.runs.Run;
@@ -64,7 +66,7 @@ public class TeammateRunsTest {
             int idxRun1 = shadowListView.findIndexOfItemContainingText("Run 1");
             int idxRun2 = shadowListView.findIndexOfItemContainingText("Run 2");
             assertThat(idxRun1).isLessThan(idxRun2);
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -75,6 +77,11 @@ public class TeammateRunsTest {
             ListView listView = activity.getActivity().findViewById(R.id.my_runs_list);
             ShadowListView shadowListView = Shadows.shadowOf(listView);
             assertThat(shadowListView.findItemContainingText("")).isNull();
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
+    }
+
+    @After
+    public void noListenerLeak(){
+        MockFirebaseHelpers.assertNoListenerLeak();
     }
 }

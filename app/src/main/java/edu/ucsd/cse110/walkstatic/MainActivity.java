@@ -35,9 +35,6 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.material.navigation.NavigationView;
-
-import edu.ucsd.cse110.walkstatic.maps.Map;
 import edu.ucsd.cse110.walkstatic.runs.Run;
 
 

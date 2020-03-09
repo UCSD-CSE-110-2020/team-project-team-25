@@ -23,9 +23,12 @@ import java.util.ArrayList;
 
 import edu.ucsd.cse110.walkstatic.fitness.DefaultBlueprints;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
+import edu.ucsd.cse110.walkstatic.runs.RunUpdateListener;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
+import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
+import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestListener;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -41,6 +44,7 @@ import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentat
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -50,14 +54,38 @@ public class InviteTeammateEspressoTest {
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
 
     private ArrayList<TeammateRequest> teammateRequestArrayList;
+    private TeammateRequestListener teammateRequestListener;
 
+    private class MockStorageWatcher implements StorageWatcher {
+        public RunUpdateListener runUpdateListener;
+        public TeammateRequestListener localTeammateRequestListener;
+
+        @Override
+        public void addRunUpdateListener(RunUpdateListener runUpdateListener) {
+            this.runUpdateListener = runUpdateListener;
+        }
+
+        @Override
+        public void addTeammateRequestUpdateListener(TeammateRequestListener teammateRequestsListener) {
+            teammateRequestListener = teammateRequestsListener;
+            localTeammateRequestListener = teammateRequestListener;
+        }
+
+        @Override
+        public void deleteAllListeners() {
+            if(teammateRequestListener == localTeammateRequestListener){
+                teammateRequestListener = null;
+            }
+            localTeammateRequestListener = null;
+            runUpdateListener = null;
+        }
+    }
 
     @Test
     public void inviteTeammateEspressoTest() {
-//        EspressoHelpers.mockStorage();
-        final FirebaseMocks.MockStorageWatcher mockStorageWatcher = new FirebaseMocks.MockStorageWatcher();
+        EspressoHelpers.mockStorage();
         final FirebaseMocks.MockTeammateRequestStore mockTeammateRequestStore = new FirebaseMocks.MockTeammateRequestStore();
-        DefaultStorage.setDefaultStorageWatcher(user -> mockStorageWatcher);
+        DefaultStorage.setDefaultStorageWatcher(user -> new MockStorageWatcher());
         DefaultStorage.setDefaultTeammateRequestStore(() -> mockTeammateRequestStore);
 
         Context targetContext = getInstrumentation().getTargetContext();
@@ -140,7 +168,7 @@ public class InviteTeammateEspressoTest {
 
         try {
             mActivityTestRule.runOnUiThread(() -> {
-                mockStorageWatcher.teammateRequestListener.onNewTeammateRequest(queryRequest);
+                teammateRequestListener.onNewTeammateRequest(queryRequest);
             });
         } catch(Throwable e){
             assert(false);
@@ -154,11 +182,11 @@ public class InviteTeammateEspressoTest {
 
         try {
             mActivityTestRule.runOnUiThread(() -> {
-                mockStorageWatcher.teammateRequestListener.onTeammateRequestDeleted(queryRequest);
+                teammateRequestListener.onTeammateRequestDeleted(queryRequest);
                 Teammate teammate = new Teammate("j@gmail.com");
                 teammate.setName("Jupiter");
                 TeammateRequest newTeammateRequest = new TeammateRequest(user, teammate);
-                mockStorageWatcher.teammateRequestListener.onNewTeammateRequest(newTeammateRequest);
+                teammateRequestListener.onNewTeammateRequest(newTeammateRequest);
             });
         } catch(Throwable e){
             assert(false);
@@ -214,10 +242,10 @@ public class InviteTeammateEspressoTest {
 
         try {
             mActivityTestRule.runOnUiThread(() -> {
-                mockStorageWatcher.teammateRequestListener.onNewTeammateRequest(queryRequest);
+                teammateRequestListener.onNewTeammateRequest(queryRequest);
             });
         } catch(Throwable e){
-            assert(false);
+            assertTrue(false);
         }
 
         ViewInteraction textView3 = onView(

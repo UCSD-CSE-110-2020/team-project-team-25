@@ -25,6 +25,11 @@ public class FirebaseMocks {
         public void addTeammateRequestUpdateListener(TeammateRequestListener teammateRequestsListener) {
             this.teammateRequestListener = teammateRequestsListener;
         }
+
+        @Override
+        public void deleteAllListeners() {
+
+        }
     }
 
     public static class MockTeammateRequestStore implements TeammateRequestStore {

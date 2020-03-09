@@ -29,7 +29,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
-import edu.ucsd.cse110.walkstatic.maps.Map;
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.time.TimeHelp;
 
@@ -85,7 +84,7 @@ public class ViewRunFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.action_start_run){
             this.startRun();
-            Navigation.findNavController(Objects.requireNonNull(this.getView())).navigate(R.id.runActivity);
+            Navigation.findNavController(this.requireView()).navigate(R.id.runActivity);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -175,7 +174,7 @@ public class ViewRunFragment extends Fragment {
         if(run == null) return;
 
         String preferencesName = this.getResources().getString(R.string.current_run);
-        Activity activity = Objects.requireNonNull(this.getActivity());
+        Activity activity = this.requireActivity();
         SharedPreferences sharedPreferences = activity.getSharedPreferences(
                 preferencesName, Context.MODE_PRIVATE);
         this.run.setInitialSteps(Run.INVALID_STEPS);

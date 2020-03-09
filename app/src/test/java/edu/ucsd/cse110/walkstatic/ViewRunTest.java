@@ -4,8 +4,10 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.lifecycle.Lifecycle;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -31,7 +33,7 @@ public class ViewRunTest {
             assertThat(runName.getText().toString()).isEqualTo("This is a run");
             assertThat(startingPoint.getText().toString()).isEqualTo("This is a starting point");
             assertThat(shadowOf(favoriteIndicator.getDrawable()).getCreatedFromResId()).isEqualTo(R.drawable.ic_star_white_24dp);
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -47,7 +49,7 @@ public class ViewRunTest {
             assertThat(runName.getText().toString()).isEqualTo("This is a run");
             assertThat(startingPoint.getText().toString()).isEqualTo("This is a starting point");
             assertThat(shadowOf(favoriteIndicator.getDrawable()).getCreatedFromResId()).isEqualTo(R.drawable.ic_star_border_white_24dp);
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -65,7 +67,7 @@ public class ViewRunTest {
             assertThat(startingPoint.getText().toString()).isEqualTo("This is a starting point");
             assertThat(shadowOf(favoriteIndicator.getDrawable()).getCreatedFromResId()).isEqualTo(R.drawable.ic_star_border_white_24dp);
             assertThat(difficulty.getText().toString()).isEqualTo("Moderate");
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -92,7 +94,7 @@ public class ViewRunTest {
             assertThat(loopVsOut.getText().toString()).isEqualTo("Loop");
             assertThat(flatVsHilly.getText().toString()).isEqualTo("Flat");
             assertThat(evenVsUneven.getText().toString()).isEqualTo("Even Surface");
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -121,7 +123,7 @@ public class ViewRunTest {
             assertThat(flatVsHilly.getText().toString()).isEqualTo("Flat");
             assertThat(evenVsUneven.getText().toString()).isEqualTo("Even Surface");
             assertThat(note.getText().toString()).isEqualTo("Notes:\nNote");
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -150,7 +152,7 @@ public class ViewRunTest {
             assertThat(flatVsHilly.getText().toString()).isEqualTo("Flat");
             assertThat(evenVsUneven.getText().toString()).isEqualTo("Even Surface");
             assertThat(note.getText().toString()).isEqualTo("");
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -164,7 +166,7 @@ public class ViewRunTest {
             TextView miles = activity.getActivity().findViewById(R.id.last_miles_view);
             assertThat(steps.getText().toString()).isEqualTo("-- Steps");
             assertThat(miles.getText().toString()).isEqualTo("-- Miles");
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -181,7 +183,7 @@ public class ViewRunTest {
             TextView miles = activity.getActivity().findViewById(R.id.last_miles_view);
             assertThat(steps.getText().toString()).isEqualTo("55 Steps");
             assertThat(miles.getText().toString()).isEqualTo(".23 Miles");
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
     }
 
     @Test
@@ -199,6 +201,11 @@ public class ViewRunTest {
             TextView time = activity.getActivity().findViewById(R.id.run_time);
             TextView miles = activity.getActivity().findViewById(R.id.last_miles_view);
             assertThat(time.getText().toString()).isEqualTo("Time: 00:00:04");
-        });
+        }).moveToState(Lifecycle.State.DESTROYED);
+    }
+
+    @After
+    public void noListenerLeak(){
+        MockFirebaseHelpers.assertNoListenerLeak();
     }
 }
