@@ -59,11 +59,11 @@ public class ProposeRunFragment extends Fragment {
 
         if (id == R.id.proposeCheckButton && (validTime && validDate)) {
             String preferencesName = this.getResources().getString(R.string.proposed_time_run);
-            Activity activity = Objects.requireNonNull(this.getActivity());
+            Activity activity = this.requireActivity();
             SharedPreferences sharedPreferences = activity.getSharedPreferences(
                     preferencesName, Context.MODE_PRIVATE);
             sharedPreferences.edit().putString(preferencesName, this.runproposal.toJSON()).apply();
-            Navigation.findNavController(Objects.requireNonNull(this.getView())).navigate(R.id.runActivity);
+            Navigation.findNavController(this.requireView()).navigate(R.id.runActivity);
         }
         return super.onOptionsItemSelected(item);
     }

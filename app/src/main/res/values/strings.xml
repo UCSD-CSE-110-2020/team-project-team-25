@@ -1,9 +1,7 @@
 <resources>
     <string name="app_name">Walkstatic!</string>
 
-    <string name="run_save_name">runs</string>
     <string name="current_run">currentRun</string>
-    <string name="last_run">lastRun</string>
     <string name="proposed_time_run">proposedRun</string>
 
     <string name="run_name_label">Name:</string>
