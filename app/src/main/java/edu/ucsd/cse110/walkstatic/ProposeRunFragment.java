@@ -34,6 +34,7 @@ public class ProposeRunFragment extends Fragment {
     boolean validTime = false;
     boolean validDate = false;
     boolean isToday = false;
+    boolean proposed = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,6 +59,7 @@ public class ProposeRunFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.proposeCheckButton && (validTime && validDate)) {
+            proposed = true;
             String preferencesName = this.getResources().getString(R.string.proposed_time_run);
             Activity activity = this.requireActivity();
             SharedPreferences sharedPreferences = activity.getSharedPreferences(

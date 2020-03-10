@@ -95,6 +95,8 @@ public class Walkstatic {
         return this.runProposal;
     }
 
+
+
     public void destroy(){
         this.storageWatcher.deleteAllListeners();
         this.responseWatcher.deleteAllListeners();

@@ -3,6 +3,10 @@
 
     <string name="current_run">currentRun</string>
     <string name="proposed_time_run">proposedRun</string>
+    <string name="withdraw">Withdraw</string>
+    <string name="schedule_run">Schedule</string>
+    <string name="status">Status</string>
+
 
     <string name="run_name_label">Name:</string>
     <string name="run_starting_point_label">Starting Point:</string>

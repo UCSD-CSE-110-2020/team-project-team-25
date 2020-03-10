@@ -39,6 +39,7 @@ public class ScheduledWalkFragment extends Fragment implements RunProposalListen
     private TeammateResponseArrayAdapter teammateResponseArrayAdapter;
     private List<TeammateResponse> responses;
     private Walkstatic app;
+    private boolean delete = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,14 +54,47 @@ public class ScheduledWalkFragment extends Fragment implements RunProposalListen
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState){
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         this.app = new Walkstatic(this.getContext());
-        if(this.app.isWalkScheduled()){
+        if (this.app.isWalkScheduled()) {
             this.populateWithRun(this.app.getScheduledRun().getRun());
             this.setDateAndTime(this.app.getScheduledRun());
             this.populateResponseList(this.app.getScheduledRun());
         }
+        String preferencesName = this.getResources().getString(R.string.proposed_time_run);
+        Activity activity = this.requireActivity();
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(
+                preferencesName, Context.MODE_PRIVATE);
+        Button cancel = getActivity().findViewById(R.id.cancelButton);
+        TextView status = getActivity().findViewById(R.id.statusView);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //getActivity().findViewById(R.id.time_view).setVisibility(View.INVISIBLE);
+                //getActivity().findViewById(R.id.date_view).setVisibility(View.INVISIBLE);
+                //app.destroy();
+                //app = null;
+               // delete = true;
+                //app.unregister();
+                populateWithRun(null);
+                sharedPreferences.edit().clear().commit();
+                status.setText("Withdrawn");
+                //setDateAndTime(app.getScheduledRun(),true);
+                //populateResponseList(null);
+                //cancel.setText("hi");
+                //populateWithRun(null);
+                //app.destroy();
+            }
+        });
+        Button schedule = getActivity().findViewById(R.id.scheduleButton);
+        schedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                status.setText("Scheduled");
+            }
+        });
+
     }
 
     private void populateWithRun(Run run){
@@ -84,6 +118,7 @@ public class ScheduledWalkFragment extends Fragment implements RunProposalListen
         startingPoint.setText(run.getStartingPoint());
     }
 
+
     private void setDateAndTime(RunProposal runProposal){
         TextView scheduledTimeView = this.getActivity().findViewById(R.id.time_view);
         TextView scheduledDateView = this.getActivity().findViewById(R.id.date_view);
@@ -96,6 +131,7 @@ public class ScheduledWalkFragment extends Fragment implements RunProposalListen
 
         scheduledTimeView.setText(scheduledTimeString);
         scheduledDateView.setText(scheduledDateString);
+
     }
 
     private void populateResponseList(RunProposal runProposal){
