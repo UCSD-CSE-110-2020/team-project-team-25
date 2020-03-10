@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -60,12 +62,14 @@ public class ScheduledWalkFragment extends Fragment implements RunProposalListen
             this.populateWithRun(this.app.getScheduledRun().getRun());
             this.setDateAndTime(this.app.getScheduledRun());
             this.populateResponseList(this.app.getScheduledRun());
+        } else {
+            this.populateWithRun(null);
         }
     }
 
     private void populateWithRun(Run run){
         TextView runName = this.getActivity().findViewById(R.id.run_name);
-        TextView startingPoint = this.getActivity().findViewById(R.id.starting_point);
+        TextView startingPoint = this.getActivity().findViewById(R.id.starting_point_schedule);
         if (run == null){
             runName.setVisibility(View.INVISIBLE);
             startingPoint.setVisibility(View.INVISIBLE);
@@ -79,9 +83,18 @@ public class ScheduledWalkFragment extends Fragment implements RunProposalListen
             getActivity().findViewById(R.id.date_view).setVisibility(View.VISIBLE);
 
         }
-
         runName.setText(run.getName());
-        startingPoint.setText(run.getStartingPoint());
+        SpannableString start = new SpannableString(run.getStartingPoint());
+        start.setSpan(new UnderlineSpan(),0,start.length(),0);
+        startingPoint.setText(start);
+        startingPoint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map map = new Map(run.getStartingPoint());
+                map.openMaps();
+                startActivity(map.intent);
+            }
+        });
     }
 
     private void setDateAndTime(RunProposal runProposal){
