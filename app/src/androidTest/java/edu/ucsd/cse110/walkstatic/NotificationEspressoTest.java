@@ -1,16 +1,10 @@
 package edu.ucsd.cse110.walkstatic;
 
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
-
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,12 +31,16 @@ public class NotificationEspressoTest {
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
 
+    FirebaseMocks.MockStorageWatcher mockStorageWatcher;
+    FirebaseMocks.MockTeammateRequestStore mockTeammateRequestStore;
 
-    @Test
-    public void testNotificationVisible() {
+    TeammateRequest request;
+
+    @Before
+    public void setupStorage() {
         EspressoHelpers.mockStorage();
-        final FirebaseMocks.MockStorageWatcher mockStorageWatcher = new FirebaseMocks.MockStorageWatcher();
-        final FirebaseMocks.MockTeammateRequestStore mockTeammateRequestStore = new FirebaseMocks.MockTeammateRequestStore();
+        mockStorageWatcher = new FirebaseMocks.MockStorageWatcher();
+        mockTeammateRequestStore = new FirebaseMocks.MockTeammateRequestStore();
 
         DefaultStorage.setDefaultStorageWatcher(user -> mockStorageWatcher);
         DefaultStorage.setDefaultTeammateRequestStore(() -> mockTeammateRequestStore);
@@ -58,8 +56,12 @@ public class NotificationEspressoTest {
 
         EspressoHelpers.setUser(target);
 
-        TeammateRequest request = new TeammateRequest(requester, target);
+        request = new TeammateRequest(requester, target);
+    }
 
+
+    @Test
+    public void testRejectNotification() {
         EspressoHelpers.setStartupParams(mActivityTestRule, "65");
 
         ViewInteraction invisibleNotif = onView(allOf(withId(R.id.notification)));
@@ -76,25 +78,40 @@ public class NotificationEspressoTest {
         visibleNotif.check(matches(isDisplayed()));
 
         visibleNotif.perform(click());
+
+        ViewInteraction rejectButton = onView(withId(R.id.rejectButton));
+        rejectButton.check(matches(isDisplayed()));
+
+        rejectButton.perform(click());
+
+        // check we're on the main activity
+        ViewInteraction mainActivityTitle = onView(withId(R.id.run_name_display));
+        mainActivityTitle.check(matches(isDisplayed()));
     }
 
-    private static Matcher<View> childAtPosition(
-            final Matcher<View> parentMatcher, final int position) {
 
-        return new TypeSafeMatcher<View>() {
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("Child at position " + position + " in parent ");
-                parentMatcher.describeTo(description);
-            }
+    @Test
+    public void testAcceptNotification() {
+        EspressoHelpers.setStartupParams(mActivityTestRule, "65");
 
-            @Override
-            public boolean matchesSafely(View view) {
-                ViewParent parent = view.getParent();
-                return parent instanceof ViewGroup && parentMatcher.matches(parent)
-                        && view.equals(((ViewGroup) parent).getChildAt(position));
-            }
-        };
+        ViewInteraction invisibleNotif = onView(allOf(withId(R.id.notification)));
+        invisibleNotif.check(doesNotExist());
+
+        try {
+            mActivityTestRule.runOnUiThread(() -> {
+                mockStorageWatcher.teammateRequestListener.onNewTeammateRequest(request);
+            });
+        }
+        catch (Throwable t) { assert(false); }
+
+        ViewInteraction visibleNotif = onView(allOf(withId(R.id.notification)));
+        visibleNotif.check(matches(isDisplayed()));
+
+        visibleNotif.perform(click());
+
+        ViewInteraction acceptButton = onView(withId(R.id.acceptButton));
+        acceptButton.check(matches(isDisplayed()));
+
+        acceptButton.perform(click());
     }
-
 }
