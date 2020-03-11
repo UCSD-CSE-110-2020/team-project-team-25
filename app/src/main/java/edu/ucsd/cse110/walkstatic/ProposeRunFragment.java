@@ -21,11 +21,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Objects;
 
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunProposal;
+import edu.ucsd.cse110.walkstatic.time.TimeMachine;
 
 public class ProposeRunFragment extends Fragment {
     private RunProposal runproposal;
@@ -34,7 +36,6 @@ public class ProposeRunFragment extends Fragment {
     boolean validTime = false;
     boolean validDate = false;
     boolean isToday = false;
-    boolean proposed = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,7 +60,6 @@ public class ProposeRunFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.proposeCheckButton && (validTime && validDate)) {
-            proposed = true;
             String preferencesName = this.getResources().getString(R.string.proposed_time_run);
             Activity activity = this.requireActivity();
             SharedPreferences sharedPreferences = activity.getSharedPreferences(
@@ -94,13 +94,16 @@ public class ProposeRunFragment extends Fragment {
         timeEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Calendar cldr = Calendar.getInstance();
-                int hour = cldr.get(Calendar.HOUR_OF_DAY);
-                int minutes = cldr.get(Calendar.MINUTE);
+                //final Calendar cldr = Calendar.getInstance();
+                //int hour = cldr.get(Calendar.HOUR_OF_DAY);
+                //int minutes = cldr.get(Calendar.MINUTE);
+                LocalDateTime currentTime = TimeMachine.now();
+                int hour = currentTime.getHour();
+                int minutes = currentTime.getMinute();
 
-                int day = cldr.get(Calendar.DAY_OF_MONTH);
+/*                int day = cldr.get(Calendar.DAY_OF_MONTH);
                 int month = cldr.get(Calendar.MONTH);
-                int year = cldr.get(Calendar.YEAR);
+                int year = cldr.get(Calendar.YEAR);*/
                 //sHour >= hour && sMinute >= minutes
                 //&& (sHour < hour && sMinute < minutes)
                 // time picker dialog
@@ -108,18 +111,19 @@ public class ProposeRunFragment extends Fragment {
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker tp, int sHour, int sMinute) {
-                            if(isToday == true && ((sHour == hour && sMinute < minutes) || sHour < hour)  ){
+                                if(isToday == true && ((sHour == hour && sMinute < minutes) || sHour < hour)  ){
                                     timeEditText.setText("Please select a valid time");
                                     validTime = false;
                                 }
-                            else {
-                                String time = sHour + ":" + sMinute;
-                                if(sMinute < 10){
-                                    time = sHour + ":0" + sMinute;
-                                }
-                                timeEditText.setText(time);
-                                runproposal.setTime(time);
-                                validTime = true;
+                                else {
+                                    String time = sHour + ":" + sMinute;
+                                    if(sMinute < 10){
+                                        time = sHour + ":0" + sMinute;
+                                    }
+                                    timeEditText.setText(time);
+                                    runproposal.setTime(time);
+                                    validTime = true;
+                                    //timeEditText.setText("hour: "+ hour+ "  minutes: " + minutes);
                                 }
                             }
                         }, hour, minutes, true);
@@ -132,9 +136,15 @@ public class ProposeRunFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 final Calendar cldr = Calendar.getInstance();
-                int day = cldr.get(Calendar.DAY_OF_MONTH);
-                int month = cldr.get(Calendar.MONTH);
-                int year = cldr.get(Calendar.YEAR);
+                //int day = cldr.get(Calendar.DAY_OF_MONTH);
+                //int month = cldr.get(Calendar.MONTH);
+                //int year = cldr.get(Calendar.YEAR);
+
+                LocalDateTime currentTime = TimeMachine.now();
+                int day = currentTime.getDayOfMonth();
+                int month = currentTime.getMonthValue()-1;
+                int year = currentTime.getYear();
+
                 // date picker dialog
                 datePicker = new DatePickerDialog(getActivity(),
                         new DatePickerDialog.OnDateSetListener() {
@@ -145,7 +155,7 @@ public class ProposeRunFragment extends Fragment {
 
                                 runproposal.setDate(date);
                                 validDate = true;
-                                if(years == year && monthOfYear == month && dayOfMonth == day){
+                                if(years <= year && monthOfYear <= month && dayOfMonth <= day){
                                     isToday = true;
                                 }
                                 else{
@@ -155,6 +165,7 @@ public class ProposeRunFragment extends Fragment {
                             }
                         }, year, month, day);
                 datePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+
                 datePicker.show();
             }
         });
