@@ -24,6 +24,8 @@ public class DefaultStorage {
     private static GenericBlueprint<TeammateRequestStore> defaultTeammateRequestStore;
     private static GenericBlueprint<RunStore> defaultRunStore;
     private static GenericBlueprint<ResponseWatcher> defaultResponseWatcher;
+    private static GenericBlueprint<ProposedStore> defaultProposedStore;
+
     private static FirebaseInitialization defaultFirebaseInitialization;
 
     public static StorageWatcher getDefaultStorageWatcher(Teammate user){
@@ -50,6 +52,14 @@ public class DefaultStorage {
         return defaultRunStore.get();
     }
 
+    public static ProposedStore getDefaultProposedStore(){
+        if(defaultProposedStore == null){
+            assertNotTestMode();
+            return new FirebaseProposedStore();
+        }
+        return defaultProposedStore.get();
+    }
+
     public static ResponseWatcher getDefaultResponseWatcher(){
         if(defaultResponseWatcher == null){
             assertNotTestMode();
@@ -58,9 +68,22 @@ public class DefaultStorage {
         return defaultResponseWatcher.get();
     }
 
+   /* public static ProposedWatcher getDefaultProposedWatcher(){
+        if(defaultResponseWatcher == null){
+            assertNotTestMode();
+            return new FirebaseProposedWatcher();
+        }
+        return FirebaseProposedWatcher.get();
+    }*/
+
     public static void setDefaultStorageWatcher(StorageWatcherBlueprint defaultStorageWatcher){
         DefaultStorage.defaultStorageWatcher = defaultStorageWatcher;
     }
+
+    public static void setDefaultProposedStore(GenericBlueprint<ProposedStore> defaultProposedStore){
+        DefaultStorage.defaultProposedStore = defaultProposedStore;
+    }
+
 
     public static void setDefaultTeammateRequestStore(GenericBlueprint<TeammateRequestStore> defaultTeammateRequestStore){
         DefaultStorage.defaultTeammateRequestStore = defaultTeammateRequestStore;

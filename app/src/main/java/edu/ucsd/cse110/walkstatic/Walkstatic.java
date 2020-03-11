@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import edu.ucsd.cse110.walkstatic.runs.RunProposal;
 import edu.ucsd.cse110.walkstatic.runs.Runs;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
+import edu.ucsd.cse110.walkstatic.store.ProposedStore;
 import edu.ucsd.cse110.walkstatic.store.ResponseWatcher;
 import edu.ucsd.cse110.walkstatic.store.RunStore;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
@@ -29,6 +30,7 @@ public class Walkstatic {
         this.readFromContext(context);
         TeammateRequestStore defaultStore = DefaultStorage.getDefaultTeammateRequestStore();
         this.storageWatcher = DefaultStorage.getDefaultStorageWatcher(this.user);
+        ProposedStore proposedStore = DefaultStorage.getDefaultProposedStore();
         RunStore defaultRunStore = DefaultStorage.getDefaultRunStore();
         this.responseWatcher = DefaultStorage.getDefaultResponseWatcher();
         this.teammateRequests = new TeammateRequests(defaultStore, this.storageWatcher);
