@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
@@ -36,6 +37,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.store.FirebaseConstants;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -57,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
             promptHeight(MainActivity.this);
         }
         this.addViewModelListener();
+        this.subscribeToNotificationsTopic();
     }
 
     private void createFakeRuns(){
@@ -134,4 +137,18 @@ public class MainActivity extends AppCompatActivity {
         RunViewModel runViewModel = new ViewModelProvider(this).get(RunViewModel.class);
         runViewModel.sharedRun.observe(this, this.app.getRuns()::addRun);
     }
+
+    private void subscribeToNotificationsTopic() {
+        FirebaseMessaging.getInstance().subscribeToTopic("global")
+                .addOnCompleteListener(task -> {
+                            String msg = "Subscribed to notifications";
+                            if (!task.isSuccessful()) {
+                                msg = "Subscribe to notifications failed";
+                            }
+                            Log.d("Main Activity", msg);
+                            Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                        }
+                );
+    }
+
 }

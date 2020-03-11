@@ -348,6 +348,9 @@ public class RunFragment extends Fragment implements TeammateRequestListener {
 
     @Override
     public void onNewTeammateRequest(TeammateRequest request) {
+        if(this.app == null){
+            return;
+        }
         if (request.getTarget().equals(app.getUser())){
             setNotification(true);
             lastRequest = request;
@@ -356,6 +359,9 @@ public class RunFragment extends Fragment implements TeammateRequestListener {
 
     @Override
     public void onTeammateRequestDeleted(TeammateRequest request) {
+        if(this.app == null){
+            return;
+        }
         if(request.getTarget().equals(app.getUser())){
             setNotification(false);
             lastRequest = null;
