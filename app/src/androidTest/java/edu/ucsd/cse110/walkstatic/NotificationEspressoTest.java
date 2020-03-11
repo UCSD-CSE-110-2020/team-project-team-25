@@ -22,7 +22,6 @@ import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static org.hamcrest.Matchers.allOf;
 
 @LargeTest
 @RunWith(JUnit4.class)
@@ -31,10 +30,10 @@ public class NotificationEspressoTest {
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
 
-    FirebaseMocks.MockStorageWatcher mockStorageWatcher;
-    FirebaseMocks.MockTeammateRequestStore mockTeammateRequestStore;
+    private FirebaseMocks.MockStorageWatcher mockStorageWatcher;
+    private FirebaseMocks.MockTeammateRequestStore mockTeammateRequestStore;
 
-    TeammateRequest request;
+    private TeammateRequest request;
 
     @Before
     public void setupStorage() {
@@ -64,7 +63,7 @@ public class NotificationEspressoTest {
     public void testRejectNotification() {
         EspressoHelpers.setStartupParams(mActivityTestRule, "65");
 
-        ViewInteraction invisibleNotif = onView(allOf(withId(R.id.notification)));
+        ViewInteraction invisibleNotif = onView(withId(R.id.notification));
         invisibleNotif.check(doesNotExist());
 
         try {
@@ -74,7 +73,7 @@ public class NotificationEspressoTest {
         }
         catch (Throwable t) { assert(false); }
 
-        ViewInteraction visibleNotif = onView(allOf(withId(R.id.notification)));
+        ViewInteraction visibleNotif = onView(withId(R.id.notification));
         visibleNotif.check(matches(isDisplayed()));
 
         visibleNotif.perform(click());
@@ -94,7 +93,7 @@ public class NotificationEspressoTest {
     public void testAcceptNotification() {
         EspressoHelpers.setStartupParams(mActivityTestRule, "65");
 
-        ViewInteraction invisibleNotif = onView(allOf(withId(R.id.notification)));
+        ViewInteraction invisibleNotif = onView(withId(R.id.notification));
         invisibleNotif.check(doesNotExist());
 
         try {
@@ -104,7 +103,7 @@ public class NotificationEspressoTest {
         }
         catch (Throwable t) { assert(false); }
 
-        ViewInteraction visibleNotif = onView(allOf(withId(R.id.notification)));
+        ViewInteraction visibleNotif = onView(withId(R.id.notification));
         visibleNotif.check(matches(isDisplayed()));
 
         visibleNotif.perform(click());

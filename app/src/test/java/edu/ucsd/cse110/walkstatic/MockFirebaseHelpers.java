@@ -7,6 +7,7 @@ import edu.ucsd.cse110.walkstatic.store.ResponseWatcher;
 import edu.ucsd.cse110.walkstatic.store.RunStore;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
 import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
+import edu.ucsd.cse110.walkstatic.store.TeamsStore;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,8 +21,13 @@ public class MockFirebaseHelpers {
         activeCount = 0;
         DefaultStorage.setDefaultRunStore(()-> mock(RunStore.class));
         DefaultStorage.setDefaultTeammateRequestStore(() -> mock(TeammateRequestStore.class));
+        DefaultStorage.setDefaultTeamsStore(() -> mock(TeamsStore.class));
+
+        DefaultStorage.setDefaultResponseWatcher(() -> mock(ResponseWatcher.class));
+
         StorageWatcher storageWatcher = mock(StorageWatcher.class);
         DefaultStorage.setDefaultStorageWatcher((ignoredUser) -> {return storageWatcher;});
+
         doAnswer((args) -> {
             activeCount ++;
             RunUpdateListener listener = (RunUpdateListener) args.getArguments()[0];
@@ -30,7 +36,6 @@ public class MockFirebaseHelpers {
             }
             return null;
         }).when(storageWatcher).addRunUpdateListener(any());
-        DefaultStorage.setDefaultResponseWatcher(() -> mock(ResponseWatcher.class));
         doAnswer((args) -> {
             activeCount = 0;
             return null;

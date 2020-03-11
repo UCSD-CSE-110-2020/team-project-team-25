@@ -1,23 +1,19 @@
 package edu.ucsd.cse110.walkstatic.store;
 
-import android.content.Context;
 import android.util.Log;
 
-import edu.ucsd.cse110.walkstatic.runs.Run;
-import edu.ucsd.cse110.walkstatic.teammate.Teammate;
-import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
-
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class FirebaseStore implements TeammateRequestStore {
+import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
+
+public class FirebaseTeammateRequestStore implements TeammateRequestStore {
     private static final String TAG = "FirebaseStore";
 
     private DocumentReference teammateRequests;
 
-    public FirebaseStore(){
+    public FirebaseTeammateRequestStore(){
         this.teammateRequests = FirebaseFirestore.getInstance()
                 .collection(FirebaseConstants.TEAM_COLLECTION)
                 .document(FirebaseConstants.REQUEST_DOCUMENT);

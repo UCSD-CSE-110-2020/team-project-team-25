@@ -4,18 +4,21 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.rule.ActivityTestRule;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import androidx.test.core.app.ApplicationProvider;
-import androidx.test.rule.ActivityTestRule;
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunUpdateListener;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
 import edu.ucsd.cse110.walkstatic.store.ResponseWatcher;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
 import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
+import edu.ucsd.cse110.walkstatic.store.TeamsStore;
+import edu.ucsd.cse110.walkstatic.teammate.Team;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestListener;
@@ -87,18 +90,23 @@ public class EspressoHelpers{
     public static void mockStorage(Run[] runs, TeammateResponse[] responses){
         DefaultStorage.setDefaultFirebaseInitialization((context) -> {});
         ArrayList<Run> actualRuns = new ArrayList<>(Arrays.asList(runs));
+
         DefaultStorage.setDefaultRunStore(() -> actualRuns::add);
         DefaultStorage.setDefaultTeammateRequestStore(() -> new TeammateRequestStore() {
             @Override
-            public void addRequest(TeammateRequest request) {
-
-            }
+            public void addRequest(TeammateRequest request) { }
 
             @Override
-            public void delete(TeammateRequest request) {
+            public void delete(TeammateRequest request) { }
+        });
+
+        DefaultStorage.setDefaultTeamsStore(() -> new TeamsStore() {
+            @Override
+            public void addTeam(Team team) {
 
             }
         });
+
         DefaultStorage.setDefaultStorageWatcher((ignoredUser) -> new FakeStorageWatcher(actualRuns));
         DefaultStorage.setDefaultResponseWatcher(() -> new ResponseWatcher(){
             @Override
