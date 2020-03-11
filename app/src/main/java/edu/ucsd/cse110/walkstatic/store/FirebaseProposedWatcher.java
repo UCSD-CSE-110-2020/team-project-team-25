@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.ucsd.cse110.walkstatic.runs.RunProposal;
+import edu.ucsd.cse110.walkstatic.runs.RunProposalChangeListener;
 import edu.ucsd.cse110.walkstatic.runs.RunProposalListener;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponse;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponseChangeListener;
@@ -21,7 +22,7 @@ import edu.ucsd.cse110.walkstatic.teammate.TeammateResponseChangeListener;
 public class FirebaseProposedWatcher implements ProposedWatcher {
     private static String TAG = "FireBaseProposedWatcher";
 
-    private ArrayList<RunProposalListener> runProposalListenerArrayList;
+    private ArrayList<RunProposalChangeListener> runProposalListenerArrayList;
     private ListenerRegistration collectionRegistration;
 
     public FirebaseProposedWatcher(){
@@ -34,7 +35,7 @@ public class FirebaseProposedWatcher implements ProposedWatcher {
     }
 
     @Override
-    public void addProposalListener(RunProposalListener listener) {
+    public void addProposalListener(RunProposalChangeListener listener) {
         this.runProposalListenerArrayList.add(listener);
     }
 
@@ -60,7 +61,7 @@ public class FirebaseProposedWatcher implements ProposedWatcher {
             final boolean removed = documentChange.getType() == DocumentChange.Type.REMOVED;
             this.runProposalListenerArrayList.forEach(listener ->{
                 if(!removed){
-                    listener.onResponsesChanged(responseList);
+                    listener.onChangedProposal(responseList);
                 }
             });
         }

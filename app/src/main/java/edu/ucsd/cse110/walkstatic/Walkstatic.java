@@ -78,11 +78,11 @@ public class Walkstatic {
         }
     }
 
-    private void registerProposal(ProposedWatcher proposedWatcher){
+/*    private void registerProposal(ProposedWatcher proposedWatcher){
         if(this.isWalkScheduled()){
             proposedWatcher.addProposalListener(this.getScheduledRun());
         }
-    }
+    }*/
 
     public TeammateRequests getTeammateRequests(){
         return this.teammateRequests;
