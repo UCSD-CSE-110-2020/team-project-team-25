@@ -16,7 +16,7 @@ import java.util.List;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponse;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponseChangeListener;
 
-public class FirebaseResponseWatcher implements  ResponseWatcher {
+public class FirebaseResponseWatcher implements ResponseWatcher {
     private static String TAG = "FirebaseResponseWatcher";
 
     private ArrayList<TeammateResponseChangeListener> teammateResponseChangeListenerArrayList;
@@ -46,14 +46,17 @@ public class FirebaseResponseWatcher implements  ResponseWatcher {
         if(exception != null){
             Log.e(TAG, exception.getLocalizedMessage());
         }
+
         if(snapshot == null){
             return;
         }
+
         List<DocumentChange> documentChanges = snapshot.getDocumentChanges();
         for (DocumentChange documentChange : documentChanges) {
             QueryDocumentSnapshot queryDocumentSnapshot = documentChange.getDocument();
             TeammateResponse response = queryDocumentSnapshot.toObject(TeammateResponse.class);
             final boolean removed = documentChange.getType() == DocumentChange.Type.REMOVED;
+
             this.teammateResponseChangeListenerArrayList.forEach(listener ->{
                 if(!removed){
                     listener.onChangedResponse(response);

@@ -31,6 +31,7 @@ public class Walkstatic {
         this.storageWatcher = DefaultStorage.getDefaultStorageWatcher(this.user);
         RunStore defaultRunStore = DefaultStorage.getDefaultRunStore();
         this.responseWatcher = DefaultStorage.getDefaultResponseWatcher();
+
         this.teammateRequests = new TeammateRequests(defaultStore, this.storageWatcher);
         this.initRuns(defaultRunStore, this.storageWatcher);
         this.registerProposedWalk(this.responseWatcher);
@@ -73,27 +74,17 @@ public class Walkstatic {
         }
     }
 
-    public TeammateRequests getTeammateRequests(){
-        return this.teammateRequests;
-    }
+    public TeammateRequests getTeammateRequests(){ return this.teammateRequests; }
 
-    public Teammate getUser(){
-        return this.user;
-    }
+    public Teammate getUser(){ return this.user; }
 
-    public Runs getRuns(){
-        return this.runs;
-    }
+    public Runs getRuns(){ return this.runs; }
 
     public Team getTeam() { return this.team; }
 
-    public boolean isWalkScheduled(){
-        return this.runProposal != null;
-    }
+    public boolean isWalkScheduled(){ return this.runProposal != null; }
 
-    public RunProposal getScheduledRun() {
-        return this.runProposal;
-    }
+    public RunProposal getScheduledRun() { return this.runProposal; }
 
     public void destroy(){
         this.storageWatcher.deleteAllListeners();

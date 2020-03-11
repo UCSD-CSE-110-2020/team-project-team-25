@@ -24,6 +24,10 @@ public class FirebaseTeamsStore implements TeamsStore {
     public void addTeam(Team team) {
         assert(team != null);
 
+        team.addTeamListener((Teammate teammate) -> {
+            // when a new teammate is added, update the backing firebase
+        });
+
         CollectionReference teamRef = teams.collection(team.getDocumentId());
 
         for (Teammate teammate : team.getTeammates()) {
