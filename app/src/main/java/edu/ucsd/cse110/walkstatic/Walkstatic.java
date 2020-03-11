@@ -7,6 +7,7 @@ import edu.ucsd.cse110.walkstatic.runs.RunProposal;
 import edu.ucsd.cse110.walkstatic.runs.Runs;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
 import edu.ucsd.cse110.walkstatic.store.ProposedStore;
+import edu.ucsd.cse110.walkstatic.store.ProposedWatcher;
 import edu.ucsd.cse110.walkstatic.store.ResponseWatcher;
 import edu.ucsd.cse110.walkstatic.store.RunStore;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
@@ -24,6 +25,7 @@ public class Walkstatic {
 
     private StorageWatcher storageWatcher;
     private ResponseWatcher responseWatcher;
+    private ProposedWatcher proposedWatcher;
 
     public Walkstatic(Context context){
         DefaultStorage.initialize(context);
@@ -31,6 +33,7 @@ public class Walkstatic {
         TeammateRequestStore defaultStore = DefaultStorage.getDefaultTeammateRequestStore();
         this.storageWatcher = DefaultStorage.getDefaultStorageWatcher(this.user);
         ProposedStore proposedStore = DefaultStorage.getDefaultProposedStore();
+        this.proposedWatcher = DefaultStorage.getDefaultProposedWatcher();
         RunStore defaultRunStore = DefaultStorage.getDefaultRunStore();
         this.responseWatcher = DefaultStorage.getDefaultResponseWatcher();
         this.teammateRequests = new TeammateRequests(defaultStore, this.storageWatcher);

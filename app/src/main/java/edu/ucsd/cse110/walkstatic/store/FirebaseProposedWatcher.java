@@ -55,7 +55,7 @@ public class FirebaseProposedWatcher implements ProposedWatcher {
         List<DocumentChange> documentChanges = snapshot.getDocumentChanges();
         for (DocumentChange documentChange : documentChanges) {
             QueryDocumentSnapshot queryDocumentSnapshot = documentChange.getDocument();
-            List<TeammateResponse> responseList = queryDocumentSnapshot.toObject(RunProposal.class);
+            List<TeammateResponse> responseList = (List<TeammateResponse>) queryDocumentSnapshot.toObject(RunProposal.class);
 
             final boolean removed = documentChange.getType() == DocumentChange.Type.REMOVED;
             this.runProposalListenerArrayList.forEach(listener ->{
