@@ -17,6 +17,7 @@ public class MockFirebaseHelpers {
     private static int activeCount;
 
     public static void mockStorage(Run... runs){
+        FirebaseMocks.setBasicMocks();
         activeCount = 0;
         DefaultStorage.setDefaultRunStore(()-> mock(RunStore.class));
         DefaultStorage.setDefaultTeammateRequestStore(() -> mock(TeammateRequestStore.class));

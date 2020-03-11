@@ -113,6 +113,7 @@ public class EspressoHelpers{
 
             }
         });
+        DefaultStorage.setDefaultNotificationTopicSubscriber(() -> (topic) -> {});
     }
 
     public static void setUser(Teammate user){

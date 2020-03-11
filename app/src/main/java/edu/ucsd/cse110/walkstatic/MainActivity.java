@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
@@ -36,6 +37,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.store.FirebaseConstants;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -134,4 +136,5 @@ public class MainActivity extends AppCompatActivity {
         RunViewModel runViewModel = new ViewModelProvider(this).get(RunViewModel.class);
         runViewModel.sharedRun.observe(this, this.app.getRuns()::addRun);
     }
+
 }
