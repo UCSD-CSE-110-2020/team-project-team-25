@@ -85,4 +85,9 @@ public class Teammate implements Serializable {
         float lightness = random.nextFloat() * 0.5F + 0.25F;
         return new float[]{hue, saturation, lightness};
     }
+
+    @Exclude
+    public boolean isValid(){
+        return !this.email.isEmpty() && !this.name.isEmpty();
+    }
 }
