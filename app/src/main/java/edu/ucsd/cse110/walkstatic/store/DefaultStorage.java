@@ -24,6 +24,7 @@ public class DefaultStorage {
     private static GenericBlueprint<TeammateRequestStore> defaultTeammateRequestStore;
     private static GenericBlueprint<RunStore> defaultRunStore;
     private static GenericBlueprint<ResponseWatcher> defaultResponseWatcher;
+    private static GenericBlueprint<NotificationTopicSubscriber> defaultNotificationTopicSubscriber;
     private static FirebaseInitialization defaultFirebaseInitialization;
 
     public static StorageWatcher getDefaultStorageWatcher(Teammate user){
@@ -58,6 +59,14 @@ public class DefaultStorage {
         return defaultResponseWatcher.get();
     }
 
+    public static NotificationTopicSubscriber getDefaultNotificationTopicSubscriber(){
+        if(defaultNotificationTopicSubscriber == null){
+            assertNotTestMode();
+            return new FirebaseNotificationTopicSubscriber();
+        }
+        return defaultNotificationTopicSubscriber.get();
+    }
+
     public static void setDefaultStorageWatcher(StorageWatcherBlueprint defaultStorageWatcher){
         DefaultStorage.defaultStorageWatcher = defaultStorageWatcher;
     }
@@ -76,6 +85,10 @@ public class DefaultStorage {
 
     public static void setDefaultFirebaseInitialization(FirebaseInitialization firebaseInitialization){
         DefaultStorage.defaultFirebaseInitialization = firebaseInitialization;
+    }
+
+    public static void setDefaultNotificationTopicSubscriber(GenericBlueprint<NotificationTopicSubscriber> defaultNotificationTopicSubscriber){
+        DefaultStorage.defaultNotificationTopicSubscriber = defaultNotificationTopicSubscriber;
     }
 
     public static void initialize(Context context){

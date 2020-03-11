@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
             promptHeight(MainActivity.this);
         }
         this.addViewModelListener();
-        this.subscribeToNotificationsTopic();
     }
 
     private void createFakeRuns(){
@@ -136,19 +135,6 @@ public class MainActivity extends AppCompatActivity {
     private void addViewModelListener(){
         RunViewModel runViewModel = new ViewModelProvider(this).get(RunViewModel.class);
         runViewModel.sharedRun.observe(this, this.app.getRuns()::addRun);
-    }
-
-    private void subscribeToNotificationsTopic() {
-        FirebaseMessaging.getInstance().subscribeToTopic("global")
-                .addOnCompleteListener(task -> {
-                            String msg = "Subscribed to notifications";
-                            if (!task.isSuccessful()) {
-                                msg = "Subscribe to notifications failed";
-                            }
-                            Log.d("Main Activity", msg);
-                            Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-                        }
-                );
     }
 
 }

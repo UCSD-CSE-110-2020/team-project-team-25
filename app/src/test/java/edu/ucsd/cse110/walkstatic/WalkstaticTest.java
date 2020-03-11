@@ -11,6 +11,7 @@ import android.content.res.Resources;
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunProposal;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
+import edu.ucsd.cse110.walkstatic.store.NotificationTopicSubscriber;
 import edu.ucsd.cse110.walkstatic.store.ResponseWatcher;
 import edu.ucsd.cse110.walkstatic.store.RunStore;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
@@ -215,5 +216,61 @@ public class WalkstaticTest {
         Walkstatic walkstatic = new Walkstatic(sharedPreferencesContext);
         walkstatic.destroy();
         verify(watcher).deleteAllListeners();
+    }
+
+    @Test
+    public void walkstaticConstructionRegistersTopic(){
+        Context sharedPreferencesContext = mock(Context.class);
+
+        Resources mockResources = mock(Resources.class);
+        when(mockResources.getString(R.string.proposed_time_run)).thenReturn("proposedRun");
+        when(mockResources.getString(R.string.user_string)).thenReturn("user");
+        when(sharedPreferencesContext.getResources()).thenReturn(mockResources);
+
+        SharedPreferences userSharedPreferences = mock(SharedPreferences.class);
+        when(sharedPreferencesContext.getSharedPreferences("user", Context.MODE_PRIVATE)).thenReturn(userSharedPreferences);
+
+        Teammate user = new Teammate("Jay");
+        user.setName("Name");
+        when(userSharedPreferences.getString("user", "")).thenReturn(user.toString());
+
+        SharedPreferences proposedRunPreferences = mock(SharedPreferences.class);
+        when(sharedPreferencesContext.getSharedPreferences("proposedRun", Context.MODE_PRIVATE)).thenReturn(proposedRunPreferences);
+
+        when(proposedRunPreferences.getString("proposedRun", null)).thenReturn(null);
+
+        NotificationTopicSubscriber subscriber = mock(NotificationTopicSubscriber.class);
+        DefaultStorage.setDefaultNotificationTopicSubscriber(() -> subscriber);
+
+        Walkstatic walkstatic = new Walkstatic(sharedPreferencesContext);
+        verify(subscriber).subscribeToNotificationTopic("Jay");
+    }
+
+    @Test
+    public void defaultTagRemovesAtSmybol(){
+        Context sharedPreferencesContext = mock(Context.class);
+
+        Resources mockResources = mock(Resources.class);
+        when(mockResources.getString(R.string.proposed_time_run)).thenReturn("proposedRun");
+        when(mockResources.getString(R.string.user_string)).thenReturn("user");
+        when(sharedPreferencesContext.getResources()).thenReturn(mockResources);
+
+        SharedPreferences userSharedPreferences = mock(SharedPreferences.class);
+        when(sharedPreferencesContext.getSharedPreferences("user", Context.MODE_PRIVATE)).thenReturn(userSharedPreferences);
+
+        Teammate user = new Teammate("Jay@gmail.com");
+        user.setName("Name");
+        when(userSharedPreferences.getString("user", "")).thenReturn(user.toString());
+
+        SharedPreferences proposedRunPreferences = mock(SharedPreferences.class);
+        when(sharedPreferencesContext.getSharedPreferences("proposedRun", Context.MODE_PRIVATE)).thenReturn(proposedRunPreferences);
+
+        when(proposedRunPreferences.getString("proposedRun", null)).thenReturn(null);
+
+        NotificationTopicSubscriber subscriber = mock(NotificationTopicSubscriber.class);
+        DefaultStorage.setDefaultNotificationTopicSubscriber(() -> subscriber);
+
+        Walkstatic walkstatic = new Walkstatic(sharedPreferencesContext);
+        verify(subscriber).subscribeToNotificationTopic("Jaygmail.com");
     }
 }

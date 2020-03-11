@@ -10,12 +10,16 @@ exports.sendChatNotifications = functions.firestore
      const document = snap.exists ? snap.data() : null;
 
      if (document) {
+       // don't spam the requester with their own notifications
+       if(document.target.email !== context.params.username){
+         return 0;
+       }
        var message = {
          notification: {
-           title: document.requester.email + ' sent ' + document.target.email + ' a request.',
-           body: "Bottom Text"
+           title: document.requester.name + ' sent you a Teammate request.',
+           body: "Tap this to open Walkstatic and send them a reply."
          },
-         topic: "global"
+         topic: context.params.username.replace("@", "")
        };
 
        return admin.messaging().send(message)

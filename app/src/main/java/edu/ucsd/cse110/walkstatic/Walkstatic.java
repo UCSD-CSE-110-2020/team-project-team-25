@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import edu.ucsd.cse110.walkstatic.runs.RunProposal;
 import edu.ucsd.cse110.walkstatic.runs.Runs;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
+import edu.ucsd.cse110.walkstatic.store.NotificationTopicSubscriber;
 import edu.ucsd.cse110.walkstatic.store.ResponseWatcher;
 import edu.ucsd.cse110.walkstatic.store.RunStore;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
@@ -34,6 +35,8 @@ public class Walkstatic {
         this.teammateRequests = new TeammateRequests(defaultStore, this.storageWatcher);
         this.initRuns(defaultRunStore, this.storageWatcher);
         this.registerProposedWalk(this.responseWatcher);
+
+        this.registerTopics();
     }
 
     private void initRuns(RunStore store, StorageWatcher storageWatcher){
@@ -98,5 +101,12 @@ public class Walkstatic {
     public void destroy(){
         this.storageWatcher.deleteAllListeners();
         this.responseWatcher.deleteAllListeners();
+    }
+
+    private void registerTopics(){
+        String topic = this.user.getEmail();
+        String sanitizedTopic = topic.replace("@", "");
+        NotificationTopicSubscriber topicSubscriber = DefaultStorage.getDefaultNotificationTopicSubscriber();
+        topicSubscriber.subscribeToNotificationTopic(sanitizedTopic);
     }
 }
