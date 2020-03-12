@@ -101,8 +101,8 @@ public class RunProposalTest {
         Run run = new Run();
         RunProposal runProposal = new RunProposal(run);
 
-        RunProposalListener runProposalListener = mock(RunProposalListener.class);
-        runProposal.addListener(runProposalListener);
+        RunProposalResponseListener runProposalResponseListener = mock(RunProposalResponseListener.class);
+        runProposal.addListener(runProposalResponseListener);
 
         RunProposal runProposal2 = new RunProposal(run);
         assertThat(runProposal).isEqualTo(runProposal2);
@@ -131,13 +131,13 @@ public class RunProposalTest {
         templetonsResponse.setResponse(TeammateResponse.Response.BAD_TIME);
         RunProposal runProposal = new RunProposal(run);
 
-        RunProposalListener runProposalListener = mock(RunProposalListener.class);
+        RunProposalResponseListener runProposalResponseListener = mock(RunProposalResponseListener.class);
         ArgumentCaptor<List<TeammateResponse>> argumentCaptor = ArgumentCaptor.forClass(List.class);
-        runProposal.addListener(runProposalListener);
+        runProposal.addListener(runProposalResponseListener);
 
         runProposal.onChangedResponse(templetonsResponse);
 
-        verify(runProposalListener).onResponsesChanged(argumentCaptor.capture());
+        verify(runProposalResponseListener).onResponsesChanged(argumentCaptor.capture());
         assertThat(argumentCaptor.getValue()).isEqualTo(runProposal.getAttendees());
     }
 }

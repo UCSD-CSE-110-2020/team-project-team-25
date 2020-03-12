@@ -1,42 +1,26 @@
 package edu.ucsd.cse110.walkstatic;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
-import java.text.DecimalFormat;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
-import java.util.Objects;
 
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunProposal;
-import edu.ucsd.cse110.walkstatic.runs.RunProposalListener;
+import edu.ucsd.cse110.walkstatic.runs.RunProposalResponseListener;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponse;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponseArrayAdapter;
-import edu.ucsd.cse110.walkstatic.time.TimeHelp;
 
-public class ScheduledWalkFragment extends Fragment implements RunProposalListener {
+public class ScheduledWalkFragment extends Fragment implements RunProposalResponseListener {
 
     private TeammateResponseArrayAdapter teammateResponseArrayAdapter;
     private List<TeammateResponse> responses;

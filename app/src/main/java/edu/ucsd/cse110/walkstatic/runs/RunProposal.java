@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,12 +29,12 @@ public class RunProposal implements TeammateResponseChangeListener, Serializable
     private HashMap<Teammate, TeammateResponse> attendees;
 
     @Expose(serialize = false)
-    private ArrayList<RunProposalListener> runProposalListeners;
+    private ArrayList<RunProposalResponseListener> runProposalResponseListeners;
 
     public RunProposal(){
         this.run = new Run();
         this.attendees = new HashMap<>();
-        this.runProposalListeners = new ArrayList<>();
+        this.runProposalResponseListeners = new ArrayList<>();
     }
 
     public RunProposal(Run run){
@@ -78,15 +77,15 @@ public class RunProposal implements TeammateResponseChangeListener, Serializable
         return attendeesList;
     }
 
-    public void addListener(RunProposalListener listener){
-        this.runProposalListeners.add(listener);
+    public void addListener(RunProposalResponseListener listener){
+        this.runProposalResponseListeners.add(listener);
     }
 
     @Override
     public void onChangedResponse(TeammateResponse changedResponse) {
         this.attendees.put(changedResponse.getUser(), changedResponse);
         List<TeammateResponse> responseList = this.getAttendees();
-        for(RunProposalListener listener : this.runProposalListeners){
+        for(RunProposalResponseListener listener : this.runProposalResponseListeners){
             listener.onResponsesChanged(responseList);
         }
     }
