@@ -20,7 +20,9 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunProposal;
+import edu.ucsd.cse110.walkstatic.runs.RunProposalChangeListener;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
+import edu.ucsd.cse110.walkstatic.store.ProposedWatcher;
 import edu.ucsd.cse110.walkstatic.store.ResponseWatcher;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponse;
@@ -48,17 +50,20 @@ public class ShowAvailabilityTest {
         Run run = new Run();
         RunProposal proposal = new RunProposal(run);
 
-        String preferencesName = ApplicationProvider.getApplicationContext().getResources()
-                .getString(R.string.proposed_time_run);
-        SharedPreferences sharedPreferences = ApplicationProvider.getApplicationContext()
-                .getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
-        sharedPreferences.edit().putString(preferencesName, proposal.toJSON()).commit();
+        ProposedWatcher proposedWatcher = mock(ProposedWatcher.class);
+        DefaultStorage.setDefaultProposedWatcher(() -> proposedWatcher);
+        ArgumentCaptor<RunProposalChangeListener> proposedWatcherArgumentCaptor =
+                ArgumentCaptor.forClass(RunProposalChangeListener.class);
 
         FragmentScenario<ScheduledWalkFragment> scenario = FragmentScenario.
                 launchInContainer(ScheduledWalkFragment.class);
         scenario.onFragment(fragment -> {
             verify(responseWatcher).addResponseListener(captor.capture());
             TeammateResponseChangeListener listener = captor.getValue();
+            verify(proposedWatcher).addProposalListener(proposedWatcherArgumentCaptor.capture());
+            RunProposalChangeListener runProposalChangeListener =
+                    proposedWatcherArgumentCaptor.getValue();
+            runProposalChangeListener.onChangedProposal(proposal);
 
             ListView listView = fragment.getActivity().findViewById(R.id.responseList);
             ShadowListView shadowListView = Shadows.shadowOf(listView);

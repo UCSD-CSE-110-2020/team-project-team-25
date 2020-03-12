@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
+import java.util.List;
+
 import edu.ucsd.cse110.walkstatic.FirebaseMocks;
 import edu.ucsd.cse110.walkstatic.store.ResponseStore;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
@@ -87,5 +89,56 @@ public class ScheduledRunTest {
         expected.setResponse(TeammateResponse.Response.GOING);
 
         assertThat(responseArgumentCaptor.getValue()).isEqualTo(expected);
+    }
+
+    @Test
+    public void runProposalReturnsEmptyListOfAttendeesOnStart(){
+        ScheduledRun scheduledRun = new ScheduledRun(null, null);
+        List<TeammateResponse> attendees = scheduledRun.getAttendees();
+        assertThat(attendees.size()).isEqualTo(0);
+    }
+
+    @Test
+    public void runProposalAddsAttendeeOnUpdate(){
+        Teammate user = new Teammate("Tempolton@temp.com");
+        TeammateResponse templetonsResponse = new TeammateResponse(user);
+        templetonsResponse.setResponse(TeammateResponse.Response.BAD_TIME);
+        ScheduledRun scheduledRun = new ScheduledRun(null, null);
+        scheduledRun.onChangedResponse(templetonsResponse);
+        List<TeammateResponse> attendees = scheduledRun.getAttendees();
+        assertThat(attendees.size()).isEqualTo(1);
+        assertThat(attendees.get(0)).isEqualTo(templetonsResponse);
+    }
+
+    @Test
+    public void updatedRunProposalUpdatesExisting(){
+        Teammate user = new Teammate("Tempolton@temp.com");
+        TeammateResponse templetonsResponse = new TeammateResponse(user);
+        templetonsResponse.setResponse(TeammateResponse.Response.BAD_TIME);
+        ScheduledRun scheduledRun = new ScheduledRun(null, null);
+        scheduledRun.onChangedResponse(templetonsResponse);
+
+        TeammateResponse templetonsNewResponse = new TeammateResponse(user);
+        templetonsNewResponse.setResponse(TeammateResponse.Response.GOING);
+        scheduledRun.onChangedResponse(templetonsNewResponse);
+        List<TeammateResponse> attendees = scheduledRun.getAttendees();
+        assertThat(attendees.size()).isEqualTo(1);
+        assertThat(attendees.get(0)).isEqualTo(templetonsNewResponse);
+    }
+
+    @Test
+    public void listenerGetsCalledWhenResponsesChanged(){
+        Teammate user = new Teammate("Tempolton@temp.com");
+        TeammateResponse templetonsResponse = new TeammateResponse(user);
+        templetonsResponse.setResponse(TeammateResponse.Response.BAD_TIME);
+        ScheduledRun scheduledRun = new ScheduledRun(null, null);
+
+        ScheduledRunListener scheduledRunListener = mock(ScheduledRunListener.class);
+        ArgumentCaptor<ScheduledRun> argumentCaptor = ArgumentCaptor.forClass(ScheduledRun.class);
+        scheduledRun.addListener(scheduledRunListener);
+
+        scheduledRun.onChangedResponse(templetonsResponse);
+
+        verify(scheduledRunListener).onScheduledRunChanged(argumentCaptor.capture());
     }
 }

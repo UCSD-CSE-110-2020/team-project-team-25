@@ -12,15 +12,17 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunProposal;
-import edu.ucsd.cse110.walkstatic.runs.RunProposalResponseListener;
+import edu.ucsd.cse110.walkstatic.runs.ScheduledRun;
+import edu.ucsd.cse110.walkstatic.runs.ScheduledRunListener;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponse;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponseArrayAdapter;
 
-public class ScheduledWalkFragment extends Fragment implements RunProposalResponseListener {
+public class ScheduledWalkFragment extends Fragment implements ScheduledRunListener {
 
     private TeammateResponseArrayAdapter teammateResponseArrayAdapter;
     private List<TeammateResponse> responses;
@@ -42,13 +44,13 @@ public class ScheduledWalkFragment extends Fragment implements RunProposalRespon
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
         this.app = new Walkstatic(this.getContext());
-        if(this.app.isWalkScheduled()){
-            this.populateWithRun(this.app.getScheduledRun().getRun());
-            this.setDateAndTime(this.app.getScheduledRun());
-            this.populateResponseList(this.app.getScheduledRun());
-        } else {
-            this.populateWithRun(null);
-        }
+        this.populateWithRun(null);
+        this.initResponseList();
+    }
+
+    private void populateWithProposal(RunProposal runProposal){
+        this.setDateAndTime(runProposal);
+        this.populateWithRun(runProposal.getRun());
     }
 
     private void populateWithRun(Run run){
@@ -85,8 +87,8 @@ public class ScheduledWalkFragment extends Fragment implements RunProposalRespon
         TextView scheduledTimeView = this.getActivity().findViewById(R.id.time_view);
         TextView scheduledDateView = this.getActivity().findViewById(R.id.date_view);
 
-        String scheduledTimeString = runProposal.getTime();
-        String scheduledDateString = runProposal.getDate();
+        String scheduledTimeString = runProposal == null ? "" : runProposal.getTime();
+        String scheduledDateString = runProposal == null ? "" : runProposal.getDate();
 
         String scheduledTimeText = getContext().getString(R.string.scheduled_time_text, scheduledTimeString);
         String scheduledDateText = getContext().getString(R.string.scheduled_date_text, scheduledDateString);
@@ -95,9 +97,8 @@ public class ScheduledWalkFragment extends Fragment implements RunProposalRespon
         scheduledDateView.setText(scheduledDateString);
     }
 
-    private void populateResponseList(RunProposal runProposal){
-        this.responses = runProposal.getAttendees();
-        runProposal.addListener(this);
+    private void initResponseList(){
+        this.responses = new ArrayList<>();
         this.teammateResponseArrayAdapter = new TeammateResponseArrayAdapter(this.getActivity(),
                 R.layout.teammate_response_textview, this.responses);
         ListView responseList = this.getActivity().findViewById(R.id.responseList);
@@ -106,10 +107,11 @@ public class ScheduledWalkFragment extends Fragment implements RunProposalRespon
     }
 
     @Override
-    public void onResponsesChanged(List<TeammateResponse> responseList) {
+    public void onScheduledRunChanged(ScheduledRun scheduledRun) {
         this.responses.clear();
-        this.responses.addAll(responseList);
+        this.responses.addAll(scheduledRun.getAttendees());
         this.teammateResponseArrayAdapter.notifyDataSetChanged();
+        this.populateWithProposal(scheduledRun.getRunProposal());
     }
 
     @Override

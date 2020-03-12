@@ -21,7 +21,7 @@ import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponse;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponseChangeListener;
 
-public class RunProposal implements TeammateResponseChangeListener, Serializable {
+public class RunProposal implements Serializable {
     @Expose
     Run run;
 
@@ -34,12 +34,6 @@ public class RunProposal implements TeammateResponseChangeListener, Serializable
     @Expose
     Teammate author;
 
-    @Expose(serialize = false)
-    private HashMap<Teammate, TeammateResponse> attendees;
-
-    @Expose(serialize = false)
-    private ArrayList<RunProposalResponseListener> runProposalResponseListeners;
-
     public RunProposal(){
         this(new Run());
     }
@@ -47,8 +41,6 @@ public class RunProposal implements TeammateResponseChangeListener, Serializable
     public RunProposal(Run run){
         this.run = run;
         this.author = new Teammate();
-        this.attendees = new HashMap<>();
-        this.runProposalResponseListeners = new ArrayList<>();
     }
 
     public void setDate(String date) {
@@ -87,24 +79,6 @@ public class RunProposal implements TeammateResponseChangeListener, Serializable
         Gson gson = new Gson();
         RunProposal rp = gson.fromJson(json, RunProposal.class);
         return rp;
-    }
-
-    public List<TeammateResponse> getAttendees(){
-        ArrayList<TeammateResponse> attendeesList = new ArrayList<>(this.attendees.values());
-        return attendeesList;
-    }
-
-    public void addListener(RunProposalResponseListener listener){
-        this.runProposalResponseListeners.add(listener);
-    }
-
-    @Override
-    public void onChangedResponse(TeammateResponse changedResponse) {
-        this.attendees.put(changedResponse.getUser(), changedResponse);
-        List<TeammateResponse> responseList = this.getAttendees();
-        for(RunProposalResponseListener listener : this.runProposalResponseListeners){
-            listener.onResponsesChanged(responseList);
-        }
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import edu.ucsd.cse110.walkstatic.runs.RunProposal;
 import edu.ucsd.cse110.walkstatic.runs.Runs;
+import edu.ucsd.cse110.walkstatic.runs.ScheduledRun;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
 
 import edu.ucsd.cse110.walkstatic.store.NotificationTopicSubscriber;
@@ -23,7 +24,7 @@ public class Walkstatic {
     private Team team;
     private TeammateRequests teammateRequests;
     private Runs runs;
-    private RunProposal runProposal;
+    private ScheduledRun scheduledRun;
 
     private StorageWatcher storageWatcher;
     private ResponseWatcher responseWatcher;
@@ -39,9 +40,10 @@ public class Walkstatic {
         this.responseWatcher = DefaultStorage.getDefaultResponseWatcher();
         this.teammateRequests = new TeammateRequests(defaultStore, this.storageWatcher);
         this.initRuns(defaultRunStore, this.storageWatcher);
-        this.registerProposedWalk(this.responseWatcher);
+        this.initScheduledRun();
 
         this.registerTopics();
+
     }
 
     private void initRuns(RunStore store, StorageWatcher storageWatcher){
@@ -52,7 +54,6 @@ public class Walkstatic {
 
     private void readFromContext(Context context){
         this.readUser(context);
-        this.readProposedWalk(context);
     }
 
     private void readUser(Context context){
@@ -65,27 +66,11 @@ public class Walkstatic {
         }
     }
 
-    private void readProposedWalk(Context context){
-        String preferencesName = context.getResources().getString(R.string.proposed_time_run);
-        SharedPreferences sharedPreferences = context.getSharedPreferences(
-                preferencesName, Context.MODE_PRIVATE);
-        String json = sharedPreferences.getString(preferencesName, null);
-        if(json != null){
-            this.runProposal = RunProposal.fromJson(json);
-        }
+    private void initScheduledRun(){
+        this.scheduledRun = new ScheduledRun(this.user, DefaultStorage.getDefaultResponseStore());
+        this.proposedWatcher.addProposalListener(this.scheduledRun);
+        this.responseWatcher.addResponseListener(this.scheduledRun);
     }
-
-    private void registerProposedWalk(ResponseWatcher responseWatcher){
-        if(this.isWalkScheduled()){
-            responseWatcher.addResponseListener(this.getScheduledRun());
-        }
-    }
-
-/*    private void registerProposal(ProposedWatcher proposedWatcher){
-        if(this.isWalkScheduled()){
-            proposedWatcher.addProposalListener(this.getScheduledRun());
-        }
-    }*/
 
     public TeammateRequests getTeammateRequests(){
         return this.teammateRequests;
@@ -101,17 +86,14 @@ public class Walkstatic {
 
     public Team getTeam() { return this.team; }
 
-    public boolean isWalkScheduled(){
-        return this.runProposal != null;
-    }
-
-    public RunProposal getScheduledRun() {
-        return this.runProposal;
+    public ScheduledRun getScheduledRun(){
+        return this.scheduledRun;
     }
 
     public void destroy(){
         this.storageWatcher.deleteAllListeners();
         this.responseWatcher.deleteAllListeners();
+        this.proposedWatcher.deleteAllListeners();
     }
 
     private void registerTopics(){
