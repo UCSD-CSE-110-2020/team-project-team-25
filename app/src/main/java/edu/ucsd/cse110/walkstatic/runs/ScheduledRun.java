@@ -45,6 +45,7 @@ public class ScheduledRun implements RunProposalChangeListener, TeammateResponse
     @Override
     public void onChangedProposal(RunProposal runProposal) {
         this.runProposal = runProposal;
+        this.notifyListeners();
     }
 
     public RunProposal getRunProposal(){
@@ -63,6 +64,10 @@ public class ScheduledRun implements RunProposalChangeListener, TeammateResponse
     @Override
     public void onChangedResponse(TeammateResponse changedResponse) {
         this.attendees.put(changedResponse.getUser(), changedResponse);
+        this.notifyListeners();
+    }
+
+    private void notifyListeners(){
         for(ScheduledRunListener listener : this.scheduledRunListeners){
             listener.onScheduledRunChanged(this);
         }

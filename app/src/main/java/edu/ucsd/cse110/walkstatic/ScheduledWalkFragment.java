@@ -44,9 +44,9 @@ public class ScheduledWalkFragment extends Fragment implements ScheduledRunListe
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
         this.app = new Walkstatic(this.getContext());
-        this.app.getScheduledRun().addListener(this);
         this.populateWithRun(null);
         this.initResponseList();
+        this.app.getScheduledRun().addListener(this);
     }
 
     private void populateWithProposal(RunProposal runProposal){

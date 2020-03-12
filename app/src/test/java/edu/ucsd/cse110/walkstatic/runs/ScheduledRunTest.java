@@ -141,4 +141,20 @@ public class ScheduledRunTest {
 
         verify(scheduledRunListener).onScheduledRunChanged(argumentCaptor.capture());
     }
+
+    @Test
+    public void listenerGetsCalledWhenProposalChanges(){
+        Teammate user = new Teammate("Tempolton@temp.com");
+        ScheduledRun scheduledRun = new ScheduledRun(null, null);
+
+        RunProposal runProposal = new RunProposal();
+
+        ScheduledRunListener scheduledRunListener = mock(ScheduledRunListener.class);
+        ArgumentCaptor<ScheduledRun> argumentCaptor = ArgumentCaptor.forClass(ScheduledRun.class);
+        scheduledRun.addListener(scheduledRunListener);
+
+        scheduledRun.onChangedProposal(runProposal);
+
+        verify(scheduledRunListener).onScheduledRunChanged(argumentCaptor.capture());
+    }
 }
