@@ -27,6 +27,7 @@ public class DefaultStorage {
     private static GenericBlueprint<NotificationTopicSubscriber> defaultNotificationTopicSubscriber;
     private static GenericBlueprint<ProposedStore> defaultProposedStore;
     private static GenericBlueprint<ProposedWatcher> defaultProposedWatcher;
+    private static GenericBlueprint<ResponseStore> defaultResponseStore;
 
     private static FirebaseInitialization defaultFirebaseInitialization;
 
@@ -86,6 +87,14 @@ public class DefaultStorage {
         return defaultProposedWatcher.get();
     }
 
+    public static ResponseStore getDefaultResponseStore(){
+        if(defaultResponseStore == null){
+            assertNotTestMode();
+            return new FirebaseResponseStore();
+        }
+        return defaultResponseStore.get();
+    }
+
     public static void setDefaultStorageWatcher(StorageWatcherBlueprint defaultStorageWatcher){
         DefaultStorage.defaultStorageWatcher = defaultStorageWatcher;
     }
@@ -116,6 +125,10 @@ public class DefaultStorage {
 
     public static void setDefaultNotificationTopicSubscriber(GenericBlueprint<NotificationTopicSubscriber> defaultNotificationTopicSubscriber){
         DefaultStorage.defaultNotificationTopicSubscriber = defaultNotificationTopicSubscriber;
+    }
+
+    public static void setDefaultResponseStore(GenericBlueprint<ResponseStore> defaultResponseStore){
+        DefaultStorage.defaultResponseStore = defaultResponseStore;
     }
 
     public static void initialize(Context context){

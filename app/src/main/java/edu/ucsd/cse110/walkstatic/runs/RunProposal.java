@@ -31,9 +31,8 @@ public class RunProposal implements TeammateResponseChangeListener, Serializable
     @Expose
     String time;
 
-    @DocumentId
     @Expose
-    private String documentID;
+    Teammate author;
 
     @Expose(serialize = false)
     private HashMap<Teammate, TeammateResponse> attendees;
@@ -41,20 +40,15 @@ public class RunProposal implements TeammateResponseChangeListener, Serializable
     @Expose(serialize = false)
     private ArrayList<RunProposalResponseListener> runProposalResponseListeners;
 
-    private ProposedStore store;
-
     public RunProposal(){
-        this.run = new Run();
-        this.attendees = new HashMap<>();
-        this.runProposalResponseListeners = new ArrayList<>();
+        this(new Run());
     }
 
     public RunProposal(Run run){
-        this();
         this.run = run;
-        this.documentID = "";
-        //this.store = store;
-
+        this.author = new Teammate();
+        this.attendees = new HashMap<>();
+        this.runProposalResponseListeners = new ArrayList<>();
     }
 
     public void setDate(String date) {
@@ -63,10 +57,9 @@ public class RunProposal implements TeammateResponseChangeListener, Serializable
     public void setTime(String time){
         this.time = time;
     }
-    public void setDocumentID(String documentID){
-        this.documentID = documentID;
+    public void setAuthor(Teammate author){
+        this.author = author;
     }
-    public String getDocumentID() { return this.documentID; }
 
     public Run getRun(){
         return this.run;
@@ -77,6 +70,10 @@ public class RunProposal implements TeammateResponseChangeListener, Serializable
 
     public String getDate(){
         return this.date;
+    }
+
+    public Teammate getAuthor() {
+        return this.author;
     }
 
     public String toJSON(){
