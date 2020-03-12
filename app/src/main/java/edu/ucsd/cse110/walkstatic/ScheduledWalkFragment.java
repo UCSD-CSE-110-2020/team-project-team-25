@@ -22,6 +22,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import com.google.firebase.firestore.DocumentReference;
+
 import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -31,12 +33,13 @@ import java.util.Objects;
 
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunProposal;
+import edu.ucsd.cse110.walkstatic.runs.RunProposalChangeListener;
 import edu.ucsd.cse110.walkstatic.runs.RunProposalListener;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponse;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponseArrayAdapter;
 import edu.ucsd.cse110.walkstatic.time.TimeHelp;
 
-public class ScheduledWalkFragment extends Fragment implements RunProposalListener {
+public class ScheduledWalkFragment extends Fragment implements RunProposalListener, RunProposalChangeListener {
 
     private TeammateResponseArrayAdapter teammateResponseArrayAdapter;
     private List<TeammateResponse> responses;
@@ -45,6 +48,7 @@ public class ScheduledWalkFragment extends Fragment implements RunProposalListen
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         this.setHasOptionsMenu(true);
     }
 
@@ -57,14 +61,14 @@ public class ScheduledWalkFragment extends Fragment implements RunProposalListen
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
-        this.app = new Walkstatic(this.getContext());
-        if(this.app.isWalkScheduled()){
-            this.populateWithRun(this.app.getScheduledRun().getRun());
-            this.setDateAndTime(this.app.getScheduledRun());
-            this.populateResponseList(this.app.getScheduledRun());
-        } else {
-            this.populateWithRun(null);
-        }
+        this.app = new Walkstatic(this.requireContext());
+        Button withdrawButton = getActivity().findViewById(R.id.withdrawButton);
+        Button scheduleButton = getActivity().findViewById(R.id.scheduleWalkButton);
+        app.getProposedWatcher().addProposalListener(this);
+        updateOnChangedProposal();
+
+        withdrawButton.setVisibility(View.INVISIBLE);
+        scheduleButton.setVisibility(View.INVISIBLE);
     }
 
     private void populateWithRun(Run run){
@@ -121,6 +125,43 @@ public class ScheduledWalkFragment extends Fragment implements RunProposalListen
         this.teammateResponseArrayAdapter.notifyDataSetChanged();
     }
 
+    private void navigateToHomeScreen() {
+        Bundle bundle = new Bundle();
+        Navigation.findNavController(this.getActivity(), this.getId()).navigate(R.id.action_scheduledWalkFragment_to_runActivity, bundle);
+    }
+
+    private void populateWithButtons(Walkstatic app) {
+        if(app.getRunProposal() == null){
+            return;
+        }
+        Button withdrawButton = getActivity().findViewById(R.id.withdrawButton);
+        Button scheduleButton = getActivity().findViewById(R.id.scheduleWalkButton);
+        withdrawButton.setVisibility(View.VISIBLE);
+        scheduleButton.setVisibility(View.VISIBLE);
+        if(app.getRunProposal().getIsScheduled() == false){
+            scheduleButton.setEnabled(true);
+        } else {
+            scheduleButton.setEnabled(false);
+        }
+
+        withdrawButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                app.deleteProposedRun();
+                navigateToHomeScreen();
+            }
+        });
+
+
+        scheduleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                app.getRunProposal().setIsScheduled(true);
+                scheduleButton.setEnabled(false);
+            }
+        });
+    }
+
     @Override
     public void onResponsesChanged(List<TeammateResponse> responseList) {
         this.responses.clear();
@@ -129,9 +170,28 @@ public class ScheduledWalkFragment extends Fragment implements RunProposalListen
     }
 
     @Override
+    public void onChangedProposal(RunProposal runProposal) {
+        updateOnChangedProposal();
+    }
+
+    private void updateOnChangedProposal(){
+         if( this.getActivity().findViewById(R.id.run_name) == null) {
+             return;
+         }
+        if(this.app.isWalkScheduled()){
+            this.populateWithRun(this.app.getRunProposal().getRun());
+            this.setDateAndTime(this.app.getRunProposal());
+            this.populateResponseList(this.app.getRunProposal());
+            this.populateWithButtons(this.app);
+        } else {
+            this.populateWithRun(null);
+        }
+    }
+    @Override
     public void onDestroy(){
         this.app.destroy();
         this.app = null;
         super.onDestroy();
     }
+
 }

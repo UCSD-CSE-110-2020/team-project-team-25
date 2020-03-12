@@ -2,6 +2,10 @@ package edu.ucsd.cse110.walkstatic;
 
 import edu.ucsd.cse110.walkstatic.runs.RunUpdateListener;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
+import edu.ucsd.cse110.walkstatic.store.FirebaseProposalStore;
+import edu.ucsd.cse110.walkstatic.store.FirebaseProposalWatcher;
+import edu.ucsd.cse110.walkstatic.store.ProposedStore;
+import edu.ucsd.cse110.walkstatic.store.ProposedWatcher;
 import edu.ucsd.cse110.walkstatic.store.ResponseWatcher;
 import edu.ucsd.cse110.walkstatic.store.RunStore;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
@@ -51,12 +55,17 @@ public class FirebaseMocks {
         TeammateRequestStore store = mock(TeammateRequestStore.class);
         RunStore runStore = mock(RunStore.class);
         ResponseWatcher responseWatcher = mock(ResponseWatcher.class);
+        ProposedStore proposedStore = mock(ProposedStore.class);
+        ProposedWatcher proposedWatcher = mock(ProposedWatcher.class);
 
         DefaultStorage.setDefaultFirebaseInitialization(context -> {});
         DefaultStorage.setDefaultStorageWatcher(ignored -> watcher);
         DefaultStorage.setDefaultRunStore(() -> runStore);
         DefaultStorage.setDefaultTeammateRequestStore(() -> store);
         DefaultStorage.setDefaultResponseWatcher(() -> responseWatcher);
+        DefaultStorage.setDefaultProposedStore(()->proposedStore);
+        DefaultStorage.setDefaultProposedWatcher(()-> proposedWatcher);
+
     }
 
 }

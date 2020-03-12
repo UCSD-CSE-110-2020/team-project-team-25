@@ -11,8 +11,12 @@ import java.util.List;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.rule.ActivityTestRule;
 import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.runs.RunProposal;
+import edu.ucsd.cse110.walkstatic.runs.RunProposalChangeListener;
 import edu.ucsd.cse110.walkstatic.runs.RunUpdateListener;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
+import edu.ucsd.cse110.walkstatic.store.FirebaseProposalWatcher;
+import edu.ucsd.cse110.walkstatic.store.ProposedWatcher;
 import edu.ucsd.cse110.walkstatic.store.ResponseWatcher;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
 import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
@@ -113,6 +117,20 @@ public class EspressoHelpers{
 
             }
         });
+
+        DefaultStorage.setDefaultProposedWatcher(() -> new ProposedWatcher(){
+
+            @Override
+            public void addProposalListener(RunProposalChangeListener listener) {
+            }
+
+            @Override
+            public void deleteAllListeners() {
+
+            }
+        });
+
+        DefaultStorage.setDefaultProposedStore(() -> (topic) -> {});
     }
 
     public static void setUser(Teammate user){

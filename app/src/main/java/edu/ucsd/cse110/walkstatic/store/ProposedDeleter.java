@@ -1,4 +1,7 @@
 package edu.ucsd.cse110.walkstatic.store;
 
-public class ProposedDeleter {
+import edu.ucsd.cse110.walkstatic.runs.RunProposal;
+
+public interface ProposedDeleter {
+    public void delete(RunProposal runProposal);
 }

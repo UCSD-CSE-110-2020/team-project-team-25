@@ -19,18 +19,18 @@ import edu.ucsd.cse110.walkstatic.runs.RunProposalListener;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponse;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponseChangeListener;
 
-public class FirebaseProposedWatcher implements ProposedWatcher {
-    private static String TAG = "FireBaseProposedWatcher";
+public class FirebaseProposalWatcher implements ProposedWatcher {
+    private static String TAG = "FireBaseProposalWatcher";
 
     private ArrayList<RunProposalChangeListener> runProposalListenerArrayList;
     private ListenerRegistration collectionRegistration;
 
-    public FirebaseProposedWatcher(){
+    public FirebaseProposalWatcher(){
         this.runProposalListenerArrayList = new ArrayList<>();
         CollectionReference responseCollection = FirebaseFirestore.getInstance()
                 .collection(FirebaseConstants.TEAM_COLLECTION)
-                .document(FirebaseConstants.PROPOSAL_DOCUMENT)
-                .collection(FirebaseConstants.RESPONSE_COLLECTION);
+                .document(FirebaseConstants.PROPOSED_DOCUMENT)
+                .collection(FirebaseConstants.PROPOSED_DOCUMENT);
         this.collectionRegistration = responseCollection.addSnapshotListener(this::onResponse);
     }
 

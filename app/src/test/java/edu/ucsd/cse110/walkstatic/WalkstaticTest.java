@@ -99,7 +99,7 @@ public class WalkstaticTest {
 
         Walkstatic walkstatic = new Walkstatic(sharedPreferencesContext);
         assertThat(walkstatic.isWalkScheduled()).isFalse();
-        assertThat(walkstatic.getScheduledRun()).isNull();
+        assertThat(walkstatic.getRunProposal()).isNull();
     }
 
     @Test
@@ -125,7 +125,7 @@ public class WalkstaticTest {
 
         Walkstatic walkstatic = new Walkstatic(sharedPreferencesContext);
         assertThat(walkstatic.isWalkScheduled()).isTrue();
-        assertThat(walkstatic.getScheduledRun()).isEqualTo(proposal);
+        assertThat(walkstatic.getRunProposal()).isEqualTo(proposal);
     }
 
     @Test

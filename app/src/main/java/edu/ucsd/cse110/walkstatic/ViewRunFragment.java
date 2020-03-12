@@ -29,11 +29,18 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import com.google.firebase.firestore.CollectionReference;
+
 import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.runs.RunProposal;
+import edu.ucsd.cse110.walkstatic.runs.RunProposalChangeListener;
+import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.time.TimeHelp;
 
-public class ViewRunFragment extends Fragment {
+public class ViewRunFragment extends Fragment implements RunProposalChangeListener {
 
+
+    private Walkstatic app;
     private Run run;
 
     @Override
@@ -57,6 +64,9 @@ public class ViewRunFragment extends Fragment {
             this.populateWithRun(run);
         }
 
+        this.app = new Walkstatic(this.requireContext());
+        app.getProposedWatcher().addProposalListener(this);
+        updateChangedProposal();
         Button proposeButton = getActivity().findViewById(R.id.proposeButton);
 
         proposeButton.setOnClickListener(new View.OnClickListener() {
@@ -181,4 +191,28 @@ public class ViewRunFragment extends Fragment {
         sharedPreferences.edit().putString(preferencesName, this.run.toJSON()).apply();
     }
 
+    @Override
+    public void onDestroy(){
+        this.app.destroy();
+        this.app = null;
+        super.onDestroy();
+    }
+
+    @Override
+    public void onChangedProposal(RunProposal runProposal) {
+        updateChangedProposal();
+    }
+
+    private void updateChangedProposal() {
+        if (this.isResumed() == false){
+            return;
+        }
+
+        Button proposeButton = getActivity().findViewById(R.id.proposeButton);
+        if (app.getRunProposal().getDate() == null){
+            proposeButton.setEnabled(true);
+        } else {
+            proposeButton.setEnabled(false);
+        }
+    }
 }

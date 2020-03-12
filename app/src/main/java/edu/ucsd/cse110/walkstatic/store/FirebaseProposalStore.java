@@ -8,15 +8,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import edu.ucsd.cse110.walkstatic.runs.RunProposal;
 
 
-public class FirebaseProposedStore implements ProposedStore {
+public class FirebaseProposalStore implements ProposedStore, ProposedDeleter {
 
-    private static final String TAG = "FireBaseProposedStore";
+    private static final String TAG = "FireBaseProposalStore";
 
     private CollectionReference proposals;
 
-    public FirebaseProposedStore(){
+    public FirebaseProposalStore(){
         this.proposals = FirebaseFirestore.getInstance()
-                //.collection(FirebaseConstants.TEAM_COLLECTION)
+                .collection(FirebaseConstants.TEAM_COLLECTION)
                 .document(FirebaseConstants.PROPOSED_DOCUMENT)
                 .collection(FirebaseConstants.PROPOSED_DOCUMENT);
     }
@@ -33,6 +33,13 @@ public class FirebaseProposedStore implements ProposedStore {
                 Log.e(TAG, "Unable to store request " + runProposal + " because " + f.getLocalizedMessage());
             });
         }
+
+    }
+    public void delete(RunProposal runProposal) {
+        DocumentReference doc = this.proposals.document(runProposal.getDocumentID());
+        doc.delete().addOnFailureListener(f -> {
+            Log.e(TAG, "Unable to delete " + " because " + f.getLocalizedMessage());
+        });
 
     }
 }

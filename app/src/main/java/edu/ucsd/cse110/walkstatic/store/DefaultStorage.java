@@ -26,6 +26,7 @@ public class DefaultStorage {
     private static GenericBlueprint<ResponseWatcher> defaultResponseWatcher;
     private static GenericBlueprint<ProposedStore> defaultProposedStore;
     private static GenericBlueprint<ProposedWatcher> defaultProposedWatcher;
+    private static GenericBlueprint<ProposedDeleter> defaultProposedDeleter;
 
 
     private static FirebaseInitialization defaultFirebaseInitialization;
@@ -54,10 +55,18 @@ public class DefaultStorage {
         return defaultRunStore.get();
     }
 
+    public static ProposedDeleter getDefaultProposedDeleter(){
+        if(defaultProposedDeleter == null){
+            assertNotTestMode();
+            return new FirebaseProposalStore();
+        }
+        return defaultProposedDeleter.get();
+    }
+
     public static ProposedStore getDefaultProposedStore(){
         if(defaultProposedStore == null){
             assertNotTestMode();
-            return new FirebaseProposedStore();
+            return new FirebaseProposalStore();
         }
         return defaultProposedStore.get();
     }
@@ -73,7 +82,7 @@ public class DefaultStorage {
     public static ProposedWatcher getDefaultProposedWatcher(){
         if(defaultProposedWatcher == null){
             assertNotTestMode();
-            return new FirebaseProposedWatcher();
+            return new FirebaseProposalWatcher();
         }
         return defaultProposedWatcher.get();
     }
