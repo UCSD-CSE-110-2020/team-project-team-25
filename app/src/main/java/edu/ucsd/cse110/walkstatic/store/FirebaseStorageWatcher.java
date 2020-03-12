@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.runs.RunProposalListener;
 import edu.ucsd.cse110.walkstatic.runs.RunUpdateListener;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;

@@ -6,7 +6,10 @@ import android.content.SharedPreferences;
 import edu.ucsd.cse110.walkstatic.runs.RunProposal;
 import edu.ucsd.cse110.walkstatic.runs.Runs;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
+
 import edu.ucsd.cse110.walkstatic.store.NotificationTopicSubscriber;
+import edu.ucsd.cse110.walkstatic.store.ProposedStore;
+import edu.ucsd.cse110.walkstatic.store.ProposedWatcher;
 import edu.ucsd.cse110.walkstatic.store.ResponseWatcher;
 import edu.ucsd.cse110.walkstatic.store.RunStore;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
@@ -24,12 +27,14 @@ public class Walkstatic {
 
     private StorageWatcher storageWatcher;
     private ResponseWatcher responseWatcher;
+    private ProposedWatcher proposedWatcher;
 
     public Walkstatic(Context context){
         DefaultStorage.initialize(context);
         this.readFromContext(context);
         TeammateRequestStore defaultStore = DefaultStorage.getDefaultTeammateRequestStore();
         this.storageWatcher = DefaultStorage.getDefaultStorageWatcher(this.user);
+        this.proposedWatcher = DefaultStorage.getDefaultProposedWatcher();
         RunStore defaultRunStore = DefaultStorage.getDefaultRunStore();
         this.responseWatcher = DefaultStorage.getDefaultResponseWatcher();
         this.teammateRequests = new TeammateRequests(defaultStore, this.storageWatcher);
@@ -75,6 +80,12 @@ public class Walkstatic {
             responseWatcher.addResponseListener(this.getScheduledRun());
         }
     }
+
+/*    private void registerProposal(ProposedWatcher proposedWatcher){
+        if(this.isWalkScheduled()){
+            proposedWatcher.addProposalListener(this.getScheduledRun());
+        }
+    }*/
 
     public TeammateRequests getTeammateRequests(){
         return this.teammateRequests;

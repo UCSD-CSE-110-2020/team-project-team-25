@@ -1,5 +1,8 @@
 package edu.ucsd.cse110.walkstatic.runs;
 
+import androidx.annotation.NonNull;
+
+import com.google.firebase.firestore.DocumentId;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
@@ -11,6 +14,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import edu.ucsd.cse110.walkstatic.store.ProposedStore;
+import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
+import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponse;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponseChangeListener;
@@ -25,11 +31,17 @@ public class RunProposal implements TeammateResponseChangeListener, Serializable
     @Expose
     String time;
 
+    @DocumentId
+    @Expose
+    private String documentID;
+
     @Expose(serialize = false)
     private HashMap<Teammate, TeammateResponse> attendees;
 
     @Expose(serialize = false)
     private ArrayList<RunProposalResponseListener> runProposalResponseListeners;
+
+    private ProposedStore store;
 
     public RunProposal(){
         this.run = new Run();
@@ -40,6 +52,9 @@ public class RunProposal implements TeammateResponseChangeListener, Serializable
     public RunProposal(Run run){
         this();
         this.run = run;
+        this.documentID = "";
+        //this.store = store;
+
     }
 
     public void setDate(String date) {
@@ -48,6 +63,11 @@ public class RunProposal implements TeammateResponseChangeListener, Serializable
     public void setTime(String time){
         this.time = time;
     }
+    public void setDocumentID(String documentID){
+        this.documentID = documentID;
+    }
+    public String getDocumentID() { return this.documentID; }
+
     public Run getRun(){
         return this.run;
     }
