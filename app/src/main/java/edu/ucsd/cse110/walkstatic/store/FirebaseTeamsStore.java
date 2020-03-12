@@ -2,6 +2,8 @@ package edu.ucsd.cse110.walkstatic.store;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -21,13 +23,14 @@ public class FirebaseTeamsStore implements TeamsStore {
     }
 
     @Override
+    public void mergeTeams(Team team1, Team team2) {
+        team1.merge(team2);
+        addTeam(team1);
+        addTeam(team2);
+    }
+
+    @Override
     public void addTeam(Team team) {
-        assert(team != null);
-
-        team.addTeamListener((Teammate teammate) -> {
-            // when a new teammate is added, update the backing firebase
-        });
-
         CollectionReference teamRef = teams.collection(team.getDocumentId());
 
         for (Teammate teammate : team.getTeammates()) {
