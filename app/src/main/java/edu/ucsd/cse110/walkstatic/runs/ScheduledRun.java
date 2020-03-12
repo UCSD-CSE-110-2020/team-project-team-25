@@ -63,7 +63,6 @@ public class ScheduledRun implements RunProposalChangeListener, TeammateResponse
     @Override
     public void onChangedResponse(TeammateResponse changedResponse) {
         this.attendees.put(changedResponse.getUser(), changedResponse);
-        List<TeammateResponse> responseList = this.getAttendees();
         for(ScheduledRunListener listener : this.scheduledRunListeners){
             listener.onScheduledRunChanged(this);
         }
