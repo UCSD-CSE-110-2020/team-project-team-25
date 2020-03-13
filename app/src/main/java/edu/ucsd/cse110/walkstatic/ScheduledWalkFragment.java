@@ -35,6 +35,7 @@ import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunProposal;
 import edu.ucsd.cse110.walkstatic.runs.RunProposalChangeListener;
 import edu.ucsd.cse110.walkstatic.runs.RunProposalListener;
+import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponse;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponseArrayAdapter;
 import edu.ucsd.cse110.walkstatic.time.TimeHelp;
@@ -65,8 +66,6 @@ public class ScheduledWalkFragment extends Fragment implements RunProposalListen
         Button withdrawButton = getActivity().findViewById(R.id.withdrawButton);
         Button scheduleButton = getActivity().findViewById(R.id.scheduleWalkButton);
         app.getProposedWatcher().addProposalListener(this);
-        updateOnChangedProposal();
-
         withdrawButton.setVisibility(View.INVISIBLE);
         scheduleButton.setVisibility(View.INVISIBLE);
     }
@@ -175,10 +174,11 @@ public class ScheduledWalkFragment extends Fragment implements RunProposalListen
     }
 
     private void updateOnChangedProposal(){
-         if( this.getActivity().findViewById(R.id.run_name) == null) {
-             return;
-         }
-        if(this.app.isWalkScheduled()){
+        if( this.getActivity().findViewById(R.id.run_name) == null ) {
+            return;
+        }
+        Boolean walkScheduled = this.app.isWalkScheduled();
+        if (this.app.isWalkScheduled() && this.app.isUserPartOfProposal()) {
             this.populateWithRun(this.app.getRunProposal().getRun());
             this.setDateAndTime(this.app.getRunProposal());
             this.populateResponseList(this.app.getRunProposal());

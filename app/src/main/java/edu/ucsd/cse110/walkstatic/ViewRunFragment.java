@@ -215,4 +215,5 @@ public class ViewRunFragment extends Fragment implements RunProposalChangeListen
             proposeButton.setEnabled(false);
         }
     }
+
 }

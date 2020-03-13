@@ -138,4 +138,17 @@ public class Walkstatic implements RunProposalChangeListener {
     public void deleteProposedRun(){
         firebaseProposalDeleter.delete(this.runProposal);
     }
+
+    public Boolean isUserPartOfProposal(){
+        if (getUser().getEmail() .equals(
+                getRunProposal().getRun().getAuthor().getEmail())){
+            return true;
+        }
+        for (Teammate teammate: getTeam().getTeammates()){
+            if (teammate.getEmail().equals( getRunProposal().getRun().getAuthor().getEmail())){
+                return true;
+            }
+        }
+        return false;
+    }
 }
