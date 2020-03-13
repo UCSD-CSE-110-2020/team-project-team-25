@@ -91,6 +91,10 @@ public class DefaultStorage {
         DefaultStorage.defaultStorageWatcher = defaultStorageWatcher;
     }
 
+    public static void setDefaultProposedDeleter(GenericBlueprint<ProposedDeleter> defaultProposedDeleter){
+        DefaultStorage.defaultProposedDeleter = defaultProposedDeleter;
+    }
+
     public static void setDefaultProposedStore(GenericBlueprint<ProposedStore> defaultProposedStore){
         DefaultStorage.defaultProposedStore = defaultProposedStore;
     }

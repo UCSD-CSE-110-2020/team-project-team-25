@@ -131,6 +131,8 @@ public class EspressoHelpers{
         });
 
         DefaultStorage.setDefaultProposedStore(() -> (topic) -> {});
+
+        DefaultStorage.setDefaultProposedDeleter(() -> (topic) -> {});
     }
 
     public static void setUser(Teammate user){
