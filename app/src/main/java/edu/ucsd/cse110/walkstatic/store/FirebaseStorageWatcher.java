@@ -60,7 +60,6 @@ public class FirebaseStorageWatcher implements StorageWatcher {
         this.runListenerRegistration = this.runsCollection.addSnapshotListener(this::onRun);
     }
 
-
     @Override
     public void addRunUpdateListener(RunUpdateListener runUpdateListener) {
         this.runUpdateListeners.add(runUpdateListener);

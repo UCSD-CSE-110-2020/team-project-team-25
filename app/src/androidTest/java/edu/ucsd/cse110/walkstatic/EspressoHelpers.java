@@ -102,9 +102,9 @@ public class EspressoHelpers{
 
         DefaultStorage.setDefaultTeamsStore(() -> new TeamsStore() {
             @Override
-            public void addTeam(Team team) {
-
-            }
+            public void addTeam(Team team) { }
+            @Override
+            public void mergeTeams(Team team1, Team team2) { }
         });
 
         DefaultStorage.setDefaultStorageWatcher((ignoredUser) -> new FakeStorageWatcher(actualRuns));

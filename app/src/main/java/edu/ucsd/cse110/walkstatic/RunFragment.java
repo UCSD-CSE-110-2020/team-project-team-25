@@ -43,20 +43,20 @@ import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestListener;
+import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestsListener;
 import edu.ucsd.cse110.walkstatic.time.TimeHelp;
 import edu.ucsd.cse110.walkstatic.time.TimeMachine;
 
 import static android.content.Context.MODE_PRIVATE;
 
 
-public class RunFragment extends Fragment implements TeammateRequestListener {
+public class RunFragment extends Fragment {
 
     private DistanceTracker stepTracker;
     private FitnessService fitnessService;
     private SecondTimer timer;
     private Chronometer chronometer;
     private MileCalculator mileCalculator;
-    private StorageWatcher storageWatcher;
     private TeammateRequest lastRequest;
 
     private Walkstatic app;
@@ -83,7 +83,6 @@ public class RunFragment extends Fragment implements TeammateRequestListener {
         this.app = new Walkstatic(this.getContext());
         this.setHasOptionsMenu(true);
         this.buildMileCalculator();
-        this.buildStorageWatcher();
 
         initStepCount();
         Button startButton = getActivity().findViewById(R.id.startButton);
@@ -153,7 +152,21 @@ public class RunFragment extends Fragment implements TeammateRequestListener {
 
             }
         });
-        this.storageWatcher.addTeammateRequestUpdateListener(this);
+        this.app.getTeammateRequests().addRequestsListener(new TeammateRequestsListener() {
+            @Override
+            public void teammateRequestsUpdated(List<TeammateRequest> requests) {
+                if (requests.size() == 0) return;
+
+                else for (TeammateRequest tr : requests) {
+                    if (tr.getTarget().equals(app.getUser())){
+                        setNotification(true);
+                        lastRequest = tr;
+                        break;
+                    }
+                }
+
+            }
+        });
     }
 
     private void setNotification(boolean visible) {
@@ -345,23 +358,6 @@ public class RunFragment extends Fragment implements TeammateRequestListener {
             mileCount.setText(new DecimalFormat("#.00").format(lastRun.getMiles()));
         }
     }
-
-    @Override
-    public void onNewTeammateRequest(TeammateRequest request) {
-        if (request.getTarget().equals(app.getUser())){
-            setNotification(true);
-            lastRequest = request;
-        }
-    }
-
-    @Override
-    public void onTeammateRequestDeleted(TeammateRequest request) {
-        if(request.getTarget().equals(app.getUser())){
-            setNotification(false);
-            lastRequest = null;
-        }
-    }
-
     private class SecondTimer implements Runnable{
         int delay;
         Handler timer;
@@ -441,9 +437,5 @@ public class RunFragment extends Fragment implements TeammateRequestListener {
         SharedPreferences sharedPreferences = (SharedPreferences) getActivity().getSharedPreferences(preferenceName, MODE_PRIVATE);
         String height = sharedPreferences.getString(preferenceName,"-1");
         this.mileCalculator = new MileCalculator(height);
-    }
-
-    private void buildStorageWatcher(){
-        this.storageWatcher = DefaultStorage.getDefaultStorageWatcher(app.getUser());
     }
 }

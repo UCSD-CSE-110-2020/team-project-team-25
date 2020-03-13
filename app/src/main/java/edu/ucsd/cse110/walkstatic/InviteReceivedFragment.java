@@ -47,7 +47,7 @@ public class InviteReceivedFragment extends Fragment {
         Button rejectButton = view.findViewById(R.id.rejectButton);
 
         acceptButton.setOnClickListener(click -> {
-            app.getTeam().add(teammate);
+            app.getTeam().merge(teammate.getTeam());
             Navigation.findNavController(this.getActivity(), this.getId()).navigateUp();
         });
 
