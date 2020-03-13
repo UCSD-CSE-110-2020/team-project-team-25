@@ -1,8 +1,6 @@
 package edu.ucsd.cse110.walkstatic;
 
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -14,29 +12,25 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunProposal;
+import edu.ucsd.cse110.walkstatic.runs.RunProposalChangeListener;
+import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
+import edu.ucsd.cse110.walkstatic.store.ProposedWatcher;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponse;
 
-import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.is;
@@ -47,6 +41,8 @@ public class ShowAvailabilityEspressoTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
+
+    private RunProposalChangeListener lastListener = null;
 
     @Test
     public void showAvailabilityEspressoTest() {
@@ -60,15 +56,25 @@ public class ShowAvailabilityEspressoTest {
         TeammateResponse busyResponse = new TeammateResponse(busy);
         busyResponse.setResponse(TeammateResponse.Response.BAD_TIME);
         EspressoHelpers.mockStorage(busyResponse, simpletonResponse);
-        EspressoHelpers.setStartupParams(mActivityTestRule, "65");
+        Teammate user = new Teammate("user");
+        EspressoHelpers.setUser(user);
 
         Run run = new Run();
         RunProposal runProposal = new RunProposal(run);
-        Context context = getInstrumentation().getTargetContext();
-        String preferencesName = context.getResources().getString(R.string.proposed_time_run);
-        SharedPreferences sharedPreferences = context.getSharedPreferences(
-                preferencesName, Context.MODE_PRIVATE);
-        sharedPreferences.edit().putString(preferencesName, runProposal.toJSON()).commit();
+        runProposal.setAuthor(user);
+        DefaultStorage.setDefaultProposedWatcher(() -> new ProposedWatcher(){
+            @Override
+            public void addProposalListener(RunProposalChangeListener listener) {
+                lastListener = listener;
+            }
+
+            @Override
+            public void deleteAllListeners() {
+
+            }
+        });
+
+        EspressoHelpers.setStartupParams(mActivityTestRule, "65");
 
         ViewInteraction appCompatImageButton2 = onView(
                 allOf(withContentDescription("Open navigation drawer"),
@@ -90,6 +96,14 @@ public class ShowAvailabilityEspressoTest {
                         4),
                         isDisplayed()));
         navigationMenuItemView2.perform(click());
+
+        try{
+            mActivityTestRule.runOnUiThread(() -> {
+                lastListener.onChangedProposal(runProposal);
+            });
+        } catch(Throwable e){
+            assert(false);
+        }
 
         ViewInteraction textView = onView(
                 allOf(withId(R.id.teammate_name), withText("Busy Brenda"),

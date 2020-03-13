@@ -8,6 +8,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -29,6 +30,7 @@ public class ProposeRunTest {
     }
 
     @Test
+    @Ignore("remove Ignore when US 8 (#113) Propose Walk is further along")
     public void testTimeDate() {
         FragmentScenario<ProposeRunFragment> scenario = FragmentScenario.launchInContainer(ProposeRunFragment.class);
         scenario.onFragment(activity -> {
