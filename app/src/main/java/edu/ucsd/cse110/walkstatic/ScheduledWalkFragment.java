@@ -184,19 +184,21 @@ public class ScheduledWalkFragment extends Fragment implements ScheduledRunListe
         }
         Button withdrawButton = getActivity().findViewById(R.id.withdrawButton);
         Button scheduleButton = getActivity().findViewById(R.id.scheduleWalkButton);
-        withdrawButton.setVisibility(View.VISIBLE);
-        scheduleButton.setVisibility(View.VISIBLE);
-        scheduleButton.setEnabled(!this.app.getScheduledRun().getRunProposal().isScheduled());
-
-        withdrawButton.setOnClickListener(v -> {
-            app.getScheduledRun().deleteProposedRun();
-        });
-
-
-        scheduleButton.setOnClickListener(v -> {
-            app.getScheduledRun().scheduleRun();
-            scheduleButton.setEnabled(false);
-        });
+        if(app.getScheduledRun().getRunProposal().getAuthor().getEmail().equals( app.getUser().getEmail())){
+            withdrawButton.setVisibility(View.VISIBLE);
+            scheduleButton.setVisibility(View.VISIBLE);
+            scheduleButton.setEnabled(!this.app.getScheduledRun().getRunProposal().isScheduled());
+            withdrawButton.setOnClickListener(v -> {
+                app.getScheduledRun().deleteProposedRun();
+            });
+            scheduleButton.setOnClickListener(v -> {
+                app.getScheduledRun().scheduleRun();
+                scheduleButton.setEnabled(false);
+            });
+        } else {
+            withdrawButton.setVisibility(View.INVISIBLE);
+            scheduleButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
