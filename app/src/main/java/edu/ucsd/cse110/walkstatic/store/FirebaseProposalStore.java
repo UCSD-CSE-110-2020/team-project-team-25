@@ -12,32 +12,29 @@ public class FirebaseProposalStore implements ProposedStore, ProposedDeleter {
 
     private static final String TAG = "FireBaseProposalStore";
 
-    private CollectionReference proposals;
+    private DocumentReference proposals;
 
     public FirebaseProposalStore(){
         this.proposals = FirebaseFirestore.getInstance()
                 .collection(FirebaseConstants.TEAM_COLLECTION)
-                .document(FirebaseConstants.PROPOSED_DOCUMENT)
-                .collection(FirebaseConstants.PROPOSED_DOCUMENT);
+                .document(FirebaseConstants.PROPOSED_DOCUMENT);
     }
 
     @Override
     public void storeProposal(RunProposal runProposal) {
-        if(runProposal.getDocumentID().equals("")){
-            proposals.add(runProposal).addOnFailureListener(f -> {
+        if(proposals.equals("")){
+            proposals.getParent().add(runProposal).addOnFailureListener(f -> {
                 Log.e(TAG, "Unable to store request " + runProposal + " because " + f.getLocalizedMessage());
             });
         } else {
-            DocumentReference doc = this.proposals.document(runProposal.getDocumentID());
-            doc.set(runProposal).addOnFailureListener(f -> {
+            proposals.set(runProposal).addOnFailureListener(f -> {
                 Log.e(TAG, "Unable to store request " + runProposal + " because " + f.getLocalizedMessage());
             });
         }
 
     }
     public void delete(RunProposal runProposal) {
-        DocumentReference doc = this.proposals.document(runProposal.getDocumentID());
-        doc.delete().addOnFailureListener(f -> {
+        proposals.delete().addOnFailureListener(f -> {
             Log.e(TAG, "Unable to delete " + " because " + f.getLocalizedMessage());
         });
 

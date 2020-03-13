@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
+import edu.ucsd.cse110.walkstatic.store.FirebaseConstants;
 import edu.ucsd.cse110.walkstatic.store.FirebaseProposalStore;
 import edu.ucsd.cse110.walkstatic.store.ProposedStore;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
@@ -60,7 +61,7 @@ public class RunProposal implements  TeammateResponseChangeListener, Serializabl
     public RunProposal(Run run){
         this();
         this.run = run;
-        this.documentID = "";
+        this.documentID = FirebaseConstants.PROPOSED_DOCUMENT;
     }
 
     public void setIsScheduled(Boolean isScheduled){

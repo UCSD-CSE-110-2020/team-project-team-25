@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -25,13 +27,12 @@ public class FirebaseProposalWatcher implements ProposedWatcher {
     private ArrayList<RunProposalChangeListener> runProposalListenerArrayList;
     private ListenerRegistration collectionRegistration;
 
-    public FirebaseProposalWatcher(){
+    public FirebaseProposalWatcher() {
         this.runProposalListenerArrayList = new ArrayList<>();
-        CollectionReference responseCollection = FirebaseFirestore.getInstance()
+        DocumentReference responseDocument = FirebaseFirestore.getInstance()
                 .collection(FirebaseConstants.TEAM_COLLECTION)
-                .document(FirebaseConstants.PROPOSED_DOCUMENT)
-                .collection(FirebaseConstants.PROPOSED_DOCUMENT);
-        this.collectionRegistration = responseCollection.addSnapshotListener(this::onResponse);
+                .document(FirebaseConstants.PROPOSED_DOCUMENT);
+        this.collectionRegistration = responseDocument.addSnapshotListener(this::onResponse);
     }
 
     @Override
@@ -46,24 +47,36 @@ public class FirebaseProposalWatcher implements ProposedWatcher {
     }
 
 
-    private void onResponse(QuerySnapshot snapshot, FirebaseFirestoreException exception){
-        if(exception != null){
+    private void onResponse(DocumentSnapshot snapshot, FirebaseFirestoreException exception) {
+        if (exception != null) {
             Log.e(TAG, exception.getLocalizedMessage());
         }
-        if(snapshot == null){
-            return;
+        RunProposal runProposal = null;
+        if (snapshot != null) {
+            runProposal = snapshot.toObject(RunProposal.class);
         }
-        List<DocumentChange> documentChanges = snapshot.getDocumentChanges();
-        for (DocumentChange documentChange : documentChanges) {
-            QueryDocumentSnapshot queryDocumentSnapshot = documentChange.getDocument();
-            RunProposal responseList = queryDocumentSnapshot.toObject(RunProposal.class);
 
-            final boolean removed = documentChange.getType() == DocumentChange.Type.REMOVED;
-            this.runProposalListenerArrayList.forEach(listener ->{
-                if(!removed){
-                    listener.onChangedProposal(responseList);
-                }
-            });
-        }
+        final RunProposal listenerProposal = runProposal;
+
+        this.runProposalListenerArrayList.forEach(listener -> {
+            listener.onChangedProposal(listenerProposal);
+        });
     }
 }
+//        if(exception != null){
+//            Log.e(TAG, exception.getLocalizedMessage());
+//        }
+//        if(snapshot == null){
+//            return;
+//        }
+//        List<DocumentChange> documentChanges = snapshot.
+//        for (DocumentChange documentChange : documentChanges) {
+//            QueryDocumentSnapshot queryDocumentSnapshot = documentChange.getDocument();
+//            RunProposal responseList = queryDocumentSnapshot.toObject(RunProposal.class);
+//
+//            final boolean removed = documentChange.getType() == DocumentChange.Type.REMOVED;
+//            this.runProposalListenerArrayList.forEach(listener ->{
+//                if(!removed){
+//                    listener.onChangedProposal(responseList);
+//                }
+//            });

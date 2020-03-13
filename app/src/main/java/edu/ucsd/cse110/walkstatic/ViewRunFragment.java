@@ -204,10 +204,9 @@ public class ViewRunFragment extends Fragment implements RunProposalChangeListen
     }
 
     private void updateChangedProposal() {
-        if (this.isResumed() == false){
+        if (this.isResumed() == false ||!app.isWalkScheduled() ){
             return;
         }
-
         Button proposeButton = getActivity().findViewById(R.id.proposeButton);
         if (app.getRunProposal().getDate() == null){
             proposeButton.setEnabled(true);
