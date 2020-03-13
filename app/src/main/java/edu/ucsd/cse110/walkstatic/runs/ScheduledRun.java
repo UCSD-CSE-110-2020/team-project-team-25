@@ -72,4 +72,16 @@ public class ScheduledRun implements RunProposalChangeListener, TeammateResponse
             listener.onScheduledRunChanged(this);
         }
     }
+
+    public void scheduleRun(){
+
+    }
+
+    public void deleteProposedRun(){
+
+    }
+
+    public boolean canProposeNewRun(){
+        return false;
+    }
 }

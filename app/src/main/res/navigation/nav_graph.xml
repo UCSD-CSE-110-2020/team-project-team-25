@@ -49,6 +49,10 @@
         app:destination="@id/proposeRunFragment"
         app:popUpTo="@+id/viewRunFragment" />
     <action
+        android:id="@+id/action_scheduledWalkFragment_to_runActivity"
+        app:destination="@id/runActivity"
+        app:popUpTo="@+id/scheduledWalkFragment" />
+    <action
         android:id="@+id/action_global_myRunsFragment"
         app:destination="@id/myRunsFragment"
         app:popUpToInclusive="true" />

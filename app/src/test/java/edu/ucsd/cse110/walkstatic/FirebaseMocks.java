@@ -2,7 +2,10 @@ package edu.ucsd.cse110.walkstatic;
 
 import edu.ucsd.cse110.walkstatic.runs.RunUpdateListener;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
+import edu.ucsd.cse110.walkstatic.store.FirebaseProposalStore;
+import edu.ucsd.cse110.walkstatic.store.FirebaseProposalWatcher;
 import edu.ucsd.cse110.walkstatic.store.NotificationTopicSubscriber;
+import edu.ucsd.cse110.walkstatic.store.ProposedDeleter;
 import edu.ucsd.cse110.walkstatic.store.ProposedStore;
 import edu.ucsd.cse110.walkstatic.store.ProposedWatcher;
 import edu.ucsd.cse110.walkstatic.store.ResponseStore;
@@ -59,6 +62,7 @@ public class FirebaseMocks {
         ResponseStore responseStore = mock(ResponseStore.class);
         ProposedStore proposedStore = mock(ProposedStore.class);
         ProposedWatcher proposedWatcher = mock(ProposedWatcher.class);
+        ProposedDeleter proposedDeleter = mock(ProposedDeleter.class);
 
         DefaultStorage.setDefaultFirebaseInitialization(context -> {});
         DefaultStorage.setDefaultStorageWatcher(ignored -> watcher);
@@ -69,6 +73,8 @@ public class FirebaseMocks {
         DefaultStorage.setDefaultResponseStore(() -> responseStore);
         DefaultStorage.setDefaultProposedStore(() -> proposedStore);
         DefaultStorage.setDefaultProposedWatcher(() -> proposedWatcher);
+        DefaultStorage.setDefaultProposedDeleter(()->proposedDeleter);
+
     }
 
 }

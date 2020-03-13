@@ -157,4 +157,36 @@ public class ScheduledRunTest {
 
         verify(scheduledRunListener).onScheduledRunChanged(argumentCaptor.capture());
     }
+
+    @Test
+    public void scheduleRunSetsScheduledToTrueAndNotifiesListeners(){
+        Teammate user = new Teammate("Tempolton@temp.com");
+        TeammateResponse templetonsResponse = new TeammateResponse(user);
+        templetonsResponse.setResponse(TeammateResponse.Response.BAD_TIME);
+        ScheduledRun scheduledRun = new ScheduledRun(null, null);
+
+        ScheduledRunListener scheduledRunListener = mock(ScheduledRunListener.class);
+        ArgumentCaptor<ScheduledRun> argumentCaptor = ArgumentCaptor.forClass(ScheduledRun.class);
+        scheduledRun.addListener(scheduledRunListener);
+
+        scheduledRun.scheduleRun();
+
+        verify(scheduledRunListener).onScheduledRunChanged(argumentCaptor.capture());
+        assertThat(scheduledRun.getRunProposal().isScheduled()).isTrue();
+    }
+
+    @Test
+    public void deleteProposedRunDeletesProposedRun(){
+        assertThat(true).isFalse();
+    }
+
+    @Test
+    public void canProposeNewRunIsFalseWhenExistingRun(){
+        assertThat(true).isFalse();
+    }
+
+    @Test
+    public void canProposeNewRunIsTrueWithoutExistingRun(){
+        assertThat(true).isFalse();
+    }
 }

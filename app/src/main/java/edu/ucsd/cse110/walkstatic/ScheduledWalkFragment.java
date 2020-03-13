@@ -14,9 +14,16 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.firestore.DocumentReference;
+
+import java.text.DecimalFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.navigation.Navigation;
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunProposal;
 import edu.ucsd.cse110.walkstatic.runs.ScheduledRun;
@@ -33,6 +40,7 @@ public class ScheduledWalkFragment extends Fragment implements ScheduledRunListe
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         this.setHasOptionsMenu(true);
     }
 
@@ -61,6 +69,12 @@ public class ScheduledWalkFragment extends Fragment implements ScheduledRunListe
             this.setDateAndTime(null);
             this.populateWithRun(null);
         }
+
+
+        Button withdrawButton = getActivity().findViewById(R.id.withdrawButton);
+        Button scheduleButton = getActivity().findViewById(R.id.scheduleWalkButton);
+        withdrawButton.setVisibility(View.INVISIBLE);
+        scheduleButton.setVisibility(View.INVISIBLE);
     }
 
     private void populateWithRun(@Nullable ScheduledRun scheduledRun){
@@ -148,6 +162,7 @@ public class ScheduledWalkFragment extends Fragment implements ScheduledRunListe
         this.teammateResponseArrayAdapter.notifyDataSetChanged();
     }
 
+
     private void addResponseListeners(){
         Button goingButton = this.requireActivity().findViewById(R.id.going_button);
         Button badTimeButton = this.requireActivity().findViewById(R.id.bad_time_button);
@@ -163,6 +178,33 @@ public class ScheduledWalkFragment extends Fragment implements ScheduledRunListe
         });
     }
 
+    private void navigateToHomeScreen() {
+        Bundle bundle = new Bundle();
+        Navigation.findNavController(this.requireActivity(), this.getId()).navigateUp();
+    }
+
+    private void populateWithButtons() {
+        if(!this.app.getScheduledRun().isRunProposed()){
+            return;
+        }
+        Button withdrawButton = getActivity().findViewById(R.id.withdrawButton);
+        Button scheduleButton = getActivity().findViewById(R.id.scheduleWalkButton);
+        withdrawButton.setVisibility(View.VISIBLE);
+        scheduleButton.setVisibility(View.VISIBLE);
+        scheduleButton.setEnabled(!this.app.getScheduledRun().getRunProposal().isScheduled());
+
+        withdrawButton.setOnClickListener(v -> {
+            app.getScheduledRun().deleteProposedRun();
+            navigateToHomeScreen();
+        });
+
+
+        scheduleButton.setOnClickListener(v -> {
+            app.getScheduledRun().scheduleRun();
+            scheduleButton.setEnabled(false);
+        });
+    }
+
     @Override
     public void onScheduledRunChanged(ScheduledRun scheduledRun) {
         this.responses.clear();
@@ -171,6 +213,7 @@ public class ScheduledWalkFragment extends Fragment implements ScheduledRunListe
         }
         this.teammateResponseArrayAdapter.notifyDataSetChanged();
         this.populateWithProposal(scheduledRun);
+        this.populateWithButtons();
     }
 
     @Override
@@ -179,4 +222,5 @@ public class ScheduledWalkFragment extends Fragment implements ScheduledRunListe
         this.app = null;
         super.onDestroy();
     }
+
 }

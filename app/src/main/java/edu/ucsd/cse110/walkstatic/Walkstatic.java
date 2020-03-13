@@ -7,8 +7,8 @@ import edu.ucsd.cse110.walkstatic.runs.RunProposal;
 import edu.ucsd.cse110.walkstatic.runs.Runs;
 import edu.ucsd.cse110.walkstatic.runs.ScheduledRun;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
-
 import edu.ucsd.cse110.walkstatic.store.NotificationTopicSubscriber;
+import edu.ucsd.cse110.walkstatic.store.ProposedDeleter;
 import edu.ucsd.cse110.walkstatic.store.ProposedStore;
 import edu.ucsd.cse110.walkstatic.store.ProposedWatcher;
 import edu.ucsd.cse110.walkstatic.store.ResponseWatcher;
@@ -29,6 +29,8 @@ public class Walkstatic {
     private StorageWatcher storageWatcher;
     private ResponseWatcher responseWatcher;
     private ProposedWatcher proposedWatcher;
+    private ProposedStore firebaseProposalStore;
+    private ProposedDeleter firebaseProposalDeleter;
 
     public Walkstatic(Context context){
         DefaultStorage.initialize(context);
@@ -50,6 +52,9 @@ public class Walkstatic {
         this.runs = new Runs(store, this.user);
         storageWatcher.addRunUpdateListener(this.runs);
         this.team = new Team(this.user);
+    }
+    public void addRunProposal(RunProposal runProposal){
+        firebaseProposalStore.storeProposal(runProposal);
     }
 
     private void readFromContext(Context context){
