@@ -85,7 +85,6 @@ public class WalkstaticTest {
         Context sharedPreferencesContext = mock(Context.class);
 
         Resources mockResources = mock(Resources.class);
-        when(mockResources.getString(R.string.proposed_time_run)).thenReturn("proposedRun");
         when(mockResources.getString(R.string.user_string)).thenReturn("user");
         when(sharedPreferencesContext.getResources()).thenReturn(mockResources);
 
