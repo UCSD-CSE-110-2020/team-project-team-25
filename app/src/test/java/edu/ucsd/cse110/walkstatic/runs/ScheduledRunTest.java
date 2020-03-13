@@ -253,7 +253,7 @@ public class ScheduledRunTest {
         TeammateResponse templetonsResponse = new TeammateResponse(user);
         templetonsResponse.setResponse(TeammateResponse.Response.BAD_TIME);
         ProposedStore proposedStore = mock(ProposedStore.class);
-        ScheduledRun scheduledRun = new ScheduledRun(null, null, proposedStore, null);
+        ScheduledRun scheduledRun = new ScheduledRun(user, null, proposedStore, null);
 
         ScheduledRunListener scheduledRunListener = mock(ScheduledRunListener.class);
         ArgumentCaptor<ScheduledRun> argumentCaptor = ArgumentCaptor.forClass(ScheduledRun.class);
@@ -270,5 +270,6 @@ public class ScheduledRunTest {
                 ArgumentCaptor.forClass(RunProposal.class);
         verify(proposedStore).storeProposal(runProposalArgumentCaptor.capture());
         assertThat(runProposalArgumentCaptor.getValue().isScheduled()).isFalse();
+        assertThat(runProposalArgumentCaptor.getValue().getAuthor()).isEqualTo(user);
     }
 }

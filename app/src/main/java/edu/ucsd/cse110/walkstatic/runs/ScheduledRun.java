@@ -96,6 +96,7 @@ public class ScheduledRun implements RunProposalChangeListener, TeammateResponse
     }
 
     public void propose(RunProposal runProposal){
+        runProposal.setAuthor(this.user);
         this.proposedStore.storeProposal(runProposal);
         this.runProposal = runProposal;
         this.notifyListeners();

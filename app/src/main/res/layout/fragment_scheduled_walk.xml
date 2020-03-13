@@ -97,16 +97,17 @@
 
     <ListView
         android:id="@+id/responseList"
-        android:layout_width="371dp"
-        android:layout_height="253dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/withdrawButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/time_view"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toBottomOf="@+id/time_view">
 
     </ListView>
 
@@ -114,20 +115,28 @@
         android:id="@+id/withdrawButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="90dp"
-        android:layout_marginTop="90dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:text="Withdraw"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/responseList" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/space3" />
 
     <Button
         android:id="@+id/scheduleWalkButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="90dp"
-        android:layout_marginEnd="90dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
         android:text="Schedule"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/space3" />
+
+    <Space
+        android:id="@+id/space3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/responseList" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

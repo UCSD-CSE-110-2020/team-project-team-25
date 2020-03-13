@@ -194,8 +194,10 @@ public class ViewRunFragment extends Fragment implements ScheduledRunListener {
     }
 
     private void updateChangedProposal() {
-        Button proposeButton = getActivity().findViewById(R.id.proposeButton);
-        proposeButton.setEnabled(this.app.getScheduledRun().canProposeNewRun());
+        Button proposeButton = requireActivity().findViewById(R.id.proposeButton);
+        if(proposeButton != null){
+            proposeButton.setEnabled(this.app.getScheduledRun().canProposeNewRun());
+        }
     }
 
     @Override

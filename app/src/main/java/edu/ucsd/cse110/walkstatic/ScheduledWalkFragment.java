@@ -178,11 +178,6 @@ public class ScheduledWalkFragment extends Fragment implements ScheduledRunListe
         });
     }
 
-    private void navigateToHomeScreen() {
-        Bundle bundle = new Bundle();
-        Navigation.findNavController(this.requireActivity(), this.getId()).navigateUp();
-    }
-
     private void populateWithButtons() {
         if(!this.app.getScheduledRun().isRunProposed()){
             return;
@@ -195,7 +190,6 @@ public class ScheduledWalkFragment extends Fragment implements ScheduledRunListe
 
         withdrawButton.setOnClickListener(v -> {
             app.getScheduledRun().deleteProposedRun();
-            navigateToHomeScreen();
         });
 
 

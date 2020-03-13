@@ -23,9 +23,9 @@ public class FirebaseResponseStore implements ResponseStore {
 
     @Override
     public void setResponse(TeammateResponse response) {
-        String name = response.getUser().getName();
-        name = name.replace("@", "");
-        DocumentReference doc = this.responseCollection.document(name);
+        String email = response.getUser().getEmail();
+        email = email.replace("@", "");
+        DocumentReference doc = this.responseCollection.document(email);
         doc.set(response).addOnFailureListener(f -> {
             Log.e(TAG, "Unable to store response " + response + " because " + f.getLocalizedMessage());
         });
