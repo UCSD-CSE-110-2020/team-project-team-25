@@ -18,6 +18,7 @@ import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunProposal;
+import edu.ucsd.cse110.walkstatic.runs.RunProposalChangeListener;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
 import edu.ucsd.cse110.walkstatic.store.ProposedWatcher;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;

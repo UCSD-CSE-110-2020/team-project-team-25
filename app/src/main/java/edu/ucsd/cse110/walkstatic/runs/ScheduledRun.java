@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import edu.ucsd.cse110.walkstatic.store.ProposedDeleter;
+import edu.ucsd.cse110.walkstatic.store.ProposedStore;
 import edu.ucsd.cse110.walkstatic.store.ResponseStore;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponse;
@@ -13,16 +15,21 @@ public class ScheduledRun implements RunProposalChangeListener, TeammateResponse
     private RunProposal runProposal;
     private Teammate user;
     private ResponseStore responseStore;
+    private ProposedStore proposedStore;
+    private ProposedDeleter proposedDeleter;
 
     private HashMap<Teammate, TeammateResponse> attendees;
     private ArrayList<ScheduledRunListener> scheduledRunListeners;
 
-    public ScheduledRun(Teammate user, ResponseStore responseStore){
+    public ScheduledRun(Teammate user, ResponseStore responseStore,
+                        ProposedStore proposedStore, ProposedDeleter proposedDeleter){
         this.user = user;
         this.runProposal = null;
         this.responseStore = responseStore;
         this.attendees = new HashMap<>();
         this.scheduledRunListeners = new ArrayList<>();
+        this.proposedStore = proposedStore;
+        this.proposedDeleter = proposedDeleter;
     }
 
     public boolean isRunProposed(){
@@ -74,14 +81,23 @@ public class ScheduledRun implements RunProposalChangeListener, TeammateResponse
     }
 
     public void scheduleRun(){
-
+        this.runProposal.setScheduled(true);
+        this.proposedStore.storeProposal(this.runProposal);
+        this.notifyListeners();
     }
 
     public void deleteProposedRun(){
-
+        this.runProposal = null;
+        this.proposedDeleter.delete();
     }
 
     public boolean canProposeNewRun(){
-        return false;
+        return !this.isRunProposed();
+    }
+
+    public void propose(RunProposal runProposal){
+        this.proposedStore.storeProposal(runProposal);
+        this.runProposal = runProposal;
+        this.notifyListeners();
     }
 }

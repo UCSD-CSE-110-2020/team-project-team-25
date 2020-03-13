@@ -11,6 +11,7 @@ import java.util.List;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.rule.ActivityTestRule;
 import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.runs.RunProposalChangeListener;
 import edu.ucsd.cse110.walkstatic.runs.RunUpdateListener;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
 import edu.ucsd.cse110.walkstatic.store.ProposedWatcher;
@@ -129,9 +130,9 @@ public class EspressoHelpers{
             }
         });
 
-        DefaultStorage.setDefaultProposedStore(() -> (topic) -> {});
+        DefaultStorage.setDefaultProposedStore(() -> runProposal -> {});
 
-        DefaultStorage.setDefaultProposedDeleter(() -> (topic) -> {});
+        DefaultStorage.setDefaultProposedDeleter(() -> () -> {});
     }
 
     public static void setUser(Teammate user){

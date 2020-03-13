@@ -59,7 +59,7 @@ public class ProposeRunFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.proposeCheckButton && (validTime && validDate)) {
-            app.addRunProposal(this.runProposal);
+            app.getScheduledRun().propose(this.runProposal);
             Navigation.findNavController(this.requireView()).navigate(R.id.runActivity);
         }
         return super.onOptionsItemSelected(item);

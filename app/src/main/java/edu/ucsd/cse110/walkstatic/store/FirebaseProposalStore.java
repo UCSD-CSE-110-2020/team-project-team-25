@@ -21,18 +21,11 @@ public class FirebaseProposalStore implements ProposedStore, ProposedDeleter {
 
     @Override
     public void storeProposal(RunProposal runProposal) {
-        if(proposals.equals("")){
-            proposals.getParent().add(runProposal).addOnFailureListener(f -> {
-                Log.e(TAG, "Unable to store request " + runProposal + " because " + f.getLocalizedMessage());
-            });
-        } else {
-            proposals.set(runProposal).addOnFailureListener(f -> {
-                Log.e(TAG, "Unable to store request " + runProposal + " because " + f.getLocalizedMessage());
-            });
-        }
-
+        proposals.set(runProposal).addOnFailureListener(f -> {
+            Log.e(TAG, "Unable to store request " + runProposal + " because " + f.getLocalizedMessage());
+        });
     }
-    public void delete(RunProposal runProposal) {
+    public void delete() {
         proposals.delete().addOnFailureListener(f -> {
             Log.e(TAG, "Unable to delete " + " because " + f.getLocalizedMessage());
         });
