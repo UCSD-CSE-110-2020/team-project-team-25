@@ -24,6 +24,7 @@ public class DefaultStorage {
     private static GenericBlueprint<RunStore> defaultRunStore;
 
     private static GenericBlueprint<TeamsStore> defaultTeamsStore;
+    private static StorageWatcherBlueprint defaultStorageWatcher;
 
     private static GenericBlueprint<ResponseWatcher> defaultResponseWatcher;
     private static GenericBlueprint<NotificationTopicSubscriber> defaultNotificationTopicSubscriber;

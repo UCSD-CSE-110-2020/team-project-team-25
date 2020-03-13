@@ -50,7 +50,7 @@ import edu.ucsd.cse110.walkstatic.time.TimeMachine;
 import static android.content.Context.MODE_PRIVATE;
 
 
-public class RunFragment extends Fragment {
+public class RunFragment extends Fragment implements TeammateRequestListener {
 
     private DistanceTracker stepTracker;
     private FitnessService fitnessService;
