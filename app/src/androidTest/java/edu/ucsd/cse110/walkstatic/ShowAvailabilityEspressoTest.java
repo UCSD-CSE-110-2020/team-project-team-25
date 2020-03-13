@@ -65,9 +65,12 @@ public class ShowAvailabilityEspressoTest {
         TeammateResponse busyResponse = new TeammateResponse(busy);
         busyResponse.setResponse(TeammateResponse.Response.BAD_TIME);
         EspressoHelpers.mockStorage(busyResponse, simpletonResponse);
+        Teammate user = new Teammate("user");
+        EspressoHelpers.setUser(user);
 
         Run run = new Run();
         RunProposal runProposal = new RunProposal(run);
+        runProposal.setAuthor(user);
         DefaultStorage.setDefaultProposedWatcher(() -> new ProposedWatcher(){
             @Override
             public void addProposalListener(RunProposalChangeListener listener) {
