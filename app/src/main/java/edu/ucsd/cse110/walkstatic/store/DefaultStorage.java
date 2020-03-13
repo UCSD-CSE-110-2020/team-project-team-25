@@ -26,8 +26,13 @@ public class DefaultStorage {
     private static GenericBlueprint<TeamsStore> defaultTeamsStore;
 
     private static GenericBlueprint<ResponseWatcher> defaultResponseWatcher;
+    private static GenericBlueprint<NotificationTopicSubscriber> defaultNotificationTopicSubscriber;
+    private static GenericBlueprint<ProposedStore> defaultProposedStore;
+    private static GenericBlueprint<ProposedWatcher> defaultProposedWatcher;
+    private static GenericBlueprint<ResponseStore> defaultResponseStore;
+    private static GenericBlueprint<ProposedDeleter> defaultProposedDeleter;
 
-    private static StorageWatcherBlueprint defaultStorageWatcher;
+
     private static FirebaseInitialization defaultFirebaseInitialization;
 
     public static StorageWatcher getDefaultStorageWatcher(Teammate user){
@@ -62,6 +67,22 @@ public class DefaultStorage {
         return defaultTeamsStore.get();
     }
 
+    public static ProposedDeleter getDefaultProposedDeleter(){
+        if(defaultProposedDeleter == null){
+            assertNotTestMode();
+            return new FirebaseProposalStore();
+        }
+        return defaultProposedDeleter.get();
+    }
+
+    public static ProposedStore getDefaultProposedStore(){
+        if(defaultProposedStore == null){
+            assertNotTestMode();
+            return new FirebaseProposalStore();
+        }
+        return defaultProposedStore.get();
+    }
+
     public static ResponseWatcher getDefaultResponseWatcher(){
         if(defaultResponseWatcher == null){
             assertNotTestMode();
@@ -70,8 +91,44 @@ public class DefaultStorage {
         return defaultResponseWatcher.get();
     }
 
+    public static NotificationTopicSubscriber getDefaultNotificationTopicSubscriber() {
+        if (defaultNotificationTopicSubscriber == null) {
+            assertNotTestMode();
+            return new FirebaseNotificationTopicSubscriber();
+        }
+        return defaultNotificationTopicSubscriber.get();
+    }
+
+    public static ProposedWatcher getDefaultProposedWatcher(){
+        if(defaultProposedWatcher == null){
+            assertNotTestMode();
+            return new FirebaseProposalWatcher();
+        }
+        return defaultProposedWatcher.get();
+    }
+
+    public static ResponseStore getDefaultResponseStore(){
+        if(defaultResponseStore == null){
+            assertNotTestMode();
+            return new FirebaseResponseStore();
+        }
+        return defaultResponseStore.get();
+    }
+
     public static void setDefaultStorageWatcher(StorageWatcherBlueprint defaultStorageWatcher){
         DefaultStorage.defaultStorageWatcher = defaultStorageWatcher;
+    }
+
+    public static void setDefaultProposedDeleter(GenericBlueprint<ProposedDeleter> defaultProposedDeleter){
+        DefaultStorage.defaultProposedDeleter = defaultProposedDeleter;
+    }
+
+    public static void setDefaultProposedStore(GenericBlueprint<ProposedStore> defaultProposedStore){
+        DefaultStorage.defaultProposedStore = defaultProposedStore;
+    }
+
+    public static void setDefaultProposedWatcher(GenericBlueprint<ProposedWatcher> defaultProposedWatcher){
+        DefaultStorage.defaultProposedWatcher = defaultProposedWatcher;
     }
 
     public static void setDefaultTeammateRequestStore(GenericBlueprint<TeammateRequestStore> defaultTeammateRequestStore){
@@ -92,6 +149,14 @@ public class DefaultStorage {
 
     public static void setDefaultFirebaseInitialization(FirebaseInitialization firebaseInitialization){
         DefaultStorage.defaultFirebaseInitialization = firebaseInitialization;
+    }
+
+    public static void setDefaultNotificationTopicSubscriber(GenericBlueprint<NotificationTopicSubscriber> defaultNotificationTopicSubscriber){
+        DefaultStorage.defaultNotificationTopicSubscriber = defaultNotificationTopicSubscriber;
+    }
+
+    public static void setDefaultResponseStore(GenericBlueprint<ResponseStore> defaultResponseStore){
+        DefaultStorage.defaultResponseStore = defaultResponseStore;
     }
 
     public static void initialize(Context context){

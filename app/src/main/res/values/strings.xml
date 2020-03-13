@@ -81,4 +81,11 @@
     <string name="going">Going</string>
     <string name="bad_time">Not Going, Reason: Bad time.</string>
     <string name="not_good">Not Going, Reason: Not a good route for me.</string>
+
+    <string name="response_header">Send Response</string>
+    <string name="going_button">Im Going</string>
+    <string name="bad_time_button">Not Going, Bad Time</string>
+    <string name="bad_route_button">Not Going, Bad Route</string>
+
+    <string name="no_proposed_run">There is no Proposed Run</string>
 </resources>

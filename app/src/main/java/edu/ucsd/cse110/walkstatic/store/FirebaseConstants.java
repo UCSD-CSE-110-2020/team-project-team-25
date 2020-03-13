@@ -7,4 +7,5 @@ public class FirebaseConstants {
     public static final String RUNS_DOCUMENT = "runs";
     public static final String REQUEST_DOCUMENT = "requests";
     public static final String TEAM_DOCUMENT = "teams";
+    public static final String PROPOSED_DOCUMENT = "proposals";
 }

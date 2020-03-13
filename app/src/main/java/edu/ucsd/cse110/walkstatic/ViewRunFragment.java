@@ -12,17 +12,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,10 +27,15 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.runs.RunProposal;
+import edu.ucsd.cse110.walkstatic.runs.ScheduledRun;
+import edu.ucsd.cse110.walkstatic.runs.ScheduledRunListener;
 import edu.ucsd.cse110.walkstatic.time.TimeHelp;
 
-public class ViewRunFragment extends Fragment {
+public class ViewRunFragment extends Fragment implements ScheduledRunListener {
 
+
+    private Walkstatic app;
     private Run run;
 
     @Override
@@ -57,6 +59,9 @@ public class ViewRunFragment extends Fragment {
             this.populateWithRun(run);
         }
 
+        this.app = new Walkstatic(this.requireContext());
+        app.getScheduledRun().addListener(this);
+        updateChangedProposal();
         Button proposeButton = getActivity().findViewById(R.id.proposeButton);
 
         proposeButton.setOnClickListener(new View.OnClickListener() {
@@ -181,4 +186,22 @@ public class ViewRunFragment extends Fragment {
         sharedPreferences.edit().putString(preferencesName, this.run.toJSON()).apply();
     }
 
+    @Override
+    public void onDestroy(){
+        this.app.destroy();
+        this.app = null;
+        super.onDestroy();
+    }
+
+    private void updateChangedProposal() {
+        Button proposeButton = requireActivity().findViewById(R.id.proposeButton);
+        if(proposeButton != null){
+            proposeButton.setEnabled(this.app.getScheduledRun().canProposeNewRun());
+        }
+    }
+
+    @Override
+    public void onScheduledRunChanged(ScheduledRun scheduledRun) {
+        this.updateChangedProposal();
+    }
 }

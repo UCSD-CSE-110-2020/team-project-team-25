@@ -1,5 +1,9 @@
 package edu.ucsd.cse110.walkstatic.runs;
 
+import androidx.annotation.NonNull;
+
+import com.google.firebase.firestore.DocumentId;
+import com.google.firebase.firestore.Exclude;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
@@ -8,16 +12,20 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
+import edu.ucsd.cse110.walkstatic.store.FirebaseConstants;
+import edu.ucsd.cse110.walkstatic.store.FirebaseProposalStore;
+import edu.ucsd.cse110.walkstatic.store.ProposedStore;
+import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
+import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponse;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponseChangeListener;
 
-public class RunProposal implements TeammateResponseChangeListener, Serializable {
-    @Expose
+public class RunProposal implements Serializable {
     Run run;
 
     @Expose
@@ -26,21 +34,20 @@ public class RunProposal implements TeammateResponseChangeListener, Serializable
     @Expose
     String time;
 
-    @Expose(serialize = false)
-    private HashMap<Teammate, TeammateResponse> attendees;
+    @Expose
+    Teammate author;
 
-    @Expose(serialize = false)
-    private ArrayList<RunProposalListener> runProposalListeners;
+    @Expose
+    boolean scheduled;
 
     public RunProposal(){
-        this.run = new Run();
-        this.attendees = new HashMap<>();
-        this.runProposalListeners = new ArrayList<>();
+        this(new Run());
     }
 
     public RunProposal(Run run){
-        this();
         this.run = run;
+        this.author = new Teammate();
+        this.scheduled = false;
     }
 
     public void setDate(String date) {
@@ -49,6 +56,13 @@ public class RunProposal implements TeammateResponseChangeListener, Serializable
     public void setTime(String time){
         this.time = time;
     }
+    public void setAuthor(Teammate author){
+        this.author = author;
+    }
+    public void setScheduled(boolean scheduled){
+        this.scheduled = scheduled;
+    }
+
     public Run getRun(){
         return this.run;
     }
@@ -58,6 +72,13 @@ public class RunProposal implements TeammateResponseChangeListener, Serializable
 
     public String getDate(){
         return this.date;
+    }
+    public boolean isScheduled(){
+        return this.scheduled;
+    }
+
+    public Teammate getAuthor() {
+        return this.author;
     }
 
     public String toJSON(){
@@ -73,24 +94,6 @@ public class RunProposal implements TeammateResponseChangeListener, Serializable
         return rp;
     }
 
-    public List<TeammateResponse> getAttendees(){
-        ArrayList<TeammateResponse> attendeesList = new ArrayList<>(this.attendees.values());
-        return attendeesList;
-    }
-
-    public void addListener(RunProposalListener listener){
-        this.runProposalListeners.add(listener);
-    }
-
-    @Override
-    public void onChangedResponse(TeammateResponse changedResponse) {
-        this.attendees.put(changedResponse.getUser(), changedResponse);
-        List<TeammateResponse> responseList = this.getAttendees();
-        for(RunProposalListener listener : this.runProposalListeners){
-            listener.onResponsesChanged(responseList);
-        }
-    }
-
     @Override
     public boolean equals(Object other){
         if(!(other instanceof RunProposal)){
@@ -104,4 +107,5 @@ public class RunProposal implements TeammateResponseChangeListener, Serializable
     public String toString(){
         return this.toJSON();
     }
+
 }

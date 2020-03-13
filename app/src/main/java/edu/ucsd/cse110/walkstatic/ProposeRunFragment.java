@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import androidx.annotation.Nullable;
@@ -22,13 +23,13 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import java.util.Calendar;
-import java.util.Objects;
 
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunProposal;
 
 public class ProposeRunFragment extends Fragment {
-    private RunProposal runproposal;
+    private Walkstatic app;
+    private RunProposal runProposal;
     private DatePickerDialog datePicker;
     private TimePickerDialog timePicker;
     boolean validTime = false;
@@ -58,11 +59,7 @@ public class ProposeRunFragment extends Fragment {
         int id = item.getItemId();
 
         if (id == R.id.proposeCheckButton && (validTime && validDate)) {
-            String preferencesName = this.getResources().getString(R.string.proposed_time_run);
-            Activity activity = this.requireActivity();
-            SharedPreferences sharedPreferences = activity.getSharedPreferences(
-                    preferencesName, Context.MODE_PRIVATE);
-            sharedPreferences.edit().putString(preferencesName, this.runproposal.toJSON()).apply();
+            app.getScheduledRun().propose(this.runProposal);
             Navigation.findNavController(this.requireView()).navigate(R.id.runActivity);
         }
         return super.onOptionsItemSelected(item);
@@ -81,12 +78,15 @@ public class ProposeRunFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        this.app = new Walkstatic(this.requireContext());
         if (this.getArguments() != null && this.getArguments().getSerializable("Run") != null) {
             Run run = (Run) this.getArguments().getSerializable("Run");
-            this.runproposal = new RunProposal(run);
+            this.runProposal = new RunProposal(run);
         }
+        TextView runProposalName = getActivity().findViewById(R.id.runProposalName);
         EditText dateEditText = getActivity().findViewById(R.id.editDateText);
         EditText timeEditText = getActivity().findViewById(R.id.editTimeText);
+        runProposalName.setText(this.runProposal.getRun().getName());
         dateEditText.setFocusable(false);
         timeEditText.setFocusable(false);
         timeEditText.setOnClickListener(new View.OnClickListener() {
@@ -116,7 +116,7 @@ public class ProposeRunFragment extends Fragment {
                                     time = sHour + ":0" + sMinute;
                                 }
                                 timeEditText.setText(time);
-                                runproposal.setTime(time);
+                                runProposal.setTime(time);
                                 validTime = true;
                                 }
                             }
@@ -141,7 +141,7 @@ public class ProposeRunFragment extends Fragment {
                                 String date = (monthOfYear + 1) + "/" + dayOfMonth + "/" + years;
                                 dateEditText.setText(date);
 
-                                runproposal.setDate(date);
+                                runProposal.setDate(date);
                                 validDate = true;
                                 if(years == year && monthOfYear == month && dayOfMonth == day){
                                     isToday = true;
@@ -157,5 +157,11 @@ public class ProposeRunFragment extends Fragment {
             }
         });
 
+    }
+    @Override
+    public void onDestroy(){
+        this.app.destroy();
+        this.app = null;
+        super.onDestroy();
     }
 }

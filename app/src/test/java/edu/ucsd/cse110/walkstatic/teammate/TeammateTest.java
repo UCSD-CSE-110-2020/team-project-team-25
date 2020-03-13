@@ -82,4 +82,23 @@ public class TeammateTest {
         assertThat(teammate.getColor()).isNotEqualTo(teammate2.getColor());
     }
 
+    @Test
+    public void teammateInvalidIfNoEmail(){
+        Teammate teammate = new Teammate();
+        assertThat(teammate.isValid()).isFalse();
+    }
+
+    @Test
+    public void teammateInvalidIfNoNameButEmail(){
+        Teammate teammate = new Teammate("email");
+        assertThat(teammate.isValid()).isFalse();
+    }
+
+    @Test
+    public void teammateValidIfEmailAndNameSet(){
+        Teammate teammate = new Teammate("email");
+        teammate.setName("Name");
+        assertThat(teammate.isValid()).isTrue();
+    }
+
 }

@@ -358,6 +358,29 @@ public class RunFragment extends Fragment {
             mileCount.setText(new DecimalFormat("#.00").format(lastRun.getMiles()));
         }
     }
+
+    @Override
+    public void onNewTeammateRequest(TeammateRequest request) {
+        if(this.app == null){
+            return;
+        }
+        if (request.getTarget().equals(app.getUser())){
+            setNotification(true);
+            lastRequest = request;
+        }
+    }
+
+    @Override
+    public void onTeammateRequestDeleted(TeammateRequest request) {
+        if(this.app == null){
+            return;
+        }
+        if(request.getTarget().equals(app.getUser())){
+            setNotification(false);
+            lastRequest = null;
+        }
+    }
+
     private class SecondTimer implements Runnable{
         int delay;
         Handler timer;
