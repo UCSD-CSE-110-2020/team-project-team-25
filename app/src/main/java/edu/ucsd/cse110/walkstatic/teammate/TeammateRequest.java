@@ -2,7 +2,9 @@ package edu.ucsd.cse110.walkstatic.teammate;
 
 import com.google.gson.Gson;
 
-public class TeammateRequest {
+import java.io.Serializable;
+
+public class TeammateRequest implements Serializable {
     private Teammate requester;
     private Teammate target;
 

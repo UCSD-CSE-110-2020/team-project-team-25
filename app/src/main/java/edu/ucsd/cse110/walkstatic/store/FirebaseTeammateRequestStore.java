@@ -23,19 +23,31 @@ public class FirebaseTeammateRequestStore implements TeammateRequestStore {
     public void addRequest(TeammateRequest request) {
         String targetEmail = request.getTarget().getEmail();
         CollectionReference targetRequests = teammateRequests.collection(targetEmail);
-        this.addToCollection(targetRequests, request);
+        this.addToCollection(request.getRequester().getEmail(), targetRequests, request);
         String requesterEmail = request.getRequester().getEmail();
         CollectionReference requesterRequests = teammateRequests.collection(requesterEmail);
-        this.addToCollection(requesterRequests, request);
+        this.addToCollection(request.getTarget().getEmail(), requesterRequests, request);
     }
 
     @Override
     public void delete(TeammateRequest request) {
-
+        String targetEmail = request.getTarget().getEmail();
+        CollectionReference targetRequests = teammateRequests.collection(targetEmail);
+        this.deleteFromCollection(request.getRequester().getEmail(), targetRequests, request);
+        String requesterEmail = request.getRequester().getEmail();
+        CollectionReference requesterRequests = teammateRequests.collection(requesterEmail);
+        this.deleteFromCollection(request.getTarget().getEmail(), requesterRequests, request);
     }
 
-    private void addToCollection(CollectionReference reference, TeammateRequest request){
-        reference.add(request).addOnFailureListener(f -> {
+    private void deleteFromCollection(String id, CollectionReference reference, TeammateRequest request){
+        DocumentReference doc = reference.document(id);
+        doc.delete().addOnFailureListener( f ->
+                Log.e(TAG, "Unable to delete request " + request + " because " + f.getLocalizedMessage()));
+    }
+
+    private void addToCollection(String id, CollectionReference reference, TeammateRequest request){
+        DocumentReference doc = reference.document(id);
+        doc.set(request).addOnFailureListener(f -> {
             Log.e(TAG, "Unable to store request " + request + " because " + f.getLocalizedMessage());
         });
     }

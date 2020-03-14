@@ -12,17 +12,18 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
+import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
 
 public class InviteReceivedFragment extends Fragment {
 
-    private Teammate teammate;
+    private TeammateRequest teammateRequest;
     private Walkstatic app;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.teammate = (Teammate) getArguments().get("request");
+        this.teammateRequest = (TeammateRequest) getArguments().get("request");
     }
 
     @Override
@@ -40,6 +41,8 @@ public class InviteReceivedFragment extends Fragment {
         TextView requesterName = getActivity().findViewById(R.id.requester_name);
         TextView requesterEmail = getActivity().findViewById(R.id.requester_email);
 
+        Teammate teammate = teammateRequest.getRequester();
+
         requesterName.setText(teammate.getName());
         requesterEmail.setText(teammate.getEmail());
 
@@ -47,11 +50,14 @@ public class InviteReceivedFragment extends Fragment {
         Button rejectButton = view.findViewById(R.id.rejectButton);
 
         acceptButton.setOnClickListener(click -> {
-//            app.getTeam().merge(teammate.getTeam());
+            this.app.getTeammateRequests().deleteTeammateRequest(this.teammateRequest);
+            this.app.getTeam().setMembership(this.teammateRequest.getTarget());
+            this.app.getTeam().setMembership(this.teammateRequest.getRequester());
             Navigation.findNavController(this.getActivity(), this.getId()).navigateUp();
         });
 
         rejectButton.setOnClickListener(click -> {
+            this.app.getTeammateRequests().deleteTeammateRequest(this.teammateRequest);
             Navigation.findNavController(this.getActivity(), this.getId()).navigateUp();
         });
     }

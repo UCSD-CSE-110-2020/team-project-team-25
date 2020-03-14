@@ -66,4 +66,8 @@ public class TeammateRequests implements TeammateRequestListener {
         }
         return false;
     }
+
+    public void deleteTeammateRequest(TeammateRequest request){
+        this.store.delete(request);
+    }
 }

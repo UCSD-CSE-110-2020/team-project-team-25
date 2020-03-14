@@ -7,6 +7,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import androidx.navigation.Navigation;
 
 import java.util.List;
 
+import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.teammate.Team;
 import edu.ucsd.cse110.walkstatic.teammate.TeamListener;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
@@ -24,7 +26,7 @@ import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestArrayAdapter;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestsListener;
 
-public class TeamFragment extends Fragment implements TeammateRequestsListener, TeamListener {
+public class TeamFragment extends Fragment implements TeammateRequestsListener, TeamListener, AdapterView.OnItemClickListener {
 
     private TeammateRequestArrayAdapter teammateRequestListAdapter;
     private TeammateArrayAdapter teammateListAdapter;
@@ -66,9 +68,18 @@ public class TeamFragment extends Fragment implements TeammateRequestsListener, 
         teammateRequestListAdapter = new TeammateRequestArrayAdapter(this.getActivity(),
                 R.layout.teammate_request_textview, this.requestsList);
         requestsListView.setAdapter(teammateRequestListAdapter);
+        requestsListView.setOnItemClickListener(this);
         teammateRequestListAdapter.notifyDataSetChanged();
 
         this.app.getTeammateRequests().addRequestsListener(this);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+        TeammateRequest request = (TeammateRequest)parent.getItemAtPosition(pos);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("request", request);
+        Navigation.findNavController(this.getActivity(), this.getId()).navigate(R.id.action_teamFragment_to_inviteAcceptedFragment, bundle);
     }
 
     @Override
