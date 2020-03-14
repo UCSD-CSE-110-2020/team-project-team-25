@@ -32,6 +32,7 @@ public class DefaultStorage {
     private static GenericBlueprint<ProposedWatcher> defaultProposedWatcher;
     private static GenericBlueprint<ResponseStore> defaultResponseStore;
     private static GenericBlueprint<ProposedDeleter> defaultProposedDeleter;
+    private static GenericBlueprint<GenericWatcher<UserTeamListener>> defaultMembershipWatcher;
 
 
     private static FirebaseInitialization defaultFirebaseInitialization;
@@ -116,6 +117,14 @@ public class DefaultStorage {
         return defaultResponseStore.get();
     }
 
+    public static GenericWatcher<UserTeamListener> getDefaultMembershipWatcher() {
+        if(defaultMembershipWatcher == null){
+            assertNotTestMode();
+            return new FirebaseUserMembershipWatcher();
+        }
+        return defaultMembershipWatcher.get();
+    }
+
     public static void setDefaultStorageWatcher(StorageWatcherBlueprint defaultStorageWatcher){
         DefaultStorage.defaultStorageWatcher = defaultStorageWatcher;
     }
@@ -158,6 +167,10 @@ public class DefaultStorage {
 
     public static void setDefaultResponseStore(GenericBlueprint<ResponseStore> defaultResponseStore){
         DefaultStorage.defaultResponseStore = defaultResponseStore;
+    }
+
+    public static void setDefaultMembershipWatcher(GenericBlueprint<GenericWatcher<UserTeamListener>> defaultMembershipWatcher){
+        DefaultStorage.defaultMembershipWatcher = defaultMembershipWatcher;
     }
 
     public static void initialize(Context context){

@@ -7,6 +7,7 @@ import edu.ucsd.cse110.walkstatic.runs.RunProposal;
 import edu.ucsd.cse110.walkstatic.runs.Runs;
 import edu.ucsd.cse110.walkstatic.runs.ScheduledRun;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
+import edu.ucsd.cse110.walkstatic.store.GenericWatcher;
 import edu.ucsd.cse110.walkstatic.store.NotificationTopicSubscriber;
 import edu.ucsd.cse110.walkstatic.store.ProposedDeleter;
 import edu.ucsd.cse110.walkstatic.store.ProposedStore;
@@ -16,6 +17,7 @@ import edu.ucsd.cse110.walkstatic.store.ResponseWatcher;
 import edu.ucsd.cse110.walkstatic.store.RunStore;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
 import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
+import edu.ucsd.cse110.walkstatic.store.UserTeamListener;
 import edu.ucsd.cse110.walkstatic.teammate.Team;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequests;
@@ -30,6 +32,7 @@ public class Walkstatic {
     private StorageWatcher storageWatcher;
     private ResponseWatcher responseWatcher;
     private ProposedWatcher proposedWatcher;
+    private GenericWatcher<UserTeamListener> membershipWatcher;
 
     public Walkstatic(Context context){
         DefaultStorage.initialize(context);
@@ -39,6 +42,7 @@ public class Walkstatic {
         this.proposedWatcher = DefaultStorage.getDefaultProposedWatcher();
         RunStore defaultRunStore = DefaultStorage.getDefaultRunStore();
         this.responseWatcher = DefaultStorage.getDefaultResponseWatcher();
+        this.membershipWatcher = DefaultStorage.getDefaultMembershipWatcher();
 
         this.teammateRequests = new TeammateRequests(defaultStore, this.storageWatcher);
         this.initRuns(defaultRunStore, this.storageWatcher);
@@ -52,6 +56,7 @@ public class Walkstatic {
         this.runs = new Runs(store, this.user);
         storageWatcher.addRunUpdateListener(this.runs);
         this.team = new Team(this.user);
+        this.membershipWatcher.addWatcherListener(this.team);
     }
 
 
@@ -95,6 +100,7 @@ public class Walkstatic {
         this.storageWatcher.deleteAllListeners();
         this.responseWatcher.deleteAllListeners();
         this.proposedWatcher.deleteAllListeners();
+        this.membershipWatcher.deleteAllListeners();
     }
 
     private void registerTopics(){
