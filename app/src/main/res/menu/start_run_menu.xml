@@ -3,6 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/action_favorite"
+        android:icon="@drawable/ic_star_border_white_24dp"
+        android:title="Favorite"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/action_start_run"
         android:icon="@drawable/ic_run_white_24dp"
         android:title="@string/start_run"

@@ -106,11 +106,6 @@ public class TeammatesRunEspressoTest {
 
         ViewInteraction actionMenuItemView = onView(
                 allOf(withId(R.id.action_start_run), withContentDescription("Start Run"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.action_bar),
-                                        2),
-                                0),
                         isDisplayed()));
         actionMenuItemView.perform(click());
 

@@ -1,6 +1,8 @@
 package edu.ucsd.cse110.walkstatic;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -26,11 +28,13 @@ import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
 import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 import edu.ucsd.cse110.walkstatic.fitness.MockFitAdapter;
+import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.time.TimeMachine;
 
 public class DebugFragment extends Fragment implements FitnessListener {
     private static final long INCREMENT_AMOUNT = 500;
     private static final String TIME_FORMAT = "HH:mm:ss.SSS";
+    private Walkstatic app;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,9 +45,11 @@ public class DebugFragment extends Fragment implements FitnessListener {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view, savedInstanceState);
+        this.app = new Walkstatic(this.requireContext());
         initAddSteps();
         loadFirstSteps();
         loadTime();
+        populateUser();
     }
 
     private void initAddSteps(){
@@ -122,5 +128,51 @@ public class DebugFragment extends Fragment implements FitnessListener {
                 Log.e("Debug Fragment", exception.toString());
             }
         });
+    }
+
+    private void populateUser(){
+        EditText name = this.requireActivity().findViewById(R.id.name_debug);
+        EditText email = this.requireActivity().findViewById(R.id.email_debug);
+        Teammate user = this.app.getUser();
+        name.setText(user.getName());
+        email.setText(user.getEmail());
+
+        TextWatcher textWatcher = new TextWatcher(){
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String nameStr = name.getText().toString();
+                String emailStr = email.getText().toString();
+                Teammate newUser = new Teammate(emailStr);
+                newUser.setName(nameStr);
+                setUser(newUser);
+            }
+        };
+
+        name.addTextChangedListener(textWatcher);
+        email.addTextChangedListener(textWatcher);
+    }
+
+    private void setUser(Teammate user){
+        String userKey = this.requireContext().getResources().getString(R.string.user_string);
+        SharedPreferences sharedPreferences = this.requireContext().getSharedPreferences(userKey, Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString(userKey, user.toString()).apply();
+    }
+
+    @Override
+    public void onDestroy(){
+        this.app.destroy();
+        this.app = null;
+        super.onDestroy();
     }
 }

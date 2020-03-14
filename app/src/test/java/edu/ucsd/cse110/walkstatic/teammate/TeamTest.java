@@ -52,13 +52,13 @@ public class TeamTest {
     }
 
     @Test
-    public void whenAnotherUserDocumentChangedListenerNotCalled(){
+    public void whenAnotherUserDocumentChangedListenerCalled(){
         TeamListener listener = mock(TeamListener.class);
         Teammate user = new Teammate("temple");
         Team team = new Team(user, null);
         team.addTeamListener(listener);
         team.userTeamChanged(new Teammate("User"));
-        verify(listener, times(0)).teamChanged();
+        verify(listener, times(1)).teamChanged();
     }
 
     @Test
@@ -104,14 +104,14 @@ public class TeamTest {
     }
 
     @Test
-    public void whenAnotherUserAddedListenerNotCalled(){
+    public void whenAnotherUserAddedListenerCalled(){
         UserMembershipStore membershipStore = mock(UserMembershipStore.class);
         TeamListener listener = mock(TeamListener.class);
         Teammate user = new Teammate("temple");
         Team team = new Team(user, membershipStore);
         team.addTeamListener(listener);
         team.setMembership(new Teammate());
-        verify(listener, times(0)).teamChanged();
+        verify(listener, times(1)).teamChanged();
     }
 
     @Test

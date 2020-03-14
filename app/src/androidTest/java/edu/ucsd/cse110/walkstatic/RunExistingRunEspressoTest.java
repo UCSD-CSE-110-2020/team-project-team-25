@@ -64,6 +64,7 @@ public class RunExistingRunEspressoTest {
         Teammate user = new Teammate("test@gmail.com");
         EspressoHelpers.setUser(user);
         EspressoHelpers.mockStorage();
+        EspressoHelpers.setUserInTeam(user);
 
         EspressoHelpers.setStartupParams(mActivityTestRule, "65");
 
@@ -187,11 +188,6 @@ public class RunExistingRunEspressoTest {
 
         ViewInteraction actionMenuItemView3 = onView(
                 allOf(withId(R.id.action_start_run), withContentDescription("Start Run"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.action_bar),
-                                        2),
-                                0),
                         isDisplayed()));
         actionMenuItemView3.perform(click());
 

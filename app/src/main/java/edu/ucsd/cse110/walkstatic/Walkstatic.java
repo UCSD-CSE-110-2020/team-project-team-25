@@ -49,7 +49,6 @@ public class Walkstatic {
         this.initScheduledRun();
 
         this.registerTopics();
-
     }
 
     private void initRuns(RunStore store, StorageWatcher storageWatcher){
@@ -78,8 +77,7 @@ public class Walkstatic {
         ProposedStore proposalStore = DefaultStorage.getDefaultProposedStore();
         ProposedDeleter proposalDeleter = DefaultStorage.getDefaultProposedDeleter();
         ResponseStore responseStore = DefaultStorage.getDefaultResponseStore();
-        this.scheduledRun =
-                new ScheduledRun(this.user, responseStore, proposalStore, proposalDeleter);
+        this.scheduledRun = new ScheduledRun(this.user, responseStore, proposalStore, proposalDeleter);
         this.proposedWatcher.addProposalListener(this.scheduledRun);
         this.responseWatcher.addResponseListener(this.scheduledRun);
     }
@@ -92,9 +90,7 @@ public class Walkstatic {
 
     public Team getTeam() { return this.team; }
 
-    public ScheduledRun getScheduledRun(){
-        return this.scheduledRun;
-    }
+    public ScheduledRun getScheduledRun(){ return this.scheduledRun; }
 
     public void destroy(){
         this.storageWatcher.deleteAllListeners();
@@ -108,5 +104,8 @@ public class Walkstatic {
         String sanitizedTopic = topic.replace("@", "");
         NotificationTopicSubscriber topicSubscriber = DefaultStorage.getDefaultNotificationTopicSubscriber();
         topicSubscriber.subscribeToNotificationTopic(sanitizedTopic);
+//        if (this.getTeam().isUserOnTeam())
+            topicSubscriber.subscribeToNotificationTopic("inteam");
+
     }
 }

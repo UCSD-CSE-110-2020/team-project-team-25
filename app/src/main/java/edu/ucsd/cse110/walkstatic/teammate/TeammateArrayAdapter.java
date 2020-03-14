@@ -1,10 +1,12 @@
 package edu.ucsd.cse110.walkstatic.teammate;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +14,8 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 
+import androidx.core.graphics.ColorUtils;
+import androidx.core.widget.ImageViewCompat;
 import edu.ucsd.cse110.walkstatic.R;
 
 public class TeammateArrayAdapter extends ArrayAdapter<Object> {
@@ -31,35 +35,31 @@ public class TeammateArrayAdapter extends ArrayAdapter<Object> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        if (getItem(position) instanceof Teammate) {
-            Teammate teammate = (Teammate) getItem(position);
-
-            if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.teammate_textview, parent, false);
-            }
-
-            TextView nameView = convertView.findViewById(R.id.teammate_name);
-            TextView initialView = convertView.findViewById(R.id.teammate_initials);
-
-            nameView.setText(teammate.getName());
-            initialView.setText(teammate.getInitials());
-
-            return convertView;
+        Teammate teammate = null;
+        Object itemAtPos = getItem(position);
+        if(itemAtPos instanceof Teammate){
+            teammate = (Teammate) itemAtPos;
+        } else if(itemAtPos instanceof TeammateRequest){
+            teammate = ((TeammateRequest)itemAtPos).getTarget();
         } else {
-            TeammateRequest teammateRequest = (TeammateRequest) getItem(position);
-
-            if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.teammate_request_textview, parent, false);
-            }
-
-            TextView nameView = convertView.findViewById(R.id.teammate_name);
-            TextView initialView = convertView.findViewById(R.id.teammate_initials);
-
-            nameView.setText(teammateRequest.getTarget().getName());
-            initialView.setText("!!");
-
-            return convertView;
+            teammate = new Teammate();
         }
+
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.teammate_textview, parent, false);
+        }
+
+        TextView nameView = convertView.findViewById(R.id.teammate_name);
+        TextView initialView = convertView.findViewById(R.id.teammate_initials);
+        ImageView initialsBackground = convertView.findViewById(R.id.initials_background);
+
+        nameView.setText(teammate.getName());
+        initialView.setText(teammate.getInitials());
+
+        int initialsColor = ColorUtils.HSLToColor(teammate.getColor());
+        ImageViewCompat.setImageTintList(initialsBackground, ColorStateList.valueOf(initialsColor));
+
+        return convertView;
     }
 
 }

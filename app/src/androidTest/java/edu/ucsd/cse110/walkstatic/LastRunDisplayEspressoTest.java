@@ -55,6 +55,7 @@ public class LastRunDisplayEspressoTest {
 
         Teammate user = new Teammate("test@gmail.com");
         EspressoHelpers.setUser(user);
+        EspressoHelpers.setUserInTeam(user);
 
         Run run1 = new Run().setName("Mission Trails");
         Run run2 = new Run().setName("Run 2");
@@ -182,11 +183,6 @@ public class LastRunDisplayEspressoTest {
 
         ViewInteraction actionMenuItemView2 = onView(
                 allOf(withId(R.id.action_start_run), withContentDescription("Start Run"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.action_bar),
-                                        2),
-                                0),
                         isDisplayed()));
         actionMenuItemView2.perform(click());
 
