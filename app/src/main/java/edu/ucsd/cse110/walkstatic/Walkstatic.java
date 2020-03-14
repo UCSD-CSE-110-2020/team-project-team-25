@@ -107,5 +107,6 @@ public class Walkstatic {
         String sanitizedTopic = topic.replace("@", "");
         NotificationTopicSubscriber topicSubscriber = DefaultStorage.getDefaultNotificationTopicSubscriber();
         topicSubscriber.subscribeToNotificationTopic(sanitizedTopic);
+        topicSubscriber.subscribeToNotificationTopic("inteam");
     }
 }

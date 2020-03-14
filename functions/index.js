@@ -109,8 +109,8 @@ exports.sendScheduledRunResponseUpdatedNotifications = functions.firestore
              });
    });
 
-exports.sendProposedRuntNotifications = functions.firestore
-   .document('team/proposal')
+exports.sendProposedRunNotifications = functions.firestore
+   .document('team/proposals')
    .onCreate((snap, context) => {
      // Get an object with the current document value.
      // If the document does not exist, it has been deleted.
@@ -118,13 +118,12 @@ exports.sendProposedRuntNotifications = functions.firestore
 
      if (document) {
        // don't spam the requester with their own notifications
-
        var message = {
          notification: {
            title: document.author.name + ' has proposed a new run',
            body: "Tap this to open Walkstatic and send them a reply."
          },
-         topic: context.params.username.replace("@", "")
+         topic: "inteam"
        };
 
        return admin.messaging().send(message)
