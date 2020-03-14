@@ -4,7 +4,7 @@ admin.initializeApp();
 const firestore = admin.firestore();
 
 function onResponse(snap, context){
-// Get an object with the current document value.
+ // Get an object with the current document value.
  // If the document does not exist, it has been deleted.
  const document = snap.exists ? snap.data() : null;
 
@@ -81,7 +81,6 @@ exports.sendScheduledRunResponseCreatedNotifications = functions.firestore
      const document = snap.exists ? snap.data() : null;
 
      if (document) {
-
         return firestore.collection('team').doc('proposals').get().then((proposal) => {
             if(proposal.exists){
                 return responseToRun(document, proposal.data(), "responded to");
@@ -114,3 +113,37 @@ exports.sendScheduledRunResponseUpdatedNotifications = functions.firestore
                  return "failed to read changed document"
              });
    });
+
+exports.sendProposedRunNotifications = functions.firestore
+   .document('team/proposals')
+   .onCreate((snap, context) => {
+     // Get an object with the current document value.
+     // If the document does not exist, it has been deleted.
+     const document = snap.exists ? snap.data() : null;
+
+     if (document) {
+       // don't spam the requester with their own notifications
+       var message = {
+         notification: {
+           title: document.author.name + ' has proposed a new run',
+           body: "Tap this to open Walkstatic and send them a reply."
+         },
+         topic: "inteam"
+       };
+
+       return admin.messaging().send(message)
+         .then((response) => {
+           // Response is a message ID string.
+           console.log('Successfully sent message:', response);
+           return response;
+         })
+         .catch((error) => {
+           console.log('Error sending message:', error);
+           return error;
+         });
+     }
+
+     return "document was null or emtpy";
+   });
+
+
