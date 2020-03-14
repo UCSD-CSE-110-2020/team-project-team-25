@@ -117,7 +117,7 @@ var decideRun = function(document, proposal, responseMsg){
        }
        var message = {
          notification: {
-           title: proposal.run.name + " decided " + proposal.run.name,
+           title: proposal.author.name + " decided " + proposal.run.name,
            body: responseString
          },
          topic: "inteam"
@@ -134,7 +134,7 @@ var decideRun = function(document, proposal, responseMsg){
            return error;
          });
 }
-   exports.sendScheduledRunDecisionNotifications = functions.firestore
+   exports.sendScheduledRunDecisionWithdrawNotifications = functions.firestore
          .document('team/proposals')
          .onUpdate((snap, context) => {
               // Get an object with the current document value.
@@ -156,24 +156,3 @@ var decideRun = function(document, proposal, responseMsg){
 
             });
 
-            exports.sendScheduledRunDecisionNotifications = functions.firestore
-                     .document('team/proposals')
-                     .onDelete((snap, context) => {
-                          // Get an object with the current document value.
-                          // If the document does not exist, it has been deleted.
-                          const document = snap.exists ? snap.data() : null;
-                 console.log("reading changed document: ");
-
-                          //if (document) {
-                            // don't spam the requester with their own notifications
-                            //if(document.target.email !== context.params.username) { return 0; }
-
-
-                        return firestore.collection('team').doc('proposals').get().then((proposal) => {
-                                    if(proposal.exists){
-                                        return decideRun(document, proposal.data(), "responded to");
-                                    }
-                                    return "failed to read proposal"
-                                });
-
-                        });
