@@ -97,7 +97,32 @@ public class ViewRunFragment extends Fragment implements ScheduledRunListener {
             Navigation.findNavController(this.requireView()).navigate(R.id.runActivity);
             return true;
         }
+        if(item.getItemId() == R.id.action_favorite){
+            this.favorite();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void favorite(){
+        if(this.run == null){
+            return;
+        }
+        this.run.setFavorited(!this.run.isFavorited());
+        this.app.getRuns().addRun(this.run);
+        this.populateWithRun(this.run);
+        this.requireActivity().invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu){
+        super.onPrepareOptionsMenu(menu);
+        if(this.run == null){
+            return;
+        }
+        MenuItem favorite = menu.findItem(R.id.action_favorite);
+        int favoriteIcon = this.run.isFavorited() ? R.drawable.ic_star_white_24dp : R.drawable.ic_star_border_white_24dp;
+        favorite.setIcon(favoriteIcon);
     }
 
 
