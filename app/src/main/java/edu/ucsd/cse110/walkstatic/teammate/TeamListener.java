@@ -1,5 +1,5 @@
 package edu.ucsd.cse110.walkstatic.teammate;
 
 public interface TeamListener {
-    public void userIsNowOnTeam();
+    public void teamChanged();
 }

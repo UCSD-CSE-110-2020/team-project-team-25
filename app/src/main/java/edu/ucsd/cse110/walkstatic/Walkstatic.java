@@ -3,7 +3,6 @@ package edu.ucsd.cse110.walkstatic;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import edu.ucsd.cse110.walkstatic.runs.RunProposal;
 import edu.ucsd.cse110.walkstatic.runs.Runs;
 import edu.ucsd.cse110.walkstatic.runs.ScheduledRun;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
@@ -55,7 +54,7 @@ public class Walkstatic {
     private void initRuns(RunStore store, StorageWatcher storageWatcher){
         this.runs = new Runs(store, this.user);
         storageWatcher.addRunUpdateListener(this.runs);
-        this.team = new Team(this.user);
+        this.team = new Team(this.user, DefaultStorage.getDefaultUserMembershipStore());
         this.membershipWatcher.addWatcherListener(this.team);
     }
 

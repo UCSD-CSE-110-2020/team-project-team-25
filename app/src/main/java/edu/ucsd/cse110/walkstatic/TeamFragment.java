@@ -17,16 +17,19 @@ import androidx.navigation.Navigation;
 import java.util.List;
 
 import edu.ucsd.cse110.walkstatic.teammate.Team;
+import edu.ucsd.cse110.walkstatic.teammate.TeamListener;
+import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateArrayAdapter;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestArrayAdapter;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestsListener;
 
-public class TeamFragment extends Fragment implements TeammateRequestsListener {
+public class TeamFragment extends Fragment implements TeammateRequestsListener, TeamListener {
 
     private TeammateRequestArrayAdapter teammateRequestListAdapter;
     private TeammateArrayAdapter teammateListAdapter;
     private List<TeammateRequest> requestsList;
+    private List<Teammate> teammateList;
     private Walkstatic app;
 
     @Override
@@ -49,12 +52,13 @@ public class TeamFragment extends Fragment implements TeammateRequestsListener {
     }
 
     private void populateTeammates() {
-        ListView teammatesListView = this.getActivity().findViewById(R.id.my_teammates_list);
-        ListView requestsListView = this.getActivity().findViewById(R.id.teammate_requests_list);
+        ListView teammatesListView = this.requireActivity().findViewById(R.id.my_teammates_list);
+        ListView requestsListView = this.requireActivity().findViewById(R.id.teammate_requests_list);
 
         Team team = this.app.getTeam();
+        this.teammateList = team.getTeammates();
         teammateListAdapter = new TeammateArrayAdapter(this.getActivity(),
-                R.layout.teammate_textview, null);
+                R.layout.teammate_textview, this.teammateList);
         teammatesListView.setAdapter(teammateListAdapter);
         teammateListAdapter.notifyDataSetChanged();
 
@@ -83,7 +87,7 @@ public class TeamFragment extends Fragment implements TeammateRequestsListener {
     }
 
     private void inviteTeammate() {
-        Navigation.findNavController(this.getActivity(), this.getId()).navigate(R.id.action_teamFragment_to_inviteFragment);
+        Navigation.findNavController(this.requireActivity(), this.getId()).navigate(R.id.action_teamFragment_to_inviteFragment);
     }
 
     @Override
@@ -91,6 +95,13 @@ public class TeamFragment extends Fragment implements TeammateRequestsListener {
         this.requestsList.clear();
         this.requestsList.addAll(requests);
         this.teammateRequestListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void teamChanged() {
+        this.teammateList.clear();
+        this.teammateList.addAll(this.app.getTeam().getTeammates());
+        this.teammateListAdapter.notifyDataSetChanged();
     }
 }
 

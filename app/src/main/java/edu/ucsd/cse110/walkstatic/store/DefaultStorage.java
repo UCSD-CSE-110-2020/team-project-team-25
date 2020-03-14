@@ -23,7 +23,7 @@ public class DefaultStorage {
     private static GenericBlueprint<TeammateRequestStore> defaultTeammateRequestStore;
     private static GenericBlueprint<RunStore> defaultRunStore;
 
-    private static GenericBlueprint<UserMembershipStore> defaultTeamsStore;
+    private static GenericBlueprint<UserMembershipStore> defaultUserMembershipStore;
     private static StorageWatcherBlueprint defaultStorageWatcher;
 
     private static GenericBlueprint<ResponseWatcher> defaultResponseWatcher;
@@ -61,12 +61,12 @@ public class DefaultStorage {
         return defaultRunStore.get();
     }
 
-    public static UserMembershipStore getDefaultTeamsStore() {
-        if(defaultTeamsStore == null){
+    public static UserMembershipStore getDefaultUserMembershipStore() {
+        if(defaultUserMembershipStore == null){
             assertNotTestMode();
             return new FirebaseUserMembershipStore();
         }
-        return defaultTeamsStore.get();
+        return defaultUserMembershipStore.get();
     }
 
     public static ProposedDeleter getDefaultProposedDeleter(){
@@ -149,8 +149,8 @@ public class DefaultStorage {
         DefaultStorage.defaultRunStore = runStore;
     }
 
-    public static void setDefaultTeamsStore(GenericBlueprint<UserMembershipStore> defaultTeamsStore) {
-        DefaultStorage.defaultTeamsStore = defaultTeamsStore;
+    public static void setDefaultUserMembershipStore(GenericBlueprint<UserMembershipStore> defaultUserMembershipStore) {
+        DefaultStorage.defaultUserMembershipStore = defaultUserMembershipStore;
     }
 
     public static void setDefaultResponseWatcher(GenericBlueprint<ResponseWatcher> responseWatcher){

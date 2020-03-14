@@ -72,7 +72,7 @@ public class FirebaseMocks {
         DefaultStorage.setDefaultRunStore(() -> runStore);
         DefaultStorage.setDefaultTeammateRequestStore(() -> store);
         DefaultStorage.setDefaultResponseWatcher(() -> responseWatcher);
-        DefaultStorage.setDefaultTeamsStore(() -> userMembershipStore);
+        DefaultStorage.setDefaultUserMembershipStore(() -> userMembershipStore);
         DefaultStorage.setDefaultNotificationTopicSubscriber(() -> notificationTopic);
         DefaultStorage.setDefaultResponseStore(() -> responseStore);
         DefaultStorage.setDefaultProposedStore(() -> proposedStore);

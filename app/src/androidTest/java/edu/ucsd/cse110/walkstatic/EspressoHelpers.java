@@ -102,7 +102,7 @@ public class EspressoHelpers{
             public void delete(TeammateRequest request) { }
         });
 
-        DefaultStorage.setDefaultTeamsStore(() -> new UserMembershipStore() {
+        DefaultStorage.setDefaultUserMembershipStore(() -> new UserMembershipStore() {
             @Override
             public void addUser(Team team) { }
             @Override

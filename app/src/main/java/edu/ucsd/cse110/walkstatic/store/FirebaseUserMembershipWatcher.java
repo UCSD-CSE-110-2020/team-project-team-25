@@ -13,6 +13,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponse;
 
 public class FirebaseUserMembershipWatcher implements GenericWatcher<UserTeamListener> {
@@ -52,8 +53,9 @@ public class FirebaseUserMembershipWatcher implements GenericWatcher<UserTeamLis
         List<DocumentChange> documentChanges = snapshot.getDocumentChanges();
         for (DocumentChange documentChange : documentChanges) {
             QueryDocumentSnapshot queryDocumentSnapshot = documentChange.getDocument();
+            Teammate teammate = queryDocumentSnapshot.toObject(Teammate.class);
             this.userTeamListeners.forEach(listener ->{
-                listener.userTeamChanged(queryDocumentSnapshot.getId());
+                listener.userTeamChanged(teammate);
             });
         }
     }

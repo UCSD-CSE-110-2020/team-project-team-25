@@ -18,8 +18,6 @@ public class Teammate implements Serializable {
     @Expose
     private final String email;
 
-    private Team team;
-
     public Teammate(){
         this("");
     }
@@ -40,10 +38,6 @@ public class Teammate implements Serializable {
     public String getEmail(){
         return this.email;
     }
-
-    public Team getTeam() { return team; }
-
-    public void setTeam(Team team) { this.team = team; }
 
     @Override
     public String toString(){

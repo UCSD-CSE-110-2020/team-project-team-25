@@ -1,11 +1,11 @@
 package edu.ucsd.cse110.walkstatic.teammate;
 
-import com.google.firebase.firestore.DocumentId;
-import com.google.gson.annotations.Expose;
-
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import edu.ucsd.cse110.walkstatic.store.UserMembershipStore;
 import edu.ucsd.cse110.walkstatic.store.UserTeamListener;
 
 public class Team implements UserTeamListener {
@@ -13,25 +13,37 @@ public class Team implements UserTeamListener {
     private Teammate user;
     private boolean isUserOnTeam;
     private List<TeamListener> listeners;
+    private UserMembershipStore userMembershipStore;
 
-    @DocumentId
-    private String documentId;
+    private Set<Teammate> teammateList;
 
-    public Team(Teammate teammate) {
+    public Team(Teammate teammate, UserMembershipStore userMembershipStore) {
         this.user = teammate;
         this.isUserOnTeam = false;
         this.listeners = new ArrayList<>();
+        this.userMembershipStore = userMembershipStore;
+        this.teammateList = new HashSet<>();
     }
 
     public void addTeamListener(TeamListener listener) { listeners.add(listener); }
 
-    public String getDocumentId() { return documentId; }
+    public void setMembership(Teammate user){
+        this.userMembershipStore.addUser(user);
+        this.userTeamChanged(user);
+    }
 
 
     private void notifyListeners() {
         for(TeamListener listener : this.listeners){
-            listener.userIsNowOnTeam();
+            listener.teamChanged();
         }
+    }
+
+    public List<Teammate> getTeammates(){
+        if(this.isUserOnTeam()){
+            return new ArrayList<>(this.teammateList);
+        }
+        return new ArrayList<>();
     }
 
     public boolean isUserOnTeam(){
@@ -39,8 +51,9 @@ public class Team implements UserTeamListener {
     }
 
     @Override
-    public void userTeamChanged(String userEmail) {
-        if(userEmail.equals(this.user.getEmail())){
+    public void userTeamChanged(Teammate newUser) {
+        this.teammateList.add(newUser);
+        if(newUser.getEmail().equals(this.user.getEmail())){
             this.isUserOnTeam = true;
             this.notifyListeners();
         }

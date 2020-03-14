@@ -22,7 +22,7 @@ public class MockFirebaseHelpers {
         activeCount = 0;
         DefaultStorage.setDefaultRunStore(()-> mock(RunStore.class));
         DefaultStorage.setDefaultTeammateRequestStore(() -> mock(TeammateRequestStore.class));
-        DefaultStorage.setDefaultTeamsStore(() -> mock(UserMembershipStore.class));
+        DefaultStorage.setDefaultUserMembershipStore(() -> mock(UserMembershipStore.class));
 
         DefaultStorage.setDefaultResponseWatcher(() -> mock(ResponseWatcher.class));
 
