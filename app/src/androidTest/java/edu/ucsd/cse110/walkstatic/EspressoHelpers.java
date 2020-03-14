@@ -19,7 +19,7 @@ import edu.ucsd.cse110.walkstatic.store.ProposedWatcher;
 import edu.ucsd.cse110.walkstatic.store.ResponseWatcher;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
 import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
-import edu.ucsd.cse110.walkstatic.store.TeamsStore;
+import edu.ucsd.cse110.walkstatic.store.UserMembershipStore;
 import edu.ucsd.cse110.walkstatic.teammate.Team;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
@@ -102,9 +102,9 @@ public class EspressoHelpers{
             public void delete(TeammateRequest request) { }
         });
 
-        DefaultStorage.setDefaultTeamsStore(() -> new TeamsStore() {
+        DefaultStorage.setDefaultTeamsStore(() -> new UserMembershipStore() {
             @Override
-            public void addTeam(Team team) { }
+            public void addUser(Team team) { }
             @Override
             public void mergeTeams(Team team1, Team team2) { }
         });

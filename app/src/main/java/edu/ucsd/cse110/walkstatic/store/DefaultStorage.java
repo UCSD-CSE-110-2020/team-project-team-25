@@ -23,7 +23,7 @@ public class DefaultStorage {
     private static GenericBlueprint<TeammateRequestStore> defaultTeammateRequestStore;
     private static GenericBlueprint<RunStore> defaultRunStore;
 
-    private static GenericBlueprint<TeamsStore> defaultTeamsStore;
+    private static GenericBlueprint<UserMembershipStore> defaultTeamsStore;
     private static StorageWatcherBlueprint defaultStorageWatcher;
 
     private static GenericBlueprint<ResponseWatcher> defaultResponseWatcher;
@@ -60,10 +60,10 @@ public class DefaultStorage {
         return defaultRunStore.get();
     }
 
-    public static TeamsStore getDefaultTeamsStore() {
+    public static UserMembershipStore getDefaultTeamsStore() {
         if(defaultTeamsStore == null){
             assertNotTestMode();
-            return new FirebaseTeamsStore();
+            return new FirebaseUserMembershipStore();
         }
         return defaultTeamsStore.get();
     }
@@ -140,7 +140,7 @@ public class DefaultStorage {
         DefaultStorage.defaultRunStore = runStore;
     }
 
-    public static void setDefaultTeamsStore(GenericBlueprint<TeamsStore> defaultTeamsStore) {
+    public static void setDefaultTeamsStore(GenericBlueprint<UserMembershipStore> defaultTeamsStore) {
         DefaultStorage.defaultTeamsStore = defaultTeamsStore;
     }
 

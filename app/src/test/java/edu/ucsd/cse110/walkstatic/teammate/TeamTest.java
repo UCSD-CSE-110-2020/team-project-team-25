@@ -4,8 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import edu.ucsd.cse110.walkstatic.MockFirebaseHelpers;
-import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
-import edu.ucsd.cse110.walkstatic.store.TeamsStore;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.mock;

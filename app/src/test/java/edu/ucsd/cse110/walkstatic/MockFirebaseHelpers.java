@@ -3,15 +3,11 @@ package edu.ucsd.cse110.walkstatic;
 import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunUpdateListener;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
-import edu.ucsd.cse110.walkstatic.store.FirebaseProposalStore;
-import edu.ucsd.cse110.walkstatic.store.FirebaseProposalWatcher;
-import edu.ucsd.cse110.walkstatic.store.ProposedStore;
-import edu.ucsd.cse110.walkstatic.store.ProposedWatcher;
 import edu.ucsd.cse110.walkstatic.store.ResponseWatcher;
 import edu.ucsd.cse110.walkstatic.store.RunStore;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
 import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
-import edu.ucsd.cse110.walkstatic.store.TeamsStore;
+import edu.ucsd.cse110.walkstatic.store.UserMembershipStore;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -26,7 +22,7 @@ public class MockFirebaseHelpers {
         activeCount = 0;
         DefaultStorage.setDefaultRunStore(()-> mock(RunStore.class));
         DefaultStorage.setDefaultTeammateRequestStore(() -> mock(TeammateRequestStore.class));
-        DefaultStorage.setDefaultTeamsStore(() -> mock(TeamsStore.class));
+        DefaultStorage.setDefaultTeamsStore(() -> mock(UserMembershipStore.class));
 
         DefaultStorage.setDefaultResponseWatcher(() -> mock(ResponseWatcher.class));
 

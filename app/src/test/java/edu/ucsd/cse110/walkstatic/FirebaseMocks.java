@@ -2,8 +2,6 @@ package edu.ucsd.cse110.walkstatic;
 
 import edu.ucsd.cse110.walkstatic.runs.RunUpdateListener;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
-import edu.ucsd.cse110.walkstatic.store.FirebaseProposalStore;
-import edu.ucsd.cse110.walkstatic.store.FirebaseProposalWatcher;
 import edu.ucsd.cse110.walkstatic.store.NotificationTopicSubscriber;
 import edu.ucsd.cse110.walkstatic.store.ProposedDeleter;
 import edu.ucsd.cse110.walkstatic.store.ProposedStore;
@@ -13,7 +11,7 @@ import edu.ucsd.cse110.walkstatic.store.ResponseWatcher;
 import edu.ucsd.cse110.walkstatic.store.RunStore;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
 import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
-import edu.ucsd.cse110.walkstatic.store.TeamsStore;
+import edu.ucsd.cse110.walkstatic.store.UserMembershipStore;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestListener;
 
@@ -59,7 +57,7 @@ public class FirebaseMocks {
         TeammateRequestStore store = mock(TeammateRequestStore.class);
         RunStore runStore = mock(RunStore.class);
         ResponseWatcher responseWatcher = mock(ResponseWatcher.class);
-        TeamsStore teamsStore = mock(TeamsStore.class);
+        UserMembershipStore userMembershipStore = mock(UserMembershipStore.class);
         NotificationTopicSubscriber notificationTopic = mock(NotificationTopicSubscriber.class);
         ResponseStore responseStore = mock(ResponseStore.class);
         ProposedStore proposedStore = mock(ProposedStore.class);
@@ -71,7 +69,7 @@ public class FirebaseMocks {
         DefaultStorage.setDefaultRunStore(() -> runStore);
         DefaultStorage.setDefaultTeammateRequestStore(() -> store);
         DefaultStorage.setDefaultResponseWatcher(() -> responseWatcher);
-        DefaultStorage.setDefaultTeamsStore(() -> teamsStore);
+        DefaultStorage.setDefaultTeamsStore(() -> userMembershipStore);
         DefaultStorage.setDefaultNotificationTopicSubscriber(() -> notificationTopic);
         DefaultStorage.setDefaultResponseStore(() -> responseStore);
         DefaultStorage.setDefaultProposedStore(() -> proposedStore);
