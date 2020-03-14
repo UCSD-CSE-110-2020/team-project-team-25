@@ -41,7 +41,13 @@ public class Team implements UserTeamListener {
     public List<Teammate> getTeammates(){
         if(this.isUserOnTeam()){
             List<Teammate> teammates = new ArrayList<>(this.teammateList);
-            teammates.remove(user);
+            List<Teammate> toRemove = new ArrayList<>();
+            for(Teammate teammate : teammates){
+                if(teammate.getEmail().equals(this.user.getEmail())){
+                    toRemove.add(teammate);
+                }
+            }
+            teammates.removeAll(toRemove);
             return teammates;
         }
         return new ArrayList<>();
@@ -56,7 +62,7 @@ public class Team implements UserTeamListener {
         this.teammateList.add(newUser);
         if(newUser.getEmail().equals(this.user.getEmail())){
             this.isUserOnTeam = true;
-            this.notifyListeners();
         }
+        this.notifyListeners();
     }
 }
