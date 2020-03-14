@@ -22,6 +22,7 @@ import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.runs.RunProposal;
 import edu.ucsd.cse110.walkstatic.runs.RunProposalChangeListener;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
+import edu.ucsd.cse110.walkstatic.store.ProposedDeleter;
 import edu.ucsd.cse110.walkstatic.store.ProposedWatcher;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponse;
@@ -41,6 +42,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -50,6 +52,8 @@ public class WithdrawWalkEspressoTest {
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
 
     private RunProposalChangeListener lastListener = null;
+
+    private boolean hasDeleted = false;
 
 
     @Test
@@ -69,8 +73,10 @@ public class WithdrawWalkEspressoTest {
 
         Run run = new Run().setName("Run 1");
         RunProposal runProposal = new RunProposal(run);
+        DefaultStorage.setDefaultProposedDeleter(() -> () -> hasDeleted = true);
         runProposal.setAuthor(user);
         DefaultStorage.setDefaultProposedWatcher(() -> new ProposedWatcher(){
+
             @Override
             public void addProposalListener(RunProposalChangeListener listener) {
                 lastListener = listener;
@@ -78,7 +84,6 @@ public class WithdrawWalkEspressoTest {
 
             @Override
             public void deleteAllListeners() {
-
             }
         });
 
@@ -106,7 +111,6 @@ public class WithdrawWalkEspressoTest {
                         isDisplayed()));
         navigationMenuItemView2.perform(click());
 
-
         try{
             mActivityTestRule.runOnUiThread(() -> {
                 lastListener.onChangedProposal(runProposal);
@@ -125,6 +129,14 @@ public class WithdrawWalkEspressoTest {
                         isDisplayed()));
         appCompatButton2.perform(click());
 
+        try{
+            mActivityTestRule.runOnUiThread(() -> {
+                lastListener.onChangedProposal(runProposal);
+            });
+        } catch(Throwable e){
+            assert(false);
+        }
+
         ViewInteraction textView = onView(
                 allOf(withId(R.id.run_name), withText("Run 1"),
                         childAtPosition(
@@ -134,6 +146,20 @@ public class WithdrawWalkEspressoTest {
                                 0),
                         isDisplayed()));
         textView.check(matches(withText("Run 1")));
+
+
+        if(this.hasDeleted == true) {
+            try {
+                mActivityTestRule.runOnUiThread(() -> {
+                    lastListener.onChangedProposal(null);
+                });
+            } catch (Throwable e) {
+                assert (false);
+            }
+        }
+        ViewInteraction textView1 = onView(withId(R.id.run_name));
+        textView1.check(matches(withText("There is no Proposed Run")));
+
     }
 
     private static Matcher<View> childAtPosition(
