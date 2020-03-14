@@ -108,3 +108,38 @@ exports.sendScheduledRunResponseUpdatedNotifications = functions.firestore
                  return "failed to read changed document"
              });
    });
+
+   exports.sendScheduledRunResponseCreatedNotifications = functions.firestore
+         .document('team/proposal/{responseId}')
+         .onUpdate((snap, context) => {
+              // Get an object with the current document value.
+              // If the document does not exist, it has been deleted.
+              const document = snap.exists ? snap.data() : null;
+
+              if (document) {
+                // don't spam the requester with their own notifications
+                if(document.target.email !== context.params.username) { return 0; }
+
+                var response = document.scheduled ? "has scheduled the proposed walk!" : "has withdrawn the proposed walk!";
+                var message = {
+                  notification: {
+                    title: document.author.name + response,
+                    body: "Tap this to open Walkstatic"
+                  },
+                  topic: context.params.username.replace("@", "")
+                };
+
+                return admin.messaging().send(message)
+                  .then((response) => {
+                    // Response is a message ID string.
+                    console.log('Successfully sent message:', response);
+                    return response;
+                  })
+                  .catch((error) => {
+                    console.log('Error sending message:', error);
+                    return error;
+                  });
+              }
+
+              return "document was null or emtpy";
+            });
