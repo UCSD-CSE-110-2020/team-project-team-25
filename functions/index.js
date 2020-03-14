@@ -169,11 +169,23 @@ exports.sendScheduledRunDecisionWithdrawNotifications = functions.firestore
                 //if(document.target.email !== context.params.username) { return 0; }
 
 
-            return firestore.collection('team').doc('proposals').get().then((proposal) => {
-                        if(proposal.exists){
-                            return decideRun(document, proposal.data(), "responded to");
-                        }
-                        return "failed to read proposal"
-                    });
+            var message = {
+                     notification: {
+                       title: "Run Withdrew",
+                       body: "The scheduled run has been withdrawn"
+                     },
+                     topic: "inteam"
+                   };
+
+                   return admin.messaging().send(message)
+                     .then((response) => {
+                       // Response is a message ID string.
+                       console.log('Successfully sent message:', response);
+                       return response;
+                     })
+                     .catch((error) => {
+                       console.log('Error sending message:', error);
+                       return error;
+                     });
 
             });
