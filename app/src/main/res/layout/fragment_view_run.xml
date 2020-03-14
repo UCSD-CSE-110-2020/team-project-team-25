@@ -170,7 +170,7 @@
         app:layout_constraintTop_toBottomOf="@+id/notes" />
 
     <ImageView
-        android:id="@+id/ran_check"
+        android:id="@+id/my_run_check"
         android:layout_width="40dp"
         android:layout_height="43dp"
         android:layout_marginEnd="16dp"

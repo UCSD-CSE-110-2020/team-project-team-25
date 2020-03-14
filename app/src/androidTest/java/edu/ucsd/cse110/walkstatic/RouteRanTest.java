@@ -166,6 +166,10 @@ public class RouteRanTest {
                         isDisplayed()));
         navigationMenuItemView2.perform(click());
 
+        ViewInteraction myRunsCheck = onView(
+                withId(R.id.run_check));
+        myRunsCheck.check(matches(isDisplayed()));
+
         DataInteraction constraintLayout2 = onData(anything())
                 .inAdapterView(allOf(withId(R.id.my_runs_list),
                         childAtPosition(
@@ -175,7 +179,7 @@ public class RouteRanTest {
         constraintLayout2.perform(click());
 
         ViewInteraction imageView = onView(
-                withId(R.id.ran_check));
+                withId(R.id.my_run_check));
         imageView.check(matches(isDisplayed()));
     }
 
