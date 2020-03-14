@@ -186,4 +186,8 @@ public class Run implements Serializable, Comparable<Run>{
         Run run = gson.fromJson(json, Run.class);
         return run;
     }
+
+    public Boolean hasBeenRunPreviously(){
+        return (this.steps != -1);
+    }
 }

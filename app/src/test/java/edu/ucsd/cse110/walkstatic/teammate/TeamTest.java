@@ -119,9 +119,11 @@ public class TeamTest {
         UserMembershipStore membershipStore = mock(UserMembershipStore.class);
         Teammate user = new Teammate("temple");
         Team team = new Team(user, membershipStore);
+        Teammate otherUser = new Teammate("lol");
         team.setMembership(user);
+        team.setMembership(otherUser);
         assertThat(team.getTeammates().size()).isEqualTo(1);
-        assertThat(team.getTeammates().get(0)).isEqualTo(user);
+        assertThat(team.getTeammates().get(0)).isEqualTo(otherUser);
     }
 
     @Test
@@ -129,10 +131,12 @@ public class TeamTest {
         UserMembershipStore membershipStore = mock(UserMembershipStore.class);
         Teammate user = new Teammate("temple");
         Team team = new Team(user, membershipStore);
+        Teammate otherUser = new Teammate("lol");
         team.setMembership(user);
-        team.setMembership(user);
+        team.setMembership(otherUser);
+        team.setMembership(otherUser);
         assertThat(team.getTeammates().size()).isEqualTo(1);
-        assertThat(team.getTeammates().get(0)).isEqualTo(user);
+        assertThat(team.getTeammates().get(0)).isEqualTo(otherUser);
     }
 
     @Test

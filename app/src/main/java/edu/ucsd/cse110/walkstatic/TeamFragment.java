@@ -51,28 +51,17 @@ public class TeamFragment extends Fragment implements TeammateRequestsListener {
 
     private void populateTeammates() {
         ListView teammatesListView = this.requireActivity().findViewById(R.id.my_teammates_list);
-        ListView requestsListView = this.requireActivity().findViewById(R.id.teammate_requests_list);
 
         Team team = this.app.getTeam();
         this.teammateList = new ArrayList<>();
         this.teammateList.addAll(team.getTeammates());
         this.teammateList.addAll(this.app.getTeammateRequests().getRequests());
-        // this.requestsList = this.app.getTeammateRequests().getRequests();
 
         teammateListAdapter = new TeammateArrayAdapter(this.getActivity(),
                 R.layout.teammate_textview, this.teammateList);
         teammatesListView.setAdapter(teammateListAdapter);
         teammatesListView.setOnItemClickListener(this::onItemClick);
         teammateListAdapter.notifyDataSetChanged();
-
-        /*
-        this.requestsList = this.app.getTeammateRequests().getRequests();
-        teammateRequestListAdapter = new TeammateRequestArrayAdapter(this.getActivity(),
-                R.layout.teammate_request_textview, this.requestsList);
-        requestsListView.setAdapter(teammateRequestListAdapter);
-        requestsListView.setOnItemClickListener(this);
-        teammateRequestListAdapter.notifyDataSetChanged();
-         */
 
         this.app.getTeammateRequests().addRequestsListener(this);
     }

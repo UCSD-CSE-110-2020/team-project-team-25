@@ -21,7 +21,9 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static org.hamcrest.Matchers.not;
 
 @LargeTest
 @RunWith(JUnit4.class)
@@ -54,17 +56,18 @@ public class NotificationEspressoTest {
         target.setName("Temp Templeton");
 
         EspressoHelpers.setUser(target);
+        EspressoHelpers.setUserInTeam(target);
 
         request = new TeammateRequest(requester, target);
     }
 
 
     @Test
-    public void testRejectNotification() {
+    public void testNotificationMenuOptionEnabled() {
         EspressoHelpers.setStartupParams(mActivityTestRule, "65");
 
         ViewInteraction invisibleNotif = onView(withId(R.id.notification));
-        invisibleNotif.check(doesNotExist());
+        invisibleNotif.check(matches(not(isEnabled())));
 
         try {
             mActivityTestRule.runOnUiThread(() -> {
@@ -74,43 +77,8 @@ public class NotificationEspressoTest {
         catch (Throwable t) { assert(false); }
 
         ViewInteraction visibleNotif = onView(withId(R.id.notification));
-        visibleNotif.check(matches(isDisplayed()));
+        visibleNotif.check(matches(isEnabled()));
 
         visibleNotif.perform(click());
-
-        ViewInteraction rejectButton = onView(withId(R.id.rejectButton));
-        rejectButton.check(matches(isDisplayed()));
-
-        rejectButton.perform(click());
-
-        // check we're on the main activity
-        ViewInteraction mainActivityTitle = onView(withId(R.id.run_name_display));
-        mainActivityTitle.check(matches(isDisplayed()));
-    }
-
-
-    @Test
-    public void testAcceptNotification() {
-        EspressoHelpers.setStartupParams(mActivityTestRule, "65");
-
-        ViewInteraction invisibleNotif = onView(withId(R.id.notification));
-        invisibleNotif.check(doesNotExist());
-
-        try {
-            mActivityTestRule.runOnUiThread(() -> {
-                mockStorageWatcher.teammateRequestListener.onNewTeammateRequest(request);
-            });
-        }
-        catch (Throwable t) { assert(false); }
-
-        ViewInteraction visibleNotif = onView(withId(R.id.notification));
-        visibleNotif.check(matches(isDisplayed()));
-
-        visibleNotif.perform(click());
-
-        ViewInteraction acceptButton = onView(withId(R.id.acceptButton));
-        acceptButton.check(matches(isDisplayed()));
-
-        acceptButton.perform(click());
     }
 }
