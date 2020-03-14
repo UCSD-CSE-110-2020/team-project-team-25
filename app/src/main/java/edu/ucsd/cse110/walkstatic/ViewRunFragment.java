@@ -112,6 +112,9 @@ public class ViewRunFragment extends Fragment implements ScheduledRunListener {
         this.app.getRuns().addRun(this.run);
         this.populateWithRun(this.run);
         this.requireActivity().invalidateOptionsMenu();
+        if(!this.app.getUser().equals(this.run.getAuthor())){
+            Navigation.findNavController(this.requireView()).navigate(R.id.myRunsFragment);
+        }
     }
 
     @Override
