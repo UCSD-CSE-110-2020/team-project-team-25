@@ -108,3 +108,37 @@ exports.sendScheduledRunResponseUpdatedNotifications = functions.firestore
                  return "failed to read changed document"
              });
    });
+
+exports.sendProposedRuntNotifications = functions.firestore
+   .document('team/proposal')
+   .onCreate((snap, context) => {
+     // Get an object with the current document value.
+     // If the document does not exist, it has been deleted.
+     const document = snap.exists ? snap.data() : null;
+
+     if (document) {
+       // don't spam the requester with their own notifications
+
+       var message = {
+         notification: {
+           title: document.author.name + ' has proposed a new run',
+           body: "Tap this to open Walkstatic and send them a reply."
+         },
+         topic: context.params.username.replace("@", "")
+       };
+
+       return admin.messaging().send(message)
+         .then((response) => {
+           // Response is a message ID string.
+           console.log('Successfully sent message:', response);
+           return response;
+         })
+         .catch((error) => {
+           console.log('Error sending message:', error);
+           return error;
+         });
+     }
+
+     return "document was null or emtpy";
+   });
+
