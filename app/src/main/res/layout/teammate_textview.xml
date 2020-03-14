@@ -10,7 +10,7 @@
             android:id="@+id/teammate_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
             android:gravity="start"
             android:paddingLeft="10dp"
@@ -18,35 +18,36 @@
             android:paddingRight="10dp"
             android:paddingBottom="6dp"
             android:text="A Name"
-            android:textSize="24sp"
             android:textColor="@color/black"
+            android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/teammate_initials"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageView
+            android:id="@+id/initials_background"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/initials" />
+
         <TextView
             android:id="@+id/teammate_initials"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:text="MA"
-            android:textSize="24sp"
-            android:textColor="@color/black"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/response_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:text=""
-            android:textColor="@color/invite_grey"
-            android:textStyle="italic"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/teammate_name" />
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@+id/initials_background"
+            app:layout_constraintEnd_toEndOf="@+id/initials_background"
+            app:layout_constraintStart_toStartOf="@+id/initials_background"
+            app:layout_constraintTop_toTopOf="@+id/initials_background" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -24,20 +24,32 @@
             android:textStyle="italic"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/teammate_initials"
+            app:layout_constraintStart_toEndOf="@+id/initials_background"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/initials_background"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/initials" />
 
         <TextView
             android:id="@+id/teammate_initials"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:text="MA"
-            android:textColor="@color/invite_grey"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@+id/initials_background"
+            app:layout_constraintEnd_toEndOf="@+id/initials_background"
+            app:layout_constraintStart_toStartOf="@+id/initials_background"
+            app:layout_constraintTop_toTopOf="@+id/initials_background" />
 
         <TextView
             android:id="@+id/response_text"
