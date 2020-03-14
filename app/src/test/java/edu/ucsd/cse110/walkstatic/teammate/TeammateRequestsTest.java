@@ -50,7 +50,8 @@ public class TeammateRequestsTest {
     public void teammateRequestsPostsNewRequestOnAddRequest(){
         Store store = new Store();
         FakeStorageWatcher storageWatcher = new FakeStorageWatcher();
-        TeammateRequests teammateRequests = new TeammateRequests(store, storageWatcher);
+        TeammateRequests teammateRequests = new TeammateRequests(store, null);
+        storageWatcher.lastListener = teammateRequests;
         Teammate requester = new Teammate("g");
         Teammate target = new Teammate("f");
         TeammateRequest request = new TeammateRequest(requester, target);
@@ -62,7 +63,8 @@ public class TeammateRequestsTest {
     public void teammateRequestsUpdatedWhenNewData(){
         Store store = new Store();
         FakeStorageWatcher storageWatcher = new FakeStorageWatcher();
-        TeammateRequests teammateRequests = new TeammateRequests(store, storageWatcher);
+        TeammateRequests teammateRequests = new TeammateRequests(store, null);
+        storageWatcher.lastListener = teammateRequests;
         Teammate requester = new Teammate("g");
         Teammate target = new Teammate("f");
         TeammateRequest request = new TeammateRequest(requester, target);
@@ -85,7 +87,8 @@ public class TeammateRequestsTest {
     public void listenersNotifiedRepeatedlyOfNewTeammateRequests(){
         Store store = new Store();
         FakeStorageWatcher storageWatcher = new FakeStorageWatcher();
-        TeammateRequests teammateRequests = new TeammateRequests(store, storageWatcher);
+        TeammateRequests teammateRequests = new TeammateRequests(store, null);
+        storageWatcher.lastListener = teammateRequests;
         TRL trl = new TRL();
         teammateRequests.addRequestsListener(trl);
         Teammate requester = new Teammate("g");
@@ -107,7 +110,8 @@ public class TeammateRequestsTest {
     public void requestWithDifferentTeammatesFromSameRequesterAreSeparate(){
         Store store = new Store();
         FakeStorageWatcher storageWatcher = new FakeStorageWatcher();
-        TeammateRequests teammateRequests = new TeammateRequests(store, storageWatcher);
+        TeammateRequests teammateRequests = new TeammateRequests(store, null);
+        storageWatcher.lastListener = teammateRequests;
         Teammate requester = new Teammate("g");
         Teammate target1 = new Teammate("target1");
         Teammate target2 = new Teammate("target2");
@@ -124,7 +128,8 @@ public class TeammateRequestsTest {
     public void duplicateRequestRejected(){
         Store store = new Store();
         FakeStorageWatcher storageWatcher = new FakeStorageWatcher();
-        TeammateRequests teammateRequests = new TeammateRequests(store, storageWatcher);
+        TeammateRequests teammateRequests = new TeammateRequests(store, null);
+        storageWatcher.lastListener = teammateRequests;
         Teammate requester = new Teammate("g");
         Teammate target = new Teammate("target");
         TeammateRequest request1 = new TeammateRequest(requester, target);
@@ -140,7 +145,8 @@ public class TeammateRequestsTest {
     public void addRequestRejectsDuplicates(){
         Store store = new Store();
         FakeStorageWatcher storageWatcher = new FakeStorageWatcher();
-        TeammateRequests teammateRequests = new TeammateRequests(store, storageWatcher);
+        TeammateRequests teammateRequests = new TeammateRequests(store, null);
+        storageWatcher.lastListener = teammateRequests;
         Teammate requester = new Teammate("g");
         Teammate target = new Teammate("target");
         TeammateRequest request1 = new TeammateRequest(requester, target);
@@ -156,7 +162,8 @@ public class TeammateRequestsTest {
     public void teammateRequestDeletedRemovesAndUpdatesListeners(){
         Store store = new Store();
         FakeStorageWatcher storageWatcher = new FakeStorageWatcher();
-        TeammateRequests teammateRequests = new TeammateRequests(store, storageWatcher);
+        TeammateRequests teammateRequests = new TeammateRequests(store, null);
+        storageWatcher.lastListener = teammateRequests;
         TRL trl = new TRL();
         teammateRequests.addRequestsListener(trl);
         Teammate requester = new Teammate("g");
@@ -167,5 +174,39 @@ public class TeammateRequestsTest {
         storageWatcher.lastListener.onTeammateRequestDeleted(request);
 
         assertThat(trl.lastRequests.contains(request)).isFalse();
+    }
+
+    @Test
+    public void ifNoInboundRequestsThereAreNoNotifications(){
+        Store store = new Store();
+        Teammate requester = new Teammate("g");
+        TeammateRequests teammateRequests = new TeammateRequests(store, requester);
+        TRL trl = new TRL();
+        teammateRequests.addRequestsListener(trl);
+        Teammate target = new Teammate("f");
+        TeammateRequest request = new TeammateRequest(requester, target);
+        TeammateRequest request2 = new TeammateRequest(requester, target);
+        teammateRequests.onNewTeammateRequest(request);
+        teammateRequests.onNewTeammateRequest(request2);
+
+        assertThat(teammateRequests.areThereNotifications()).isFalse();
+    }
+
+    @Test
+    public void ifInboundRequestsThereAreNotifications(){
+        Store store = new Store();
+        Teammate user = new Teammate("g");
+        user.setName("Name");
+        TeammateRequests teammateRequests = new TeammateRequests(store, user);
+        TRL trl = new TRL();
+        teammateRequests.addRequestsListener(trl);
+        Teammate requester = new Teammate("g");
+        Teammate target = new Teammate("f");
+        TeammateRequest request = new TeammateRequest(requester, target);
+        TeammateRequest request2 = new TeammateRequest(target, requester);
+        teammateRequests.onNewTeammateRequest(request);
+        teammateRequests.onNewTeammateRequest(request2);
+
+        assertThat(teammateRequests.areThereNotifications()).isTrue();
     }
 }

@@ -43,7 +43,8 @@ public class Walkstatic {
         this.responseWatcher = DefaultStorage.getDefaultResponseWatcher();
         this.membershipWatcher = DefaultStorage.getDefaultMembershipWatcher();
 
-        this.teammateRequests = new TeammateRequests(defaultStore, this.storageWatcher);
+        this.teammateRequests = new TeammateRequests(defaultStore, this.user);
+        this.storageWatcher.addTeammateRequestUpdateListener(this.teammateRequests);
         this.initRuns(defaultRunStore, this.storageWatcher);
         this.initScheduledRun();
 

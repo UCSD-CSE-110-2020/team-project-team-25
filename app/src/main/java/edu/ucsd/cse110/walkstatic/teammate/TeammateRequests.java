@@ -15,12 +15,13 @@ public class TeammateRequests implements TeammateRequestListener {
     private TeammateRequestStore store;
     private Set<TeammateRequest> requestHashSet;
     private List<TeammateRequestsListener> teammateRequestsListenerList;
+    private Teammate user;
 
-    public TeammateRequests(@NonNull TeammateRequestStore store, @NonNull StorageWatcher storageWatcher){
+    public TeammateRequests(@NonNull TeammateRequestStore store, @NonNull Teammate user){
         this.store = store;
         this.requestHashSet = new HashSet<>();
         this.teammateRequestsListenerList = new ArrayList<>();
-        storageWatcher.addTeammateRequestUpdateListener(this);
+        this.user = user;
     }
 
     public void addRequest(TeammateRequest request){
@@ -55,5 +56,14 @@ public class TeammateRequests implements TeammateRequestListener {
         this.teammateRequestsListenerList.forEach(teammateRequestsListener -> {
             teammateRequestsListener.teammateRequestsUpdated(this.getRequests());
         });
+    }
+
+    public boolean areThereNotifications() {
+        for(TeammateRequest request : this.getRequests()){
+            if(request.getTarget().getEmail().equals(this.user.getEmail())){
+                return true;
+            }
+        }
+        return false;
     }
 }
