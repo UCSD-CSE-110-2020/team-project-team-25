@@ -108,38 +108,72 @@ exports.sendScheduledRunResponseUpdatedNotifications = functions.firestore
                  return "failed to read changed document"
              });
    });
+var decideRun = function(document, proposal, responseMsg){
+     var responseString = "";
+       if(proposal.scheduled){
+            responseString = proposal.author.name + " scheduled run!";
+       } else {
+            responseString = proposal.author.name + " withdrew run!";
+       }
+       var message = {
+         notification: {
+           title: proposal.run.name + " decided " + proposal.run.name,
+           body: responseString
+         },
+         topic: "inteam"
+       };
 
-   exports.sendScheduledRunResponseCreatedNotifications = functions.firestore
-         .document('team/proposal/{responseId}')
+       return admin.messaging().send(message)
+         .then((response) => {
+           // Response is a message ID string.
+           console.log('Successfully sent message:', response);
+           return response;
+         })
+         .catch((error) => {
+           console.log('Error sending message:', error);
+           return error;
+         });
+}
+   exports.sendScheduledRunDecisionNotifications = functions.firestore
+         .document('team/proposals')
          .onUpdate((snap, context) => {
               // Get an object with the current document value.
               // If the document does not exist, it has been deleted.
               const document = snap.exists ? snap.data() : null;
+     console.log("reading changed document: ");
 
-              if (document) {
+              //if (document) {
                 // don't spam the requester with their own notifications
-                if(document.target.email !== context.params.username) { return 0; }
+                //if(document.target.email !== context.params.username) { return 0; }
 
-                var response = document.scheduled ? "has scheduled the proposed walk!" : "has withdrawn the proposed walk!";
-                var message = {
-                  notification: {
-                    title: document.author.name + response,
-                    body: "Tap this to open Walkstatic"
-                  },
-                  topic: context.params.username.replace("@", "")
-                };
 
-                return admin.messaging().send(message)
-                  .then((response) => {
-                    // Response is a message ID string.
-                    console.log('Successfully sent message:', response);
-                    return response;
-                  })
-                  .catch((error) => {
-                    console.log('Error sending message:', error);
-                    return error;
-                  });
-              }
+            return firestore.collection('team').doc('proposals').get().then((proposal) => {
+                        if(proposal.exists){
+                            return decideRun(document, proposal.data(), "responded to");
+                        }
+                        return "failed to read proposal"
+                    });
 
-              return "document was null or emtpy";
             });
+
+            exports.sendScheduledRunDecisionNotifications = functions.firestore
+                     .document('team/proposals')
+                     .onDelete((snap, context) => {
+                          // Get an object with the current document value.
+                          // If the document does not exist, it has been deleted.
+                          const document = snap.exists ? snap.data() : null;
+                 console.log("reading changed document: ");
+
+                          //if (document) {
+                            // don't spam the requester with their own notifications
+                            //if(document.target.email !== context.params.username) { return 0; }
+
+
+                        return firestore.collection('team').doc('proposals').get().then((proposal) => {
+                                    if(proposal.exists){
+                                        return decideRun(document, proposal.data(), "responded to");
+                                    }
+                                    return "failed to read proposal"
+                                });
+
+                        });
