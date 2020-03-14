@@ -76,6 +76,13 @@ public class NotificationEspressoTest {
         }
         catch (Throwable t) { assert(false); }
 
+        try {
+            // We are too fast for invalidate options menu
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         ViewInteraction visibleNotif = onView(withId(R.id.notification));
         visibleNotif.check(matches(isEnabled()));
 
