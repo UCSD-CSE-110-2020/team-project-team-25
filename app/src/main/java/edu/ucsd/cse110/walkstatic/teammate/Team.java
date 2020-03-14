@@ -1,37 +1,62 @@
 package edu.ucsd.cse110.walkstatic.teammate;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-public class Team implements TeamListener {
+import edu.ucsd.cse110.walkstatic.store.UserMembershipStore;
+import edu.ucsd.cse110.walkstatic.store.UserTeamListener;
 
-    private List<Teammate> teammates;
+public class Team implements UserTeamListener {
 
-    public Team() { this(new ArrayList<>()); }
+    private Teammate user;
+    private boolean isUserOnTeam;
+    private List<TeamListener> listeners;
+    private UserMembershipStore userMembershipStore;
 
-    public Team(Teammate teammate) {
-        this();
-        this.teammates.add(teammate);
+    private Set<Teammate> teammateList;
+
+    public Team(Teammate teammate, UserMembershipStore userMembershipStore) {
+        this.user = teammate;
+        this.isUserOnTeam = false;
+        this.listeners = new ArrayList<>();
+        this.userMembershipStore = userMembershipStore;
+        this.teammateList = new HashSet<>();
     }
 
-    public Team(List<Teammate> teammates)
-    {
-        this.teammates = teammates;
+    public void addTeamListener(TeamListener listener) { listeners.add(listener); }
+
+    public void setMembership(Teammate user){
+        this.userMembershipStore.addUser(user);
+        this.userTeamChanged(user);
     }
 
-    public List<Teammate> getTeammates()
-    {
-        return teammates;
+    private void notifyListeners() {
+        for(TeamListener listener : this.listeners){
+            listener.teamChanged();
+        }
+    }
+
+    public List<Teammate> getTeammates(){
+        if(this.isUserOnTeam()){
+            List<Teammate> teammates = new ArrayList<>(this.teammateList);
+            teammates.remove(user);
+            return teammates;
+        }
+        return new ArrayList<>();
+    }
+
+    public boolean isUserOnTeam(){
+        return this.isUserOnTeam;
     }
 
     @Override
-    public void teamChanged() {
-
-    }
-
-    public void add(Teammate teammate)
-    {
-        this.teammates.add(teammate);
-        teamChanged();
+    public void userTeamChanged(Teammate newUser) {
+        this.teammateList.add(newUser);
+        if(newUser.getEmail().equals(this.user.getEmail())){
+            this.isUserOnTeam = true;
+            this.notifyListeners();
+        }
     }
 }

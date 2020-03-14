@@ -82,6 +82,9 @@
         <action
             android:id="@+id/action_teamFragment_to_inviteFragment"
             app:destination="@id/inviteFragment" />
+        <action
+            android:id="@+id/action_teamFragment_to_inviteAcceptedFragment"
+            app:destination="@id/inviteAcceptedFragment" />
     </fragment>
     <action android:id="@+id/action_global_teamFragment" app:destination="@id/teamFragment" />
     <fragment

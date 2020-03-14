@@ -58,6 +58,7 @@ public class ScheduledWalkFragment extends Fragment implements ScheduledRunListe
         this.initResponseList();
         this.app.getScheduledRun().addListener(this);
         this.addResponseListeners();
+        this.app.getTeam().addTeamListener(this::onTeamChanged);
     }
 
     private void populateWithProposal(@Nullable ScheduledRun scheduledRun){
@@ -81,7 +82,7 @@ public class ScheduledWalkFragment extends Fragment implements ScheduledRunListe
         TextView runName = this.requireActivity().findViewById(R.id.run_name);
         TextView startingPoint = this.requireActivity().findViewById(R.id.starting_point_schedule);
 
-        if(scheduledRun != null && scheduledRun.isRunProposed()){
+        if(scheduledRun != null && scheduledRun.isRunProposed() && this.app.getTeam().isUserOnTeam()){
             Run run = scheduledRun.getRunProposal().getRun();
             runName.setText(run.getName());
             SpannableString start = new SpannableString(run.getStartingPoint());
@@ -104,7 +105,10 @@ public class ScheduledWalkFragment extends Fragment implements ScheduledRunListe
     }
 
     private void setVisibility(@Nullable ScheduledRun scheduledRun){
-        if (scheduledRun != null && scheduledRun.isRunProposed()){
+        if (scheduledRun != null
+                && scheduledRun.isRunProposed()
+                && this.app.getTeam().isUserOnTeam())
+        {
             this.setRunStatsVisibility(View.VISIBLE);
             if(scheduledRun.amIProposer()){
                 this.setTeammateResponseVisibility(View.VISIBLE);
@@ -184,7 +188,7 @@ public class ScheduledWalkFragment extends Fragment implements ScheduledRunListe
         }
         Button withdrawButton = getActivity().findViewById(R.id.withdrawButton);
         Button scheduleButton = getActivity().findViewById(R.id.scheduleWalkButton);
-        if(app.getScheduledRun().getRunProposal().getAuthor().getEmail().equals( app.getUser().getEmail())){
+        if(this.app.getScheduledRun().amIProposer() && this.app.getTeam().isUserOnTeam()){
             withdrawButton.setVisibility(View.VISIBLE);
             scheduleButton.setVisibility(View.VISIBLE);
             scheduleButton.setEnabled(!this.app.getScheduledRun().getRunProposal().isScheduled());
@@ -210,6 +214,10 @@ public class ScheduledWalkFragment extends Fragment implements ScheduledRunListe
         this.teammateResponseArrayAdapter.notifyDataSetChanged();
         this.populateWithProposal(scheduledRun);
         this.populateWithButtons();
+    }
+
+    public void onTeamChanged() {
+        this.onScheduledRunChanged(this.app.getScheduledRun());
     }
 
     @Override

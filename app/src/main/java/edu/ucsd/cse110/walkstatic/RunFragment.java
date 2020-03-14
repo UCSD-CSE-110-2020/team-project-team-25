@@ -17,8 +17,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -43,25 +45,22 @@ import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestListener;
+import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestsListener;
 import edu.ucsd.cse110.walkstatic.time.TimeHelp;
 import edu.ucsd.cse110.walkstatic.time.TimeMachine;
 
 import static android.content.Context.MODE_PRIVATE;
 
 
-public class RunFragment extends Fragment implements TeammateRequestListener {
+public class RunFragment extends Fragment implements TeammateRequestsListener {
 
     private DistanceTracker stepTracker;
     private FitnessService fitnessService;
     private SecondTimer timer;
     private Chronometer chronometer;
     private MileCalculator mileCalculator;
-    private StorageWatcher storageWatcher;
-    private TeammateRequest lastRequest;
 
     private Walkstatic app;
-
-    private Menu menu;
 
     private Run run;
     private Run lastRun;
@@ -81,9 +80,9 @@ public class RunFragment extends Fragment implements TeammateRequestListener {
         super.onViewCreated(view, savedInstanceState);
         Log.d("Run Fragment", "View Created");
         this.app = new Walkstatic(this.getContext());
+        this.app.getTeammateRequests().addRequestsListener(this);
         this.setHasOptionsMenu(true);
         this.buildMileCalculator();
-        this.buildStorageWatcher();
 
         initStepCount();
         Button startButton = getActivity().findViewById(R.id.startButton);
@@ -153,11 +152,6 @@ public class RunFragment extends Fragment implements TeammateRequestListener {
 
             }
         });
-        this.storageWatcher.addTeammateRequestUpdateListener(this);
-    }
-
-    private void setNotification(boolean visible) {
-        menu.getItem(0).setVisible(visible);
     }
 
     @Override
@@ -177,27 +171,28 @@ public class RunFragment extends Fragment implements TeammateRequestListener {
     @Override
     public void onCreateOptionsMenu(@NotNull Menu menu, MenuInflater menuInflater)
     {
-        this.menu = menu;
-
         menuInflater.inflate(R.menu.notifications_menu, menu);
         super.onCreateOptionsMenu(menu, menuInflater);
+    }
 
-        MenuItem mi = menu.getItem(0);
+    @Override
+    public void onPrepareOptionsMenu(Menu menu){
+        super.onPrepareOptionsMenu(menu);
+        MenuItem notification = menu.findItem(R.id.notification);
+        boolean areNotifications = this.app.getTeammateRequests().areThereNotifications();
+        notification.setEnabled(areNotifications);
+        int tint = areNotifications ? R.color.notificationYellow : R.color.tintDisabled;
+        notification.setIconTintList(getContext().getResources().getColorStateList(tint, null));
+    }
 
-        ColorStateList csl = getContext().getResources().
-                getColorStateList(R.color.notificationYellow, null);
-        mi.setIconTintList(csl);
-
-        mi.setOnMenuItemClickListener(item -> {
-            Bundle bundle = new Bundle();
-            if (lastRequest != null)
-                bundle.putSerializable("request", lastRequest.getRequester());
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.notification){
             NavHostFragment.findNavController(this).navigate(
-                    R.id.action_runFragment_to_inviteAcceptedFragment, bundle);
+                    R.id.action_global_teamFragment);
             return true;
-        });
-
-        this.setNotification(false);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void initStepCount(){
@@ -347,25 +342,8 @@ public class RunFragment extends Fragment implements TeammateRequestListener {
     }
 
     @Override
-    public void onNewTeammateRequest(TeammateRequest request) {
-        if(this.app == null){
-            return;
-        }
-        if (request.getTarget().equals(app.getUser())){
-            setNotification(true);
-            lastRequest = request;
-        }
-    }
-
-    @Override
-    public void onTeammateRequestDeleted(TeammateRequest request) {
-        if(this.app == null){
-            return;
-        }
-        if(request.getTarget().equals(app.getUser())){
-            setNotification(false);
-            lastRequest = null;
-        }
+    public void teammateRequestsUpdated(List<TeammateRequest> requests) {
+        this.requireActivity().invalidateOptionsMenu();
     }
 
     private class SecondTimer implements Runnable{
@@ -389,7 +367,7 @@ public class RunFragment extends Fragment implements TeammateRequestListener {
         }
 
         void resume(){
-            if(this.stop == false){
+            if(!this.stop){
                 return;
             }
             this.stop = false;
@@ -447,9 +425,5 @@ public class RunFragment extends Fragment implements TeammateRequestListener {
         SharedPreferences sharedPreferences = (SharedPreferences) getActivity().getSharedPreferences(preferenceName, MODE_PRIVATE);
         String height = sharedPreferences.getString(preferenceName,"-1");
         this.mileCalculator = new MileCalculator(height);
-    }
-
-    private void buildStorageWatcher(){
-        this.storageWatcher = DefaultStorage.getDefaultStorageWatcher(app.getUser());
     }
 }

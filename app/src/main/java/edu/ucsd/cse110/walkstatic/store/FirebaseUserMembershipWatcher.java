@@ -13,32 +13,31 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateResponse;
-import edu.ucsd.cse110.walkstatic.teammate.TeammateResponseChangeListener;
 
-public class FirebaseResponseWatcher implements ResponseWatcher {
+public class FirebaseUserMembershipWatcher implements GenericWatcher<UserTeamListener> {
     private static String TAG = "FirebaseResponseWatcher";
 
-    private ArrayList<TeammateResponseChangeListener> teammateResponseChangeListenerArrayList;
+    private ArrayList<UserTeamListener> userTeamListeners;
     private ListenerRegistration collectionRegistration;
 
-    public FirebaseResponseWatcher(){
-        this.teammateResponseChangeListenerArrayList = new ArrayList<>();
+    public FirebaseUserMembershipWatcher(){
+        this.userTeamListeners = new ArrayList<>();
         CollectionReference responseCollection = FirebaseFirestore.getInstance()
-                .collection(FirebaseConstants.TEAM_COLLECTION)
-                .document(FirebaseConstants.PROPOSAL_DOCUMENT)
-                .collection(FirebaseConstants.RESPONSE_COLLECTION);
+                .collection(FirebaseConstants.USER_MEMBERSHIP_COLLECTION);
         this.collectionRegistration = responseCollection.addSnapshotListener(this::onResponse);
     }
 
+
     @Override
-    public void addResponseListener(TeammateResponseChangeListener listener) {
-        this.teammateResponseChangeListenerArrayList.add(listener);
+    public void addWatcherListener(UserTeamListener listener) {
+        this.userTeamListeners.add(listener);
     }
 
     @Override
     public void deleteAllListeners() {
-        this.teammateResponseChangeListenerArrayList.clear();
+        this.userTeamListeners.clear();
         this.collectionRegistration.remove();
     }
 
@@ -54,13 +53,9 @@ public class FirebaseResponseWatcher implements ResponseWatcher {
         List<DocumentChange> documentChanges = snapshot.getDocumentChanges();
         for (DocumentChange documentChange : documentChanges) {
             QueryDocumentSnapshot queryDocumentSnapshot = documentChange.getDocument();
-            TeammateResponse response = queryDocumentSnapshot.toObject(TeammateResponse.class);
-            final boolean removed = documentChange.getType() == DocumentChange.Type.REMOVED;
-
-            this.teammateResponseChangeListenerArrayList.forEach(listener ->{
-                if(!removed){
-                    listener.onChangedResponse(response);
-                }
+            Teammate teammate = queryDocumentSnapshot.toObject(Teammate.class);
+            this.userTeamListeners.forEach(listener ->{
+                listener.userTeamChanged(teammate);
             });
         }
     }

@@ -1,9 +1,16 @@
 package edu.ucsd.cse110.walkstatic;
 
 
+import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+
+import androidx.test.espresso.DataInteraction;
+import androidx.test.espresso.ViewInteraction;
+import androidx.test.filters.LargeTest;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.runner.AndroidJUnit4;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -12,12 +19,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import androidx.test.espresso.DataInteraction;
-import androidx.test.espresso.ViewInteraction;
-import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
-import edu.ucsd.cse110.walkstatic.runs.Run;
+import edu.ucsd.cse110.walkstatic.fitness.FitnessListener;
+import edu.ucsd.cse110.walkstatic.fitness.FitnessService;
+import edu.ucsd.cse110.walkstatic.fitness.FitnessServiceFactory;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 
 import static androidx.test.espresso.Espresso.onData;
@@ -38,25 +42,26 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class TeammatesRunEspressoTest {
+public class RouteRanTest {
+    private static final String TEST_SERVICE = "TEST_SERVICE";
+    public static long stepCount = 1337;
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
 
     @Test
-    public void teammatesRunEspressoTest() {
+    public void routeRanTest() {
+        FitnessServiceFactory.put(TEST_SERVICE, new FitnessServiceFactory.BluePrint() {
+            @Override
+            public FitnessService create(Activity activity) {
+                return new RouteRanTest.TestFitnessService(activity);
+            }
+        });
+        FitnessServiceFactory.setDefaultFitnessServiceKey(TEST_SERVICE);
+
         Teammate user = new Teammate("test@gmail.com");
         EspressoHelpers.setUser(user);
-
-        Teammate waluigi = new Teammate("waluigi");
-        waluigi.setName("Waluigi Waa");
-
-        Run waluigisCanyon = new Run().setName("Waluigi's Canyon");
-        Run WaluigisCastle = new Run().setName("Waluigi's Castle");
-        waluigisCanyon.setAuthor(waluigi);
-        WaluigisCastle.setAuthor(waluigi);
-        EspressoHelpers.mockStorage(waluigisCanyon, WaluigisCastle);
-        EspressoHelpers.setUserInTeam(user);
+        EspressoHelpers.mockStorage();
 
         EspressoHelpers.setStartupParams(mActivityTestRule, "65");
 
@@ -77,19 +82,39 @@ public class TeammatesRunEspressoTest {
                                 childAtPosition(
                                         withId(R.id.nav_view),
                                         0)),
-                        5),
+                        2),
                         isDisplayed()));
         navigationMenuItemView.perform(click());
 
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.listed_run_name), withText("Waluigi's Canyon"),
+        ViewInteraction actionMenuItemView = onView(
+                allOf(withId(R.id.action_add), withContentDescription("Add"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.action_bar),
+                                        2),
+                                0),
                         isDisplayed()));
-        textView.check(matches(withText("Waluigi's Canyon")));
+        actionMenuItemView.perform(click());
 
-        ViewInteraction textView2 = onView(
-                allOf(withId(R.id.listed_run_name), withText("Waluigi's Castle"),
+        ViewInteraction appCompatEditText = onView(
+                allOf(withId(R.id.run_name_text),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.widget.LinearLayout")),
+                                        0),
+                                1),
                         isDisplayed()));
-        textView2.check(matches(withText("Waluigi's Castle")));
+        appCompatEditText.perform(replaceText("123"), closeSoftKeyboard());
+
+        ViewInteraction actionMenuItemView2 = onView(
+                allOf(withId(R.id.action_save), withContentDescription("Save"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.action_bar),
+                                        2),
+                                1),
+                        isDisplayed()));
+        actionMenuItemView2.perform(click());
 
         DataInteraction constraintLayout = onData(anything())
                 .inAdapterView(allOf(withId(R.id.my_runs_list),
@@ -99,12 +124,7 @@ public class TeammatesRunEspressoTest {
                 .atPosition(0);
         constraintLayout.perform(click());
 
-        ViewInteraction textView5 = onView(
-                allOf(withId(R.id.run_name), withText("Waluigi's Canyon"),
-                        isDisplayed()));
-        textView5.check(matches(withText("Waluigi's Canyon")));
-
-        ViewInteraction actionMenuItemView = onView(
+        ViewInteraction actionMenuItemView3 = onView(
                 allOf(withId(R.id.action_start_run), withContentDescription("Start Run"),
                         childAtPosition(
                                 childAtPosition(
@@ -112,22 +132,18 @@ public class TeammatesRunEspressoTest {
                                         2),
                                 0),
                         isDisplayed()));
-        actionMenuItemView.perform(click());
-
-        ViewInteraction textView6 = onView(
-                allOf(withId(R.id.run_name_display), withText("Waluigi's Canyon"),
-                        isDisplayed()));
-        textView6.check(matches(withText("Waluigi's Canyon")));
+        actionMenuItemView3.perform(click());
 
         ViewInteraction appCompatButton2 = onView(
                 allOf(withId(R.id.stopButton), withText("Stop"),
+                        childAtPosition(
+                                allOf(withId(R.id.linearLayout),
+                                        childAtPosition(
+                                                withId(R.id.nav_host_fragment),
+                                                0)),
+                                12),
                         isDisplayed()));
         appCompatButton2.perform(click());
-
-        ViewInteraction textView7 = onView(
-                allOf(withId(R.id.lastRunName), withText("Last Run: Waluigi's Canyon"),
-                        isDisplayed()));
-        textView7.check(matches(withText("Last Run: Waluigi's Canyon")));
 
         ViewInteraction appCompatImageButton2 = onView(
                 allOf(withContentDescription("Open navigation drawer"),
@@ -150,10 +166,21 @@ public class TeammatesRunEspressoTest {
                         isDisplayed()));
         navigationMenuItemView2.perform(click());
 
-        ViewInteraction textView8 = onView(
-                allOf(withId(R.id.listed_run_name), withText("Waluigi's Canyon"),
-                        isDisplayed()));
-        textView8.check(matches(withText("Waluigi's Canyon")));
+        ViewInteraction myRunsCheck = onView(
+                withId(R.id.run_check));
+        myRunsCheck.check(matches(isDisplayed()));
+
+        DataInteraction constraintLayout2 = onData(anything())
+                .inAdapterView(allOf(withId(R.id.my_runs_list),
+                        childAtPosition(
+                                withClassName(is("android.widget.FrameLayout")),
+                                0)))
+                .atPosition(0);
+        constraintLayout2.perform(click());
+
+        ViewInteraction imageView = onView(
+                withId(R.id.my_run_check));
+        imageView.check(matches(isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(
@@ -173,5 +200,36 @@ public class TeammatesRunEspressoTest {
                         && view.equals(((ViewGroup) parent).getChildAt(position));
             }
         };
+    }
+
+    private class TestFitnessService implements FitnessService {
+        private static final String TAG = "[TestFitnessService]: ";
+        private FitnessListener listener;
+
+        public TestFitnessService(Activity activity) {
+        }
+
+        @Override
+        public int getRequestCode() {
+            return 0;
+        }
+
+        @Override
+        public void setup() {
+            System.out.println(TAG + "setup");
+        }
+
+        @Override
+        public void updateStepCount() {
+            System.out.println(TAG + "updateStepCount");
+            if(this.listener != null){
+                listener.onNewSteps(stepCount);
+            }
+        }
+
+        @Override
+        public void setListener(FitnessListener listener) {
+            this.listener = listener;
+        }
     }
 }

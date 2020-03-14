@@ -35,6 +35,7 @@ public class RunArrayAdapter extends ArrayAdapter<Run> {
         TextView milesView = convertView.findViewById(R.id.run_miles);
         TextView stepsView = convertView.findViewById(R.id.run_steps);
         ImageView favoriteIndicator = convertView.findViewById(R.id.favorite_indicator);
+        ImageView  runCheck = convertView.findViewById(R.id.run_check);
 
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
         String milesString = decimalFormat.format(run.getMiles());
@@ -58,6 +59,13 @@ public class RunArrayAdapter extends ArrayAdapter<Run> {
         int starColor = run.isFavorited() ? R.color.starYellow : R.color.starGrey;
         favoriteIndicator.setImageResource(starIcon);
         favoriteIndicator.setImageTintList(getContext().getResources().getColorStateList(starColor, null));
+
+        if (run.hasBeenRunPreviously() == true ){
+            runCheck.setVisibility(View.VISIBLE);
+        } else {
+            runCheck.setVisibility(View.INVISIBLE);
+        }
+
 
         return convertView;
     }

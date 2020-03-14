@@ -2,6 +2,8 @@ package edu.ucsd.cse110.walkstatic.teammate;
 
 import com.google.firebase.firestore.Exclude;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.Expose;
 
 import java.io.Serializable;
 import java.util.Random;
@@ -10,7 +12,10 @@ import java.util.UUID;
 import androidx.core.graphics.ColorUtils;
 
 public class Teammate implements Serializable {
+    @Expose
     private String name;
+
+    @Expose
     private final String email;
 
     public Teammate(){
@@ -36,9 +41,10 @@ public class Teammate implements Serializable {
 
     @Override
     public String toString(){
-        Gson gson = new Gson();
-        String json = gson.toJson(this);
-        return json;
+        return new GsonBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .create()
+                .toJson(this);
     }
 
     @Override
@@ -52,9 +58,7 @@ public class Teammate implements Serializable {
     }
 
     public static Teammate fromJSON(String json){
-        Gson gson = new Gson();
-        Teammate result = gson.fromJson(json, Teammate.class);
-        return result;
+        return new Gson().fromJson(json, Teammate.class);
     }
 
     @Override
