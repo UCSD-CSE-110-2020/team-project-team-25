@@ -83,17 +83,18 @@ public class InviteTeammateEspressoTest {
 
     @Test
     public void inviteTeammateEspressoTest() {
+        Teammate user = new Teammate("test@gmail.com");
+        user.setName("Temp Templeton");
+        EspressoHelpers.setUserInTeam(user);
         EspressoHelpers.mockStorage();
         final FirebaseMocks.MockTeammateRequestStore mockTeammateRequestStore = new FirebaseMocks.MockTeammateRequestStore();
-        DefaultStorage.setDefaultStorageWatcher(user -> new MockStorageWatcher());
+        DefaultStorage.setDefaultStorageWatcher(ingoredUser -> new MockStorageWatcher());
         DefaultStorage.setDefaultTeammateRequestStore(() -> mockTeammateRequestStore);
 
         Context targetContext = getInstrumentation().getTargetContext();
         String preferencesName = targetContext.getResources().getString(R.string.user_string);
         SharedPreferences.Editor preferencesEditor = targetContext.getSharedPreferences(
                 preferencesName, Context.MODE_PRIVATE).edit();
-        Teammate user = new Teammate("test@gmail.com");
-        user.setName("Temp Templeton");
         preferencesEditor.putString(preferencesName, user.toString()).commit();
 
         FitnessServiceFactory.setDefaultFitnessServiceKey(DefaultBlueprints.INCREMENT);
@@ -199,7 +200,7 @@ public class InviteTeammateEspressoTest {
         }
 
         ViewInteraction textView2 = onView(
-                allOf(withId(R.id.teammate_requests_list),
+                allOf(withId(R.id.my_teammates_list),
                         isDisplayed()));
         textView2.check(matches(not(hasDescendant(withText("Linda")))));
 

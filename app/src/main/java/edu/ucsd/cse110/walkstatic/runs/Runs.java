@@ -10,14 +10,14 @@ import java.util.UUID;
 import edu.ucsd.cse110.walkstatic.store.RunStore;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 
-public class Runs implements  RunUpdateListener{
+public class Runs implements RunUpdateListener {
     private RunStore store;
     private Teammate user;
     private HashMap<UUID, Run> userRuns;
     private HashMap<UUID, Run> teammateRuns;
     private List<RunsListener> runsListenersList;
 
-    public Runs(RunStore store, Teammate user){
+    public Runs(RunStore store, Teammate user) {
         this.store = store;
         this.userRuns = new HashMap<>();
         this.teammateRuns = new HashMap<>();
@@ -25,9 +25,9 @@ public class Runs implements  RunUpdateListener{
         this.user = user;
     }
 
-    public void addRun(Run run){
+    public void addRun(Run run) {
         Run userRun = run;
-        if(!this.user.equals(run.getAuthor())){
+        if(!this.user.equals(run.getAuthor())) {
             userRun = Run.fromJSON(run.toJSON());
             userRun.setUUID(UUID.randomUUID());
             userRun.setAuthor(this.user);
@@ -37,13 +37,13 @@ public class Runs implements  RunUpdateListener{
         this.userRuns.put(userRun.getUUID(), userRun);
     }
 
-    public List<Run> getRuns(){
+    public List<Run> getRuns() {
         List<Run> runs = new ArrayList<>(userRuns.values());
         Collections.sort(runs, Run::compareTo);
         return runs;
     }
 
-    public List<Run> getTeammateRuns(){
+    public List<Run> getTeammateRuns() {
         List<Run> runs = new ArrayList<>(teammateRuns.values());
         Collections.sort(runs, Run::compareTo);
         return runs;
@@ -60,16 +60,16 @@ public class Runs implements  RunUpdateListener{
         }
     }
 
-    private void notifyOfTeammateRun(){
+    private void notifyOfTeammateRun() {
         List<Run> runList = this.getTeammateRuns();
-        for(RunsListener listener : this.runsListenersList){
+        for(RunsListener listener : this.runsListenersList) {
             listener.teammateRunsChanged(runList);
         }
     }
 
-    private void notifyOfUserRun(){
+    private void notifyOfUserRun() {
         List<Run> runList = this.getRuns();
-        for(RunsListener listener : this.runsListenersList){
+        for(RunsListener listener : this.runsListenersList) {
             listener.myRunsChanged(runList);
         }
     }
@@ -78,18 +78,18 @@ public class Runs implements  RunUpdateListener{
         this.runsListenersList.add(listener);
     }
 
-    public Run getLastRun(){
+    public Run getLastRun() {
         Collection<Run> userRuns = this.userRuns.values();
-        if(userRuns.size() == 0){
+        if(userRuns.size() == 0) {
             return null;
         }
         Run latestRun = null;
-        for(Run run : userRuns){
-            if(latestRun == null || latestRun.getStartTime() < run.getStartTime()){
+        for(Run run : userRuns) {
+            if(latestRun == null || latestRun.getStartTime() < run.getStartTime()) {
                 latestRun = run;
             }
         }
-        if(latestRun.getStartTime() == Run.INVALID_TIME){
+        if(latestRun.getStartTime() == Run.INVALID_TIME) {
             return null;
         }
         return latestRun;

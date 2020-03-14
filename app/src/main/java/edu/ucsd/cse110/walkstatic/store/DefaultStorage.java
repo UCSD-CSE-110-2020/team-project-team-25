@@ -20,15 +20,19 @@ public class DefaultStorage {
         public BlueprintTarget get();
     }
 
-    private static StorageWatcherBlueprint defaultStorageWatcher;
     private static GenericBlueprint<TeammateRequestStore> defaultTeammateRequestStore;
     private static GenericBlueprint<RunStore> defaultRunStore;
+
+    private static GenericBlueprint<UserMembershipStore> defaultUserMembershipStore;
+    private static StorageWatcherBlueprint defaultStorageWatcher;
+
     private static GenericBlueprint<ResponseWatcher> defaultResponseWatcher;
     private static GenericBlueprint<NotificationTopicSubscriber> defaultNotificationTopicSubscriber;
     private static GenericBlueprint<ProposedStore> defaultProposedStore;
     private static GenericBlueprint<ProposedWatcher> defaultProposedWatcher;
     private static GenericBlueprint<ResponseStore> defaultResponseStore;
     private static GenericBlueprint<ProposedDeleter> defaultProposedDeleter;
+    private static GenericBlueprint<GenericWatcher<UserTeamListener>> defaultMembershipWatcher;
 
 
     private static FirebaseInitialization defaultFirebaseInitialization;
@@ -44,7 +48,7 @@ public class DefaultStorage {
     public static TeammateRequestStore getDefaultTeammateRequestStore(){
         if(defaultTeammateRequestStore == null){
             assertNotTestMode();
-            return new FirebaseStore();
+            return new FirebaseTeammateRequestStore();
         }
         return defaultTeammateRequestStore.get();
     }
@@ -55,6 +59,14 @@ public class DefaultStorage {
             return new FirebaseRunStore();
         }
         return defaultRunStore.get();
+    }
+
+    public static UserMembershipStore getDefaultUserMembershipStore() {
+        if(defaultUserMembershipStore == null){
+            assertNotTestMode();
+            return new FirebaseUserMembershipStore();
+        }
+        return defaultUserMembershipStore.get();
     }
 
     public static ProposedDeleter getDefaultProposedDeleter(){
@@ -105,6 +117,14 @@ public class DefaultStorage {
         return defaultResponseStore.get();
     }
 
+    public static GenericWatcher<UserTeamListener> getDefaultMembershipWatcher() {
+        if(defaultMembershipWatcher == null){
+            assertNotTestMode();
+            return new FirebaseUserMembershipWatcher();
+        }
+        return defaultMembershipWatcher.get();
+    }
+
     public static void setDefaultStorageWatcher(StorageWatcherBlueprint defaultStorageWatcher){
         DefaultStorage.defaultStorageWatcher = defaultStorageWatcher;
     }
@@ -129,6 +149,10 @@ public class DefaultStorage {
         DefaultStorage.defaultRunStore = runStore;
     }
 
+    public static void setDefaultUserMembershipStore(GenericBlueprint<UserMembershipStore> defaultUserMembershipStore) {
+        DefaultStorage.defaultUserMembershipStore = defaultUserMembershipStore;
+    }
+
     public static void setDefaultResponseWatcher(GenericBlueprint<ResponseWatcher> responseWatcher){
         DefaultStorage.defaultResponseWatcher = responseWatcher;
     }
@@ -143,6 +167,10 @@ public class DefaultStorage {
 
     public static void setDefaultResponseStore(GenericBlueprint<ResponseStore> defaultResponseStore){
         DefaultStorage.defaultResponseStore = defaultResponseStore;
+    }
+
+    public static void setDefaultMembershipWatcher(GenericBlueprint<GenericWatcher<UserTeamListener>> defaultMembershipWatcher){
+        DefaultStorage.defaultMembershipWatcher = defaultMembershipWatcher;
     }
 
     public static void initialize(Context context){

@@ -8,7 +8,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import edu.ucsd.cse110.walkstatic.runs.Run;
 
-public class FirebaseRunStore implements RunStore{
+public class FirebaseRunStore implements RunStore {
 
     private static final String TAG = "FirebaseRunStore";
 

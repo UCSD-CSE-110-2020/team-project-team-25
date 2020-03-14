@@ -13,12 +13,14 @@ public class FirebaseNotificationTopicSubscriber implements NotificationTopicSub
     public void subscribeToNotificationTopic(String topic) {
         FirebaseMessaging.getInstance().subscribeToTopic(topic)
                 .addOnCompleteListener(task -> {
-                            String msg = "Subscribed to notifications";
+                            String msg = "Subscribed to notifications at " + topic;
                             if (!task.isSuccessful()) {
                                 msg = "Subscribe to notifications failed";
                             }
                             Log.d(TAG, msg);
                         }
-                );
+                ).addOnFailureListener(f -> {
+            Log.e(TAG, "unable to register topic " + topic + " because " + f.getLocalizedMessage());
+        });
     }
 }

@@ -3,10 +3,10 @@ package edu.ucsd.cse110.walkstatic;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import edu.ucsd.cse110.walkstatic.runs.RunProposal;
 import edu.ucsd.cse110.walkstatic.runs.Runs;
 import edu.ucsd.cse110.walkstatic.runs.ScheduledRun;
 import edu.ucsd.cse110.walkstatic.store.DefaultStorage;
+import edu.ucsd.cse110.walkstatic.store.GenericWatcher;
 import edu.ucsd.cse110.walkstatic.store.NotificationTopicSubscriber;
 import edu.ucsd.cse110.walkstatic.store.ProposedDeleter;
 import edu.ucsd.cse110.walkstatic.store.ProposedStore;
@@ -16,6 +16,7 @@ import edu.ucsd.cse110.walkstatic.store.ResponseWatcher;
 import edu.ucsd.cse110.walkstatic.store.RunStore;
 import edu.ucsd.cse110.walkstatic.store.StorageWatcher;
 import edu.ucsd.cse110.walkstatic.store.TeammateRequestStore;
+import edu.ucsd.cse110.walkstatic.store.UserTeamListener;
 import edu.ucsd.cse110.walkstatic.teammate.Team;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequests;
@@ -30,6 +31,7 @@ public class Walkstatic {
     private StorageWatcher storageWatcher;
     private ResponseWatcher responseWatcher;
     private ProposedWatcher proposedWatcher;
+    private GenericWatcher<UserTeamListener> membershipWatcher;
 
     public Walkstatic(Context context){
         DefaultStorage.initialize(context);
@@ -39,18 +41,21 @@ public class Walkstatic {
         this.proposedWatcher = DefaultStorage.getDefaultProposedWatcher();
         RunStore defaultRunStore = DefaultStorage.getDefaultRunStore();
         this.responseWatcher = DefaultStorage.getDefaultResponseWatcher();
-        this.teammateRequests = new TeammateRequests(defaultStore, this.storageWatcher);
+        this.membershipWatcher = DefaultStorage.getDefaultMembershipWatcher();
+
+        this.teammateRequests = new TeammateRequests(defaultStore, this.user);
+        this.storageWatcher.addTeammateRequestUpdateListener(this.teammateRequests);
         this.initRuns(defaultRunStore, this.storageWatcher);
         this.initScheduledRun();
 
         this.registerTopics();
-
     }
 
     private void initRuns(RunStore store, StorageWatcher storageWatcher){
         this.runs = new Runs(store, this.user);
         storageWatcher.addRunUpdateListener(this.runs);
-        this.team = new Team(this.user);
+        this.team = new Team(this.user, DefaultStorage.getDefaultUserMembershipStore());
+        this.membershipWatcher.addWatcherListener(this.team);
     }
 
 
@@ -72,34 +77,26 @@ public class Walkstatic {
         ProposedStore proposalStore = DefaultStorage.getDefaultProposedStore();
         ProposedDeleter proposalDeleter = DefaultStorage.getDefaultProposedDeleter();
         ResponseStore responseStore = DefaultStorage.getDefaultResponseStore();
-        this.scheduledRun =
-                new ScheduledRun(this.user, responseStore, proposalStore, proposalDeleter);
+        this.scheduledRun = new ScheduledRun(this.user, responseStore, proposalStore, proposalDeleter);
         this.proposedWatcher.addProposalListener(this.scheduledRun);
         this.responseWatcher.addResponseListener(this.scheduledRun);
     }
 
-    public TeammateRequests getTeammateRequests(){
-        return this.teammateRequests;
-    }
+    public TeammateRequests getTeammateRequests(){ return this.teammateRequests; }
 
-    public Teammate getUser(){
-        return this.user;
-    }
+    public Teammate getUser(){ return this.user; }
 
-    public Runs getRuns(){
-        return this.runs;
-    }
+    public Runs getRuns(){ return this.runs; }
 
     public Team getTeam() { return this.team; }
 
-    public ScheduledRun getScheduledRun(){
-        return this.scheduledRun;
-    }
+    public ScheduledRun getScheduledRun(){ return this.scheduledRun; }
 
     public void destroy(){
         this.storageWatcher.deleteAllListeners();
         this.responseWatcher.deleteAllListeners();
         this.proposedWatcher.deleteAllListeners();
+        this.membershipWatcher.deleteAllListeners();
     }
 
     private void registerTopics(){
@@ -107,6 +104,8 @@ public class Walkstatic {
         String sanitizedTopic = topic.replace("@", "");
         NotificationTopicSubscriber topicSubscriber = DefaultStorage.getDefaultNotificationTopicSubscriber();
         topicSubscriber.subscribeToNotificationTopic(sanitizedTopic);
-        topicSubscriber.subscribeToNotificationTopic("inteam");
+        if (this.getTeam().isUserOnTeam())
+            topicSubscriber.subscribeToNotificationTopic("inteam");
+
     }
 }

@@ -39,6 +39,8 @@ public class TeammateRunsFragment extends Fragment implements RunsListener, Adap
         super.onViewCreated(view, savedInstanceState);
         this.app = new Walkstatic(this.getContext());
         this.populateTeammateRuns();
+        this.displayRuns();
+        this.app.getTeam().addTeamListener(this::displayRuns);
     }
 
     private void populateTeammateRuns() {
@@ -57,6 +59,11 @@ public class TeammateRunsFragment extends Fragment implements RunsListener, Adap
         Bundle bundle = new Bundle();
         bundle.putSerializable("Run", run);
         Navigation.findNavController(this.getActivity(), this.getId()).navigate(R.id.action_teammateRunsFragment_to_viewRunFragment, bundle);
+    }
+
+    public void displayRuns() {
+        ListView listView = this.getActivity().findViewById(R.id.my_runs_list);
+        listView.setVisibility(this.app.getTeam().isUserOnTeam() ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override

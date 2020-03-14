@@ -70,6 +70,11 @@ public class ViewRunFragment extends Fragment implements ScheduledRunListener {
                 proposeNewRun();
             }
         });
+
+        if(run.hasBeenRunPreviously()){
+            ImageView checkMark =  requireActivity().findViewById(R.id.my_run_check);
+            checkMark.setVisibility(View.VISIBLE);
+        }
     }
 
     private void proposeNewRun(){
