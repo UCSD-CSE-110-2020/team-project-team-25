@@ -15,23 +15,18 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import edu.ucsd.cse110.walkstatic.runs.Run;
 import edu.ucsd.cse110.walkstatic.teammate.Team;
-import edu.ucsd.cse110.walkstatic.teammate.TeamListener;
 import edu.ucsd.cse110.walkstatic.teammate.Teammate;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateArrayAdapter;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequest;
-import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestArrayAdapter;
 import edu.ucsd.cse110.walkstatic.teammate.TeammateRequestsListener;
 
-public class TeamFragment extends Fragment implements TeammateRequestsListener, TeamListener, AdapterView.OnItemClickListener {
-
-    private TeammateRequestArrayAdapter teammateRequestListAdapter;
+public class TeamFragment extends Fragment implements TeammateRequestsListener {
     private TeammateArrayAdapter teammateListAdapter;
-    private List<TeammateRequest> requestsList;
-    private List<Teammate> teammateList;
+    private List<Object> teammateList;
     private Walkstatic app;
 
     @Override
@@ -51,7 +46,7 @@ public class TeamFragment extends Fragment implements TeammateRequestsListener, 
         super.onViewCreated(view, savedInstanceState);
         this.app = new Walkstatic(this.getContext());
         this.populateTeammates();
-        this.app.getTeam().addTeamListener(this);
+        this.app.getTeam().addTeamListener(this::updateList);
     }
 
     private void populateTeammates() {
@@ -59,25 +54,35 @@ public class TeamFragment extends Fragment implements TeammateRequestsListener, 
         ListView requestsListView = this.requireActivity().findViewById(R.id.teammate_requests_list);
 
         Team team = this.app.getTeam();
-        this.teammateList = team.getTeammates();
+        this.teammateList = new ArrayList<>();
+        this.teammateList.addAll(team.getTeammates());
+        this.teammateList.addAll(this.app.getTeammateRequests().getRequests());
+        // this.requestsList = this.app.getTeammateRequests().getRequests();
+
         teammateListAdapter = new TeammateArrayAdapter(this.getActivity(),
                 R.layout.teammate_textview, this.teammateList);
         teammatesListView.setAdapter(teammateListAdapter);
+        teammatesListView.setOnItemClickListener(this::onItemClick);
         teammateListAdapter.notifyDataSetChanged();
 
+        /*
         this.requestsList = this.app.getTeammateRequests().getRequests();
         teammateRequestListAdapter = new TeammateRequestArrayAdapter(this.getActivity(),
                 R.layout.teammate_request_textview, this.requestsList);
         requestsListView.setAdapter(teammateRequestListAdapter);
         requestsListView.setOnItemClickListener(this);
         teammateRequestListAdapter.notifyDataSetChanged();
+         */
 
         this.app.getTeammateRequests().addRequestsListener(this);
     }
 
-    @Override
     public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
-        TeammateRequest request = (TeammateRequest)parent.getItemAtPosition(pos);
+        Object clicked = parent.getItemAtPosition(pos);
+
+        if (clicked instanceof Teammate) { return; }
+
+        TeammateRequest request = (TeammateRequest) clicked;
         Bundle bundle = new Bundle();
         bundle.putSerializable("request", request);
         Navigation.findNavController(this.getActivity(), this.getId()).navigate(R.id.action_teamFragment_to_inviteAcceptedFragment, bundle);
@@ -102,18 +107,16 @@ public class TeamFragment extends Fragment implements TeammateRequestsListener, 
         Navigation.findNavController(this.requireActivity(), this.getId()).navigate(R.id.action_teamFragment_to_inviteFragment);
     }
 
-    @Override
-    public void teammateRequestsUpdated(List<TeammateRequest> requests) {
-        this.requestsList.clear();
-        this.requestsList.addAll(requests);
-        this.teammateRequestListAdapter.notifyDataSetChanged();
+    private void updateList() {
+        this.teammateList.clear();
+        this.teammateList.addAll(this.app.getTeam().getTeammates());
+        this.teammateList.addAll(this.app.getTeammateRequests().getRequests());
+        this.teammateListAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void teamChanged() {
-        this.teammateList.clear();
-        this.teammateList.addAll(this.app.getTeam().getTeammates());
-        this.teammateListAdapter.notifyDataSetChanged();
+    public void teammateRequestsUpdated(List<TeammateRequest> requests) {
+        this.updateList();
     }
 }
 
