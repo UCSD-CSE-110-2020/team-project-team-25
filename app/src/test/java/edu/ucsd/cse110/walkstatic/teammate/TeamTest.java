@@ -3,6 +3,7 @@ package edu.ucsd.cse110.walkstatic.teammate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.robolectric.ParameterizedRobolectricTestRunner;
 
 import edu.ucsd.cse110.walkstatic.MockFirebaseHelpers;
 import edu.ucsd.cse110.walkstatic.store.UserMembershipStore;
@@ -142,5 +143,21 @@ public class TeamTest {
         Teammate otherUse = new Teammate("user2");
         team.setMembership(otherUse);
         assertThat(team.getTeammates().isEmpty()).isTrue();
+    }
+
+    @Test
+    public void userIsNotOnTheirOwnTeam() {
+        UserMembershipStore membershipStore = mock(UserMembershipStore.class);
+        Teammate user = new Teammate("temple");
+        Teammate user2 = new Teammate("bazaar");
+        Team team = new Team(user, membershipStore);
+
+        team.setMembership(user);
+        team.setMembership(user2);
+
+        assertThat(team.getTeammates().size()).isEqualTo(1);
+        assertThat(team.getTeammates().get(0)).isEqualTo(user2);
+
+
     }
 }

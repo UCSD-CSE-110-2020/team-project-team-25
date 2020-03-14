@@ -40,7 +40,9 @@ public class Team implements UserTeamListener {
 
     public List<Teammate> getTeammates(){
         if(this.isUserOnTeam()){
-            return new ArrayList<>(this.teammateList);
+            List<Teammate> teammates = new ArrayList<>(this.teammateList);
+            teammates.remove(user);
+            return teammates;
         }
         return new ArrayList<>();
     }
