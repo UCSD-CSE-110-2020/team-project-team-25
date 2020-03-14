@@ -54,7 +54,7 @@ public class TeamFragment extends Fragment implements TeammateRequestsListener {
 
         Team team = this.app.getTeam();
         teammateListAdapter = new TeammateArrayAdapter(this.getActivity(),
-                R.layout.teammate_textview, team.getTeammates());
+                R.layout.teammate_textview, null);
         teammatesListView.setAdapter(teammateListAdapter);
         teammateListAdapter.notifyDataSetChanged();
 

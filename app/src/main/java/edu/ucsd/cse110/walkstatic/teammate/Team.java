@@ -6,60 +6,43 @@ import com.google.gson.annotations.Expose;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Team {
+import edu.ucsd.cse110.walkstatic.store.UserTeamListener;
 
-    private List<Teammate> teammates;
+public class Team implements UserTeamListener {
+
+    private Teammate user;
+    private boolean isUserOnTeam;
     private List<TeamListener> listeners;
 
     @DocumentId
     private String documentId;
 
-    public Team() { this(new ArrayList<>()); }
-
     public Team(Teammate teammate) {
-        this();
-        this.teammates.add(teammate);
-        teammate.setTeam(this);
-    }
-
-    public Team(List<Teammate> teammates)
-    {
-        this.teammates = teammates;
-        for (Teammate t : teammates) t.setTeam(this);
-
+        this.user = teammate;
+        this.isUserOnTeam = false;
         this.listeners = new ArrayList<>();
-        this.documentId = "";
     }
 
     public void addTeamListener(TeamListener listener) { listeners.add(listener); }
 
-    public void removeAllListeners() { listeners.clear(); }
-
     public String getDocumentId() { return documentId; }
 
-    public void setDocumentId(String documentId) { this.documentId = documentId; }
 
-    public List<Teammate> getTeammates()
-    {
-        return teammates;
+    private void notifyListeners() {
+        for(TeamListener listener : this.listeners){
+            listener.userIsNowOnTeam();
+        }
     }
 
-    public void merge(Team other) {
-        for (Teammate t : other.getTeammates())
-            if (!this.teammates.contains(t)) this.add(t);
-
-        for (Teammate t : this.getTeammates())
-            if (!other.teammates.contains(t)) other.add(t);
+    public boolean isUserOnTeam(){
+        return this.isUserOnTeam;
     }
 
-    public void add(Teammate teammate)
-    {
-        this.teammates.add(teammate);
-        notifyListeners(teammate);
+    @Override
+    public void userTeamChanged(String userEmail) {
+        if(userEmail.equals(this.user.getEmail())){
+            this.isUserOnTeam = true;
+            this.notifyListeners();
+        }
     }
-
-    private void notifyListeners(Teammate teammate) {
-        for (TeamListener listener : listeners) listener.teammateAdded(teammate);
-    }
-
 }

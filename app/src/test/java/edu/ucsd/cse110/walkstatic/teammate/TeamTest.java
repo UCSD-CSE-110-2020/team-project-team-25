@@ -9,66 +9,61 @@ import edu.ucsd.cse110.walkstatic.store.TeamsStore;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class TeamTest {
 
     @Before
     public void setupMocks() { MockFirebaseHelpers.mockStorage(); }
 
-    @Test
-    public void teammatesAreAddedToTeam(){
-        Team team = new Team();
-        Teammate teammate1 = new Teammate();
-        Teammate teammate2 = new Teammate();
-        team.add(teammate1);
-        team.add(teammate2);
+    /*
+    Check if user has accepted a request
+        - check if user email is present in /onTeam/{userEmail}
 
-        assertThat(team.getTeammates()).contains(teammate1);
-        assertThat(team.getTeammates()).contains(teammate2);
-        assertThat(team.getTeammates().size()).isEqualTo(2);
+    Notify subscribers when this changes
+     */
+
+    @Test
+    public void byDefaultUserIsNotOnTeam(){
+        Teammate user = new Teammate();
+        Team team = new Team(user);
+        assertThat(team.isUserOnTeam()).isFalse();
     }
 
     @Test
-    public void addingTeammateNotifiesListener() {
-        Team team = new Team();
-
-        class FakeListener implements TeamListener {
-            public Teammate added;
-            @Override
-            public void teammateAdded(Teammate teammate) { added = teammate; }
-        }
-
-        FakeListener fl = new FakeListener();
-        Teammate t = new Teammate("whitehouse.gov");
-        team.addTeamListener(fl);
-        team.add(t);
-        assertThat(fl.added).isEqualTo(t);
+    public void whenUserDocumentChangedUserIsNowOnTeam(){
+        Teammate user = new Teammate("temple");
+        Team team = new Team(user);
+        team.userTeamChanged(user.getEmail());
+        assertThat(team.isUserOnTeam()).isTrue();
     }
 
     @Test
-    public void mergeTeams() {
-        Team team1 = new Team();
-        Team team2 = new Team();
+    public void whenAnotherUsersDocumentChangedUserIsStillNotOnTeam(){
+        Teammate user = new Teammate("temple");
+        Team team = new Team(user);
+        team.userTeamChanged("mad");
+        assertThat(team.isUserOnTeam()).isFalse();
+    }
 
-        Teammate teammate1 = new Teammate("1");
-        Teammate teammate2 = new Teammate("2");
+    @Test
+    public void whenUserDocumentChangedListenerCalled(){
+        TeamListener listener = mock(TeamListener.class);
+        Teammate user = new Teammate("temple");
+        Team team = new Team(user);
+        team.addTeamListener(listener);
+        team.userTeamChanged(user.getEmail());
+        verify(listener).userIsNowOnTeam();
+    }
 
-        team1.add(teammate1);
-        team2.add(teammate2);
-
-        assertThat(team1.getTeammates()).contains(teammate1);
-        assertThat(team2.getTeammates()).contains(teammate2);
-
-        team1.merge(team2);
-
-        assertThat(team1.getTeammates()).contains(teammate1);
-        assertThat(team2.getTeammates()).contains(teammate2);
-
-        assertThat(team1.getTeammates()).contains(teammate2);
-        assertThat(team2.getTeammates()).contains(teammate1);
-
-        assertThat(team1.getTeammates().size()).isEqualTo(2);
-        assertThat(team2.getTeammates().size()).isEqualTo(2);
-
+    @Test
+    public void whenAnotherUserDocumentChangedListenerNotCalled(){
+        TeamListener listener = mock(TeamListener.class);
+        Teammate user = new Teammate("temple");
+        Team team = new Team(user);
+        team.addTeamListener(listener);
+        team.userTeamChanged("user");
+        verify(listener, times(0)).userIsNowOnTeam();
     }
 }

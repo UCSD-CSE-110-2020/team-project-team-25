@@ -24,7 +24,6 @@ public class FirebaseTeamsStore implements TeamsStore {
 
     @Override
     public void mergeTeams(Team team1, Team team2) {
-        team1.merge(team2);
         addTeam(team1);
         addTeam(team2);
     }
@@ -33,10 +32,5 @@ public class FirebaseTeamsStore implements TeamsStore {
     public void addTeam(Team team) {
         CollectionReference teamRef = teams.collection(team.getDocumentId());
 
-        for (Teammate teammate : team.getTeammates()) {
-            teamRef.add(teammate).addOnFailureListener(f -> {
-                Log.e(TAG, "Unable to store request " + team + " because " + f.getLocalizedMessage());
-            });
-        }
     }
 }
