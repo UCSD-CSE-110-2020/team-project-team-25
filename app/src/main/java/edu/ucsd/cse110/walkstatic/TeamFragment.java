@@ -51,6 +51,7 @@ public class TeamFragment extends Fragment implements TeammateRequestsListener, 
         super.onViewCreated(view, savedInstanceState);
         this.app = new Walkstatic(this.getContext());
         this.populateTeammates();
+        this.app.getTeam().addTeamListener(this);
     }
 
     private void populateTeammates() {

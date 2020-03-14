@@ -20,6 +20,7 @@ public class TeammateRequest implements Serializable {
         this.requester = requester;
         this.target = target;
     }
+
     public Teammate getRequester(){
         return this.requester;
     }

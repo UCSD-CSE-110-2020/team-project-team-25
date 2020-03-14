@@ -32,8 +32,7 @@ public class TeammateRequests implements TeammateRequestListener {
     }
 
     public List<TeammateRequest> getRequests(){
-        List<TeammateRequest> requestList = new ArrayList<>(this.requestHashSet);
-        return requestList;
+        return new ArrayList<>(this.requestHashSet);
     }
 
     public void addRequestsListener(TeammateRequestsListener teammateRequestsListener){

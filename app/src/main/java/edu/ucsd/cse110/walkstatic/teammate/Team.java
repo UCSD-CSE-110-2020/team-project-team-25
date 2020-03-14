@@ -32,7 +32,6 @@ public class Team implements UserTeamListener {
         this.userTeamChanged(user);
     }
 
-
     private void notifyListeners() {
         for(TeamListener listener : this.listeners){
             listener.teamChanged();
